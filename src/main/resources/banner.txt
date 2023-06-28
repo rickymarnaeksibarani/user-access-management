@@ -1,0 +1,10 @@
+
+ /__  ___/ /|    //| |     //   ) )
+   / /    //|   // | |    ((
+  / /    // |  //  | |      \\
+ / /    //  | //   | |        ) )
+/ /    //   |//    | | ((___ / /
+
+${application.title} ${application.version}
+Powered by Spring Boot ${spring-boot.version}
+Developed by TDI-2 PT. GMF-AeroAsia, Tbk.

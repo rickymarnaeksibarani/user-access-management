@@ -1,5 +1,6 @@
 package com.gmf.user_management.domains.user;
 
+import com.gmf.user_management.core.dto.EmployeeDTO;
 import com.gmf.user_management.core.enums.HashEnum;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
@@ -23,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -57,6 +59,33 @@ public class UserServiceImpl implements UserService {
         }
 
         return ObjectMapperUtil.map(user, UserActiveDTO.class);
+    }
+
+    @Override
+    public EmployeeDTO getDetailUserByEmployeeNumber(String personalNumber) throws NotFoundException {
+
+        Specification<UserActiveEntity> specs = Specification
+                .where(UserPredicate.equalUsername(personalNumber))
+                ;
+
+        List<UserActiveEntity> users = userActiveMainRepository.findAll(specs);
+
+        if(users.isEmpty()) {
+            throw new NotFoundException("Employee Not Found");
+        }
+
+        UserActiveEntity user = users.get(0);
+
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        employeeDTO.setPersonalName((user.getFirstName() + " " + user.getLastName()).trim());
+        employeeDTO.setPersonalNumber(user.getUsername());
+        // TODO: Please use a proper Image
+        employeeDTO.setPersonalImage("https://raw.githubusercontent.com/antoniosai/gmf-assets/master/blank-avatar.png");
+        employeeDTO.setPersonalUnit(user.getWorkstation());
+        employeeDTO.setIsGmfEmployee(false);
+        employeeDTO.setPersonalEmail(user.getEmail());
+
+        return employeeDTO;
     }
 
     @Override

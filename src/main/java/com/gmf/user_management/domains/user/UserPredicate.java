@@ -14,4 +14,11 @@ public class UserPredicate {
                         builder.like(builder.upper(root.get("email")), "%" + email.toUpperCase() + "%")
                 );
     }
+    public static Specification<UserActiveEntity> equalUsername(String username) {
+
+        return (root, query, builder) ->
+                builder.and(
+                        builder.equal(root.get("username"), username)
+                );
+    }
 }

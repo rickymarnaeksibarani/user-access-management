@@ -1,5 +1,6 @@
 package com.gmf.user_management.domains.user;
 
+import com.gmf.user_management.core.dto.EmployeeDTO;
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
@@ -40,12 +41,12 @@ public class UserControllerImpl {
             .toResponse();
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> getDetailUser(
-            @PathVariable @IsNumeric @IsRequired String userId
+    @GetMapping("/{personalNumber}")
+    public ResponseEntity<HttpResponseDTO<EmployeeDTO>> getDetailUser(
+            @PathVariable @IsNumeric @IsRequired String personalNumber
     ) throws NotFoundException {
-        return new HttpResponseDTO<>(userService.getDetailUserById(Long.parseLong(userId)), HttpStatus.OK)
-            .setResponseHeaders("userId", userId)
+        return new HttpResponseDTO<>(userService.getDetailUserByEmployeeNumber(personalNumber), HttpStatus.OK)
+            .setResponseHeaders("personalNumber", personalNumber)
             .toResponse();
     }
 

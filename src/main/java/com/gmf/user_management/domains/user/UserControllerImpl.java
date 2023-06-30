@@ -1,0 +1,95 @@
+package com.gmf.user_management.domains.user;
+
+import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.core.validations.IsNumeric;
+import com.gmf.user_management.core.validations.IsRequired;
+import com.gmf.user_management.domains.user.dto.UserActiveDTO;
+import com.gmf.user_management.domains.user.dto.UserDTO;
+import com.gmf.user_management.domains.user.dto.UserLoginDTO;
+import com.gmf.user_management.domains.user.entities.UserActiveEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/v1/user")
+@Validated
+@Slf4j
+public class UserControllerImpl {
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<UserActiveEntity, UserActiveDTO>>> getPaginatedUser(
+        @RequestParam(defaultValue = "1") @IsNumeric String page,
+        @RequestParam(defaultValue = "20") @IsNumeric String perPage,
+        UserPaginationRequest userPaginationRequest
+    ) {
+        return new HttpResponseDTO<>(userService.getUserPaginated(Integer.parseInt(page), Integer.parseInt(perPage), userPaginationRequest), HttpStatus.OK)
+            .setResponseHeaders("page", page)
+            .setResponseHeaders("perPage", perPage)
+            .setResponseHeaders("userPaginationRequest", userPaginationRequest)
+            .toResponse();
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> getDetailUser(
+            @PathVariable @IsNumeric @IsRequired String userId
+    ) throws NotFoundException {
+        return new HttpResponseDTO<>(userService.getDetailUserById(Long.parseLong(userId)), HttpStatus.OK)
+            .setResponseHeaders("userId", userId)
+            .toResponse();
+    }
+
+    @PostMapping
+    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> createNewUser(
+        @Valid @RequestBody UserDTO userDTO
+    ) {
+        return new HttpResponseDTO<>(userService.createNewUser(userDTO), HttpStatus.CREATED)
+            .setResponseHeaders("userDTO", userDTO)
+            .toResponse();
+    }
+
+    @PostMapping(value = "/{userId}", produces = "application/json")
+    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> addNewLoginToExistingUserById(
+        @PathVariable @IsRequired @IsNumeric String userId,
+        @RequestBody @Valid UserLoginDTO userLoginDTO
+    ) throws NotFoundException {
+
+        userLoginDTO.setUserDetailId(Long.parseLong(userId));
+
+        return new HttpResponseDTO<>(userService.createNewUserLogin(Long.parseLong(userId), userLoginDTO), HttpStatus.CREATED)
+            .setResponseHeaders("userId", userId)
+            .setResponseHeaders("userLoginDTO", userLoginDTO)
+            .toResponse();
+    }
+
+
+    @PutMapping(value = "/{userLoginId}/update-login", produces = "application/json")
+    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> updateUserLoginById(
+        @PathVariable @IsRequired @IsNumeric String userLoginId,
+        @RequestBody @Valid UserLoginDTO userLoginDTO
+    ) throws NotFoundException {
+        return new HttpResponseDTO<>(userService.updateUserLoginById(Long.parseLong(userLoginId), userLoginDTO), HttpStatus.CREATED)
+            .setResponseHeaders("userLoginId", userLoginId)
+            .setResponseHeaders("userLoginDTO", userLoginDTO)
+            .toResponse();
+    }
+
+    @DeleteMapping(value = "/{userLoginId}/remove-login", produces = "application/json")
+    public ResponseEntity<HttpResponseDTO<Boolean>> deleteUserLoginById(
+        @PathVariable @IsRequired @IsNumeric String userLoginId
+    ) {
+        return new HttpResponseDTO<>(userService.removeUserLoginById(Long.parseLong(userLoginId)), HttpStatus.OK)
+            .setResponseHeaders("userLoginId", userLoginId)
+            .toResponse();
+    }
+}

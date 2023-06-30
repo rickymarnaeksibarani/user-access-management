@@ -18,8 +18,4 @@ public abstract class TimestampEntityAbstraction {
 
     @UpdateTimestamp
     private LocalDateTime updated_at;
-
-    private String created_by;
-
-    private String updated_by;
 }

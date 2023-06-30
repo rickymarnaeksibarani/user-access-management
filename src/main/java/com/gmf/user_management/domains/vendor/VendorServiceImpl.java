@@ -3,7 +3,7 @@ package com.gmf.user_management.domains.vendor;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
-import com.gmf.user_management.core.utils.PaginatorUtil;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,16 +22,16 @@ public class VendorServiceImpl implements VendorService {
     private VendorMainRepository vendorMainRepository;
 
     @Override
-    public PaginatorUtil<VendorEntity, VendorDTO> getPaginatedVendor(Integer page, Integer perPage, VendorDTO vendorRequest) {
+    public PaginationUtil<VendorEntity, VendorDTO> getPaginatedVendor(Integer page, Integer perPage, VendorDTO vendorRequest) {
         Pageable paging = PageRequest.of(page - 1, perPage);
 
         Specification<VendorEntity> specs = Specification
-                .where(VendorPerdicate.withSearchTerm(vendorRequest.getCompanyName()))
+                .where(VendorPredicate.withSearchTerm(vendorRequest.getCompanyName()))
                 ;
 
         Page<VendorEntity> pagedVendors = vendorMainRepository.findAll(specs, paging);
 
-        return new PaginatorUtil<>(pagedVendors, VendorDTO.class);
+        return new PaginationUtil<>(pagedVendors, VendorDTO.class);
     }
 
     @Override

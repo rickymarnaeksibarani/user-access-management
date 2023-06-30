@@ -14,7 +14,7 @@ import java.util.Map;
 @Setter
 @EqualsAndHashCode
 public class HttpResponseDTO<T> {
-    private T data;
+    private T response;
     private Map<String, Object> headers = new HashMap<>();
     private String message;
     private LocalDateTime time;
@@ -23,19 +23,19 @@ public class HttpResponseDTO<T> {
         this.time = LocalDateTime.now();
     }
 
-    public HttpResponseDTO(T _data) {
-        this.data = _data;
+    public HttpResponseDTO(T _response) {
+        this.response = _response;
         this.headers.put("status", HttpStatus.OK);
         this.time = LocalDateTime.now();
     }
-    public HttpResponseDTO(T _data, HttpStatus status) {
-        this.data = _data;
+    public HttpResponseDTO(T _response, HttpStatus status) {
+        this.response = _response;
         this.headers.put("status", status);
         this.time = LocalDateTime.now();
     }
 
-    public HttpResponseDTO(T _data, Map<String, Object> _headers) {
-        this.data = _data;
+    public HttpResponseDTO(T _response, Map<String, Object> _headers) {
+        this.response = _response;
         this.headers = _headers;
         this.time = LocalDateTime.now();
     }

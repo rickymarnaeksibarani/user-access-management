@@ -6,9 +6,12 @@ services:
     restart: always
     ports:
       - "8006:8006"
-    networks:
-      - tms
     environment:
       SERVER_PORT: 8006
+    networks:
+      - microservice_network
+
 networks:
-  tms:
+  microservice_network:
+    external:
+      name: microservice_global_network

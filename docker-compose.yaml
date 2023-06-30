@@ -1,0 +1,14 @@
+version: "3.6"
+services:
+  utils_userman_service:
+    image: microservice/utils-userman-service:latest
+    container_name: utils-userman-service
+    restart: always
+    ports:
+      - "8006:8006"
+    networks:
+      - tms
+    environment:
+      SERVER_PORT: 8006
+networks:
+  tms:

@@ -42,12 +42,21 @@ public class UserControllerImpl {
     }
 
     @GetMapping("/{personalNumber}")
-    public ResponseEntity<HttpResponseDTO<EmployeeDTO>> getDetailUser(
+    public ResponseEntity<HttpResponseDTO<EmployeeDTO>> getDetailUserByPersonalNumber(
             @PathVariable @IsNumeric @IsRequired String personalNumber
     ) throws NotFoundException {
         return new HttpResponseDTO<>(userService.getDetailUserByEmployeeNumber(personalNumber), HttpStatus.OK)
             .setResponseHeaders("personalNumber", personalNumber)
             .toResponse();
+    }
+
+    @GetMapping("/by-id/{personalNumber}")
+    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> getDetailUserById(
+            @PathVariable @IsNumeric @IsRequired String personalNumber
+    ) throws NotFoundException {
+        return new HttpResponseDTO<>(userService.getDetailUserById(Long.parseLong(personalNumber)), HttpStatus.OK)
+                .setResponseHeaders("personalNumber", personalNumber)
+                .toResponse();
     }
 
     @PostMapping

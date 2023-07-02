@@ -24,6 +24,15 @@ public class UserActiveDTO {
     @JsonProperty("personalNumber")
     private String aliasPersonalNumber;
 
+    @JsonProperty("identityType")
+    private String identityType;
+
+    @JsonProperty("identityNumber")
+    private String identityNumber;
+
+    @JsonProperty("dateOfBirth")
+    private String dateOfBirth;
+
     @JsonProperty("passCardNumber")
     private String passCardNumber;
 

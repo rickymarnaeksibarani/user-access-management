@@ -41,6 +41,15 @@ public class UserActiveEntity implements Serializable {
     @Column(name = "work_station")
     private String workstation;
 
+    @Column(name = "identity_type")
+    private String identityType;
+
+    @Column(name = "identity_number")
+    private String identityNumber;
+
+    @Column(name = "date_of_birth")
+    private String dateOfBirth;
+
     @Column(name = "active_status")
     private String status;
 

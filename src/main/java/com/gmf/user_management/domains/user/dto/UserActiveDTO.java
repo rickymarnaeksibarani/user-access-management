@@ -21,6 +21,9 @@ public class UserActiveDTO {
     @JsonProperty("companySource")
     private String companyName;
 
+    @JsonProperty("companyAddress")
+    private String companyAddress;
+
     @JsonProperty("personalNumber")
     private String aliasPersonalNumber;
 

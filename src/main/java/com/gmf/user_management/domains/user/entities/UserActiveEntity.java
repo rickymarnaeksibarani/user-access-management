@@ -29,6 +29,9 @@ public class UserActiveEntity implements Serializable {
     @Column(name = "company_name")
     private String companyName;
 
+    @Column(name = "company_address")
+    private String companyAddress;
+
     @Column(name = "alias_personal_number")
     private String aliasPersonalNumber;
 

@@ -4,10 +4,7 @@ import com.gmf.user_management.core.abstractions.TimestampEntityAbstraction;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,7 +18,8 @@ import java.io.Serializable;
 public class VendorEntity extends TimestampEntityAbstraction implements Serializable {
 
     @Id
-    @Column(name= " id_user_source", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name= " id_user_source")
     private Long idUserSource;
 
     @Column(name= " company_name", nullable = false)
@@ -42,6 +40,6 @@ public class VendorEntity extends TimestampEntityAbstraction implements Serializ
     @Column(name= " active_status", nullable = false)
     private String activeStatus;
 
-    @Column(name= " changed_by", nullable = false)
+    @Column(name= " changed_by")
     private String changedBy;
 }

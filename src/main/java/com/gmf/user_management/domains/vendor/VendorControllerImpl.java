@@ -50,7 +50,7 @@ public class VendorControllerImpl implements VendorController {
 
     @Override
     @PostMapping
-    public ResponseEntity<?> createNewVendor(VendorDTO vendorRequest) {
+    public ResponseEntity<?> createNewVendor(@RequestBody @Valid VendorDTO vendorRequest) {
         return new HttpResponseDTO<>(vendorService.createNewVendor(vendorRequest))
             .setResponseHeaders("vendorRequest", vendorRequest)
             .toResponse("Store New Vendor");

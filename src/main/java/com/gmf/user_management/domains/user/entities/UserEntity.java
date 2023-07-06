@@ -21,7 +21,7 @@ public class UserEntity extends TimestampEntityAbstraction implements Serializab
     @Id
     @Column(name = "id_user_details")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_user_seq")
-    @SequenceGenerator(name = "id_user_seq", sequenceName = "public.user_details_information_id_user_details_seq", allocationSize = 1)
+    @SequenceGenerator(name = "id_user_seq", sequenceName = "user_details_information_id_user_details_seq", allocationSize = 1)
     private Long idUserDetail;
 
     @Column(name = "first_name", length = 40, nullable = false)

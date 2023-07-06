@@ -3,10 +3,12 @@ package com.gmf.user_management.core.exceptions;
 
 import com.gmf.user_management.core.errors.AppError;
 import com.gmf.user_management.core.errors.NoHandlerError;
+import com.gmf.user_management.core.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -143,6 +145,13 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
             }
         }
 
+        if(exception instanceof DataIntegrityViolationException) {
+            String errorMessage = "Conflict on Column: " + StringUtil.transformToCamelCase(extractConflictingValue((DataIntegrityViolationException) exception));
+            log.error(errorMessage);
+            AppError appError = new AppError(HttpStatus.CONFLICT, errorMessage);
+            return new ResponseEntity(appError, appError.getHttpStatus());
+        }
+
         log.error("GENERAL Exception caused here: {}", exception.toString());
         AppError appError = new AppError(HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity(appError, appError.getHttpStatus());
@@ -235,5 +244,16 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getValue(), ex.getRequiredType().getSimpleName());
         AppError appError = new AppError(HttpStatus.BAD_REQUEST, _message);
         return new ResponseEntity(appError, HttpStatus.BAD_REQUEST);
+    }
+
+    private String extractConflictingValue(DataIntegrityViolationException ex) {
+        // Extract the relevant information from the exception
+        // You might need to inspect the exception message or use a specific exception subclass for more details
+        // This depends on the specific database driver and the constraint that caused the violation
+        // Example: extracting the violating value from a unique constraint violation
+        String message = ex.getMostSpecificCause().getMessage();
+        int startIndex = message.indexOf("Detail: Key (") + "Detail: Key (".length();
+        int endIndex = message.indexOf(")=(", startIndex);
+        return message.substring(startIndex, endIndex);
     }
 }

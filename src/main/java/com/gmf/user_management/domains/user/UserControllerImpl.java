@@ -13,6 +13,7 @@ import com.gmf.user_management.domains.user.entities.UserActiveEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +83,16 @@ public class UserControllerImpl {
             .toResponse();
     }
 
+    @PutMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> updateUserById(
+            @PathVariable @IsRequired @IsNumeric String userId,
+            @Valid @RequestBody UserDTO userDTO
+    ) throws NotFoundException {
+        return new HttpResponseDTO<>(userService.updateUserDetailById(Long.parseLong(userId), userDTO), HttpStatus.CREATED)
+                .setResponseHeaders("userDTO", userDTO)
+                .toResponse();
+    }
+
 
     @PutMapping(value = "/{userLoginId}/update-login", produces = "application/json")
     public ResponseEntity<HttpResponseDTO<UserActiveDTO>> updateUserLoginById(
@@ -101,5 +112,14 @@ public class UserControllerImpl {
         return new HttpResponseDTO<>(userService.removeUserLoginById(Long.parseLong(userLoginId)), HttpStatus.OK)
             .setResponseHeaders("userLoginId", userLoginId)
             .toResponse();
+    }
+
+    @DeleteMapping(value = "/{userId}", produces = "application/json")
+    public ResponseEntity<HttpResponseDTO<Boolean>> deleteUserById(
+            @PathVariable @IsRequired @IsNumeric String userId
+    ) {
+        return new HttpResponseDTO<>(userService.removeUserDetailById(Long.parseLong(userId)), HttpStatus.NO_CONTENT)
+                .setResponseHeaders("userId", userId)
+                .toResponse();
     }
 }

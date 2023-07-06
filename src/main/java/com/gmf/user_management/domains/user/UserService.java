@@ -23,4 +23,5 @@ public interface UserService {
     UserActiveDTO createNewUserLogin(Long userId, UserLoginDTO userLoginDTO) throws NotFoundException;
 
     Boolean removeUserLoginById(Long userLoginId);
+    Boolean removeUserDetailById(Long userId);
 }

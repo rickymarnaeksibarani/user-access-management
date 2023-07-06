@@ -90,7 +90,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserActiveDTO updateUserDetailById(Long userId, UserDTO userDTO) throws NotFoundException {
-        return null;
+
+        if(!userMainRepository.existsById(userId)) {
+            throw new NotFoundException("User with ID => " + userId + " is not Found");
+        }
+
+        userDTO.setIdUserDetail(userId);
+
+        UserEntity user = userMainRepository.saveAndFlush(ObjectMapperUtil.map(userDTO, UserEntity.class));
+
+        UserActiveEntity userActive = JpaResultHelperUtil.getSingleResultFromOptional(userActiveMainRepository.findById(user.getIdUserDetail()));
+
+        return ObjectMapperUtil.map(userActive, UserActiveDTO.class);
     }
 
     @Override
@@ -136,6 +147,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Boolean removeUserLoginById(Long userLoginId) {
         userLoginMainRepository.deleteById(userLoginId);
+
+        return true;
+    }
+
+    @Override
+    public Boolean removeUserDetailById(Long userId) {
+
+        userMainRepository.deleteById(userId);
 
         return true;
     }

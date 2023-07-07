@@ -30,6 +30,9 @@ public class UserDTO {
     @Email
     private String email;
 
+    @JsonProperty("isPic")
+    private Boolean isPic;
+
     @JsonProperty("identityNumber")
     @IsNumeric
     private String identityNumber;

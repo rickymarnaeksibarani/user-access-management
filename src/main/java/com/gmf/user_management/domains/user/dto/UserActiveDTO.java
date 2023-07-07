@@ -33,6 +33,9 @@ public class UserActiveDTO {
     @JsonProperty("identityNumber")
     private String identityNumber;
 
+    @JsonProperty("isPic")
+    private Boolean isPic;
+
     @JsonProperty("dateOfBirth")
     private String dateOfBirth;
 

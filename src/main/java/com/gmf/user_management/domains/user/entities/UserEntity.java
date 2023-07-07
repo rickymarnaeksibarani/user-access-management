@@ -39,6 +39,9 @@ public class UserEntity extends TimestampEntityAbstraction implements Serializab
     @Column(name = "identity_number", nullable = false)
     private String identityNumber;
 
+    @Column(name = "is_pic", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean isPic;
+
     @Column(name = "identity_type", nullable = false)
     private String identityType;
 

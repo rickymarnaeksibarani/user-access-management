@@ -89,6 +89,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserActiveDTO getDetailUserByPersonalNumber(String personalNumber) throws NotFoundException {
+        Specification<UserActiveEntity> specs = Specification
+                .where(UserPredicate.equalUsername(personalNumber))
+                ;
+
+        List<UserActiveEntity> users = userActiveMainRepository.findAll(specs);
+
+        if(users.isEmpty()) {
+            throw new NotFoundException("Employee Not Found");
+        }
+
+        UserActiveEntity user = users.get(0);
+
+        return ObjectMapperUtil.map(user, UserActiveDTO.class);
+    }
+
+    @Override
     public UserActiveDTO updateUserDetailById(Long userId, UserDTO userDTO) throws NotFoundException {
 
         if(!userMainRepository.existsById(userId)) {

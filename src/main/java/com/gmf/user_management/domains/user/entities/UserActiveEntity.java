@@ -56,6 +56,9 @@ public class UserActiveEntity implements Serializable {
     @Column(name = "active_status")
     private String status;
 
+    @Column(name = "is_pic")
+    private Boolean isPic;
+
     @Column(name = "first_name")
     private String firstName;
 

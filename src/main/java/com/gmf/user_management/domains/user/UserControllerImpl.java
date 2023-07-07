@@ -60,6 +60,15 @@ public class UserControllerImpl {
                 .toResponse();
     }
 
+    @GetMapping("/by-personal-number/{personalNumber}")
+    public ResponseEntity<HttpResponseDTO<UserActiveDTO>> getDetailUserByEmployeeNumber(
+            @PathVariable @IsNumeric @IsRequired String personalNumber
+    ) throws NotFoundException {
+        return new HttpResponseDTO<>(userService.getDetailUserByPersonalNumber(personalNumber), HttpStatus.OK)
+                .setResponseHeaders("personalNumber", personalNumber)
+                .toResponse();
+    }
+
     @PostMapping
     public ResponseEntity<HttpResponseDTO<UserActiveDTO>> createNewUser(
         @Valid @RequestBody UserDTO userDTO

@@ -13,6 +13,7 @@ public interface UserService {
 
     UserActiveDTO getDetailUserById(Long userId) throws NotFoundException;
     EmployeeDTO getDetailUserByEmployeeNumber(String personalNumber) throws NotFoundException;
+    UserActiveDTO getDetailUserByPersonalNumber(String personalNumber) throws NotFoundException;
 
     UserActiveDTO updateUserDetailById(Long userId, UserDTO userDTO) throws NotFoundException;
 

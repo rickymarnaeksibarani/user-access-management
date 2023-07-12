@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
 
         Specification<UserActiveEntity> specs = Specification
                 .where(UserPredicate.likeEmail(userPaginationRequest.getEmail()))
+                .and(UserPredicate.equalSourceId(userPaginationRequest.getUserSourceId()))
                 ;
 
         Page<UserActiveEntity> pagedUsers = userActiveMainRepository.findAll(specs, paging);

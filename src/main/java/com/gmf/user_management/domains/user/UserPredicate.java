@@ -5,6 +5,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
 
 public class UserPredicate {
+    public static Specification<UserActiveEntity> equalSourceId(@Nullable String email) {
+        if (email == null || email.isEmpty())
+            return null;
+
+        Long sourceId = Long.parseLong(email);
+
+        return (root, query, builder) ->
+                builder.or(
+                        builder.equal(root.get("sourceId"), sourceId)
+                );
+    }
     public static Specification<UserActiveEntity> likeEmail(@Nullable String email) {
         if (email == null || email.isEmpty())
             return null;

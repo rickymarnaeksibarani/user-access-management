@@ -11,4 +11,7 @@ public class UserPaginationRequest {
     @Sanitizer
     private String email;
 
+    @Sanitizer
+    private String userSourceId;
+
 }

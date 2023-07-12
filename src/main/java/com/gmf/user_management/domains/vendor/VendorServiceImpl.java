@@ -48,10 +48,12 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
+    @Transactional
     public VendorDTO updateVendorById(Long vendorId, VendorDTO vendorRequest) throws NotFoundException {
         if(!vendorMainRepository.existsById(vendorId)) {
             throw new NotFoundException("Vendor Not Found");
         }
+
         vendorRequest.setIdUserSource(vendorId);
 
         return upsertVendorEntity(vendorRequest);
@@ -75,8 +77,11 @@ public class VendorServiceImpl implements VendorService {
         return "Successfully deleted Vendor";
     }
 
+    @Transactional
     private VendorDTO upsertVendorEntity(VendorDTO vendorData) {
-        VendorEntity newVendor = vendorMainRepository.save(ObjectMapperUtil.map(vendorData, VendorEntity.class));
+        VendorEntity newVendor = vendorMainRepository.saveAndFlush(ObjectMapperUtil.map(vendorData, VendorEntity.class));
+
+        System.out.println("newVendor => " + newVendor);
 
         return ObjectMapperUtil.map(newVendor, VendorDTO.class);
     }

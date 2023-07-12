@@ -13,7 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Immutable
 @Table(name = "user_source", schema = "public")
 public class VendorEntity extends TimestampEntityAbstraction implements Serializable {
 

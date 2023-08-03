@@ -18,6 +18,8 @@ public class UserActiveDTO {
     @JsonProperty("sourceId")
     private Long sourceId;
 
+    private Long userLoginId;
+
     @JsonProperty("companySource")
     private String companyName;
 

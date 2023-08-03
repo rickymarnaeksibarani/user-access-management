@@ -26,6 +26,9 @@ public class UserActiveEntity implements Serializable {
     @Column(name = "user_source_id")
     private Long sourceId;
 
+    @Column(name = "user_login_id")
+    private Long userLoginId;
+
     @Column(name = "company_name")
     private String companyName;
 

@@ -14,4 +14,7 @@ public class UserPaginationRequest {
     @Sanitizer
     private String userSourceId;
 
+    @Sanitizer
+    private String searchTerm;
+
 }

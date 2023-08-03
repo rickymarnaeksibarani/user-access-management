@@ -30,13 +30,13 @@ public class UserPredicate {
         String finalSearchTerm = searchTerm;
         return (root, query, builder) ->
             builder.or(
-                    builder.like(root.get("username"), finalSearchTerm),
-                    builder.like(root.get("workstation"), finalSearchTerm),
-                    builder.like(root.get("identityNumber"), finalSearchTerm),
-                    builder.like(root.get("firstName"), finalSearchTerm),
-                    builder.like(root.get("lastName"), finalSearchTerm),
-                    builder.like(root.get("email"), finalSearchTerm),
-                    builder.like(root.get("passCardNumber"), finalSearchTerm)
+                    builder.like(builder.upper(root.get("username")), finalSearchTerm.toUpperCase()),
+                    builder.like(builder.upper(root.get("workstation")), finalSearchTerm.toUpperCase()),
+                    builder.like(builder.upper(root.get("identityNumber")), finalSearchTerm.toUpperCase()),
+                    builder.like(builder.upper(root.get("firstName")), finalSearchTerm.toUpperCase()),
+                    builder.like(builder.upper(root.get("lastName")), finalSearchTerm.toUpperCase()),
+                    builder.like(builder.upper(root.get("email")), finalSearchTerm.toUpperCase()),
+                    builder.like(builder.upper(root.get("passCardNumber")), finalSearchTerm.toUpperCase())
             );
     }
 

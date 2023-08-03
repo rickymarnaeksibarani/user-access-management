@@ -10,7 +10,7 @@ public class VendorPredicate {
 
         return (root, query, builder) ->
                 builder.or(
-                        builder.like(builder.upper(root.get("vendorName")), "%" + searchTerm.toUpperCase() + "%")
+                        builder.like(builder.upper(root.get("companyName")), "%" + searchTerm.toUpperCase() + "%")
                 );
     }
 }

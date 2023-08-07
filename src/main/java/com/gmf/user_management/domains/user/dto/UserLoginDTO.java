@@ -36,7 +36,7 @@ public class UserLoginDTO {
     @NotNull
     private String activeStatus;
 
-    @JsonProperty("workStation")
+    @JsonProperty("workstation")
     @NotNull
     private String workStation;
 

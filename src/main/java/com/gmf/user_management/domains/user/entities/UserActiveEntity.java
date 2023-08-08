@@ -68,6 +68,9 @@ public class UserActiveEntity implements Serializable {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "email")
     private String email;
 

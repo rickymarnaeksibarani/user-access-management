@@ -35,6 +35,9 @@ public class UserLoginEntity extends TimestampEntityAbstraction implements Seria
     @Column(name = "active_status", nullable = false)
     private String activeStatus;
 
+    @Column(name = "title", nullable = true)
+    private String title;
+
     @Column(name = "work_station", nullable = false, length = 20)
     private String workStation;
 

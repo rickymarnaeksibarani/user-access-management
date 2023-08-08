@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -35,6 +36,9 @@ public class UserLoginDTO {
     @JsonProperty("status")
     @NotNull
     private String activeStatus;
+
+    @JsonProperty("title")
+    private String title;
 
     @JsonProperty("workstation")
     @NotNull

@@ -132,6 +132,11 @@ public class UserServiceImpl implements UserService {
 
         UserLoginEntity updateLoginEntity = userLoginMainRepository.findById(userLoginId).get();
         updateLoginEntity.setIdActiveUser(userLoginId);
+        updateLoginEntity.setUsername(userLoginDTO.getUsername());
+        updateLoginEntity.setWorkStation(userLoginDTO.getWorkStation());
+        updateLoginEntity.setPersonalNumber(userLoginDTO.getPersonalNumber());
+        updateLoginEntity.setActiveStatus(userLoginDTO.getActiveStatus());
+        updateLoginEntity.setPassCardNumber(userLoginDTO.getPassCardNumber());
         updateLoginEntity.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
 
         UserLoginEntity userLoginEntity = userLoginMainRepository.saveAndFlush(updateLoginEntity);

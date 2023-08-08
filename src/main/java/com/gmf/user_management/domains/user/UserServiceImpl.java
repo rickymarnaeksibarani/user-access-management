@@ -130,10 +130,11 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("User Login with ID => "+ userLoginId + " is not found!");
         }
 
-        userLoginDTO.setIdActiveUser(userLoginId);
-        userLoginDTO.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
+        UserLoginEntity updateLoginEntity = userLoginMainRepository.findById(userLoginId).get();
+        updateLoginEntity.setIdActiveUser(userLoginId);
+        updateLoginEntity.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
 
-        UserLoginEntity userLoginEntity = userLoginMainRepository.saveAndFlush(ObjectMapperUtil.map(userLoginDTO, UserLoginEntity.class));
+        UserLoginEntity userLoginEntity = userLoginMainRepository.saveAndFlush(updateLoginEntity);
 
         return getDetailUserById(userLoginEntity.getUserDetailId());
     }

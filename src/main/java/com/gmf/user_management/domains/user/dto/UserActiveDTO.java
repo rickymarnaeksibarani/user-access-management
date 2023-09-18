@@ -50,12 +50,8 @@ public class UserActiveDTO {
     @JsonProperty("workStation")
     private String workstation;
 
-    // Data Origin: active_status
-    @JsonProperty("isLogin")
-    private String userStatus;
-
-    @JsonProperty("isWorking")
-    private String userWorking;
+    @JsonProperty("userStatus")
+    private String status;
 
     @JsonProperty("firstName")
     private String firstName;

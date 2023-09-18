@@ -56,11 +56,8 @@ public class UserActiveEntity implements Serializable {
     @Column(name = "date_of_birth")
     private String dateOfBirth;
 
-    @Column(name = "is_login")
-    private String userStatus;
-
-    @Column(name = "is_working")
-    private String userWorking;
+    @Column(name = "active_status")
+    private String status;
 
     @Column(name = "is_pic")
     private Boolean isPic;

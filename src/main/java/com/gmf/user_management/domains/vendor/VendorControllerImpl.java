@@ -4,6 +4,7 @@ import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.validations.IsNumeric;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +33,13 @@ public class VendorControllerImpl implements VendorController {
     }
 
     @Override
-    @GetMapping("/{vendorId}")
+    @GetMapping(name = "/{vendorId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getVendorDetailById(@PathVariable Long vendorId) throws NotFoundException {
         return new HttpResponseDTO<>(vendorService.getVendorDetailById(vendorId))
-            .setResponseHeaders("vendorId", vendorId)
-            .toResponse("Getting Vendor Detail By ID from Server");
+                .setResponseHeaders("vendorId", vendorId)
+                .toResponse("Successfully fetched by Vendor ID");
     }
+
 
     @Override
     @PutMapping("/{vendorId}")

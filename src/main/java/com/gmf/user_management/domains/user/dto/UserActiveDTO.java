@@ -52,10 +52,10 @@ public class UserActiveDTO {
 
     // Data Origin: active_status
     @JsonProperty("isLogin")
-    private Boolean userStatus;
+    private String userStatus;
 
     @JsonProperty("isWorking")
-    private Boolean userWorking;
+    private String userWorking;
 
     @JsonProperty("firstName")
     private String firstName;

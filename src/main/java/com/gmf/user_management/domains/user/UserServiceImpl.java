@@ -7,6 +7,7 @@ import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.core.utils.PasswordUtil;
+import com.gmf.user_management.domains.user.dto.PersonalInformationDTO;
 import com.gmf.user_management.domains.user.dto.UserActiveDTO;
 import com.gmf.user_management.domains.user.dto.UserDTO;
 import com.gmf.user_management.domains.user.dto.UserLoginDTO;
@@ -16,6 +17,7 @@ import com.gmf.user_management.domains.user.entities.UserLoginEntity;
 import com.gmf.user_management.domains.user.repositories.UserActiveMainRepository;
 import com.gmf.user_management.domains.user.repositories.UserLoginMainRepository;
 import com.gmf.user_management.domains.user.repositories.UserMainRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -51,6 +54,43 @@ public class UserServiceImpl implements UserService {
         Page<UserActiveEntity> pagedUsers = userActiveMainRepository.findAll(specs, paging);
 
         return new PaginationUtil<>(pagedUsers, UserActiveDTO.class);
+    }
+
+    @Override
+    public PaginationUtil<UserActiveEntity, PersonalInformationDTO> getUserPaginated(Integer page, Integer perPage, UserPaginationRequest userPaginationRequest, boolean isSoe) {
+
+        PaginationUtil<UserActiveEntity, UserActiveDTO> originData = getUserPaginated(page, perPage, userPaginationRequest);
+
+        List<PersonalInformationDTO> data = originData.getData().stream()
+                .map(f -> {
+                    PersonalInformationDTO tempPersonalInformation = new PersonalInformationDTO();
+                    tempPersonalInformation.setPersonalGroup("TAD");
+                    tempPersonalInformation.setPersonalSuperior(null);
+                    tempPersonalInformation.setPersonalTitle("-");
+                    tempPersonalInformation.setPersonalJob("-");
+                    tempPersonalInformation.setPersonalImage("https://github.com/antoniosai/gmf-assets/blob/master/blank-avatar.png");
+                    tempPersonalInformation.setPersonalName(f.getFirstName() + " " + f.getLastName());
+                    tempPersonalInformation.setPersonalNumber(f.getAliasPersonalNumber());
+                    tempPersonalInformation.setIsGmfEmployee(false);
+                    tempPersonalInformation.setPersonalSubGroup(f.getCompanyName());
+                    tempPersonalInformation.setPersonalUnit(f.getWorkstation());
+                    tempPersonalInformation.setPersonalEmail(f.getEmail());
+
+                    log.info("Temp Personal Information => {}", tempPersonalInformation);
+                    return tempPersonalInformation;
+                })
+                .toList();
+
+        PaginationUtil<UserActiveEntity, PersonalInformationDTO> newMappedResult = new PaginationUtil<>();
+        newMappedResult.setData(data);
+        newMappedResult.setCurrentPage(originData.getCurrentPage());
+        newMappedResult.setHasNext(originData.getHasNext());
+        newMappedResult.setHasPrev(originData.getHasPrev());
+        newMappedResult.setLastPage(originData.getLastPage());
+        newMappedResult.setTotalItems(originData.getTotalItems());
+        newMappedResult.setCurrentPage(originData.getCurrentPage());
+
+        return newMappedResult;
     }
 
     @Override

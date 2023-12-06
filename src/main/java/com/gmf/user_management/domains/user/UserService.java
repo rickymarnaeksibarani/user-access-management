@@ -3,6 +3,7 @@ package com.gmf.user_management.domains.user;
 import com.gmf.user_management.core.dto.EmployeeDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.domains.user.dto.PersonalInformationDTO;
 import com.gmf.user_management.domains.user.dto.UserActiveDTO;
 import com.gmf.user_management.domains.user.dto.UserDTO;
 import com.gmf.user_management.domains.user.dto.UserLoginDTO;
@@ -10,6 +11,7 @@ import com.gmf.user_management.domains.user.entities.UserActiveEntity;
 
 public interface UserService {
     PaginationUtil<UserActiveEntity, UserActiveDTO> getUserPaginated(Integer page, Integer perPage, UserPaginationRequest userPaginationRequest);
+    PaginationUtil<UserActiveEntity, PersonalInformationDTO> getUserPaginated(Integer page, Integer perPage, UserPaginationRequest userPaginationRequest, boolean isSoe);
 
     UserActiveDTO getDetailUserById(Long userId) throws NotFoundException;
     EmployeeDTO getDetailUserByEmployeeNumber(String personalNumber) throws NotFoundException;

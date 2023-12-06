@@ -30,16 +30,27 @@ public class UserControllerImpl {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<HttpResponseDTO<PaginationUtil<UserActiveEntity, UserActiveDTO>>> getPaginatedUser(
+    public Object getPaginatedUser(
         @RequestParam(defaultValue = "1") @IsNumeric String page,
         @RequestParam(defaultValue = "20") @IsNumeric String perPage,
+        @RequestParam(defaultValue = "false") boolean isSoeField,
         UserPaginationRequest userPaginationRequest
     ) {
-        return new HttpResponseDTO<>(userService.getUserPaginated(Integer.parseInt(page), Integer.parseInt(perPage), userPaginationRequest), HttpStatus.OK)
-            .setResponseHeaders("page", page)
-            .setResponseHeaders("perPage", perPage)
-            .setResponseHeaders("userPaginationRequest", userPaginationRequest)
-            .toResponse();
+        Object result;
+
+        if(isSoeField) {
+            log.info("Fetch Mapped Data");
+            result = userService.getUserPaginated(Integer.parseInt(page), Integer.parseInt(perPage), userPaginationRequest, true);
+        } else {
+            log.info("Fetch Original Data");
+            result = userService.getUserPaginated(Integer.parseInt(page), Integer.parseInt(perPage), userPaginationRequest);
+        }
+
+        return new HttpResponseDTO<>(result, HttpStatus.OK)
+                .setResponseHeaders("page", page)
+                .setResponseHeaders("perPage", perPage)
+                .setResponseHeaders("userPaginationRequest", userPaginationRequest)
+                .toResponse();
     }
 
     @GetMapping("/{personalNumber}")

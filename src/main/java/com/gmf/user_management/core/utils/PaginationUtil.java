@@ -1,13 +1,13 @@
 package com.gmf.user_management.core.utils;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaginationUtil<InClass, OutClass> {
     private List<OutClass> data;
     private Integer currentPage;

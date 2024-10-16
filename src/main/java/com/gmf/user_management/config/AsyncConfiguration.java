@@ -10,12 +10,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
-@Configuration
-@EnableAsync
+//@Configuration
+//@EnableAsync
 public class AsyncConfiguration implements AsyncConfigurer {
     private static final Logger LOGGER = LoggerFactory.getLogger(AsyncConfiguration.class);
 
-    @Bean(name = "excelExecutor")
+//    @Bean(name = "excelExecutor")
     public Executor excelExecutor() {
         LOGGER.info("Creating Excel Executor");
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: localricky
   application:
     name: user_management
   output:

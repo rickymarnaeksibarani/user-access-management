@@ -86,3 +86,6 @@ public class VendorServiceImpl implements VendorService {
         return ObjectMapperUtil.map(newVendor, VendorDTO.class);
     }
 }
+
+//todo: 1. business_unit_code, 2. unit, 3. unit_job_code, 4. composite_role
+

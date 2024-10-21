@@ -1,0 +1,58 @@
+package com.gmf.user_management.masterData.businessUnitCode;
+
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
+import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
+import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+@Service
+public class BusinessUnitCodeService {
+    @Autowired
+    private BusinessUnitCodeRepository businessUnitCodeRepository;
+
+    private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
+        return BusinessUnitCodeResponDTO.builder()
+                .id_business_unit_code(businessUnitCodeEntity.getId_business_unit_code())
+                .business_unit_code(businessUnitCodeEntity.getBusiness_unit_code())
+                .description(businessUnitCodeEntity.getDescription())
+                .dinas(businessUnitCodeEntity.getDinas())
+                .created_at(businessUnitCodeEntity.getCreated_at())
+                .created_by(businessUnitCodeEntity.getCreated_by())
+                .updated_at(businessUnitCodeEntity.getUpdated_at())
+                .updated_by(businessUnitCodeEntity.getUpdated_by())
+                .build();
+    }
+
+    public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request)throws Exception{
+        BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
+        BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
+        businessUnitCodeRepository.save(payload);
+        return businessRespone(payload);
+    }
+
+    public BusinessUnitCodeResponDTO updateBusinessUnitCode(Long id_business_unit_code, BusinessUnitCodeDTO request)throws Exception{
+        BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+        BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
+        businessUnitCodeRepository.save(payload);
+        return businessRespone(payload);
+    }
+
+    public Boolean deleteBusinessUnitCode(Long idBusinessUnitCode) {
+        businessUnitCodeRepository.findById(idBusinessUnitCode);
+        return true;
+    }
+    private BusinessUnitCodeEntity businessUnitCodePayload(BusinessUnitCodeDTO request, BusinessUnitCodeEntity businessUnitCodeEntity) {
+        businessUnitCodeEntity.setBusiness_unit_code(request.getBusiness_unit_code());
+        businessUnitCodeEntity.setDescription(request.getDescription());
+        businessUnitCodeEntity.setDinas(request.getDinas());
+        businessUnitCodeEntity.setCreated_by(request.getCreated_by());
+        businessUnitCodeEntity.setUpdated_by(request.getUpdated_by());
+        return businessUnitCodeEntity;
+    }
+
+}

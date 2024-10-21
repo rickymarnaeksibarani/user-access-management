@@ -5,8 +5,6 @@ import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.domains.user.UserPaginationRequest;
-import com.gmf.user_management.domains.user.UserPredicate;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeDTO;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodePredicate;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeRequestDto;
@@ -17,17 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 @Service
 public class JobCodeService {

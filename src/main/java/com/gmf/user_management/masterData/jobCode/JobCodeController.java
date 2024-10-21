@@ -4,7 +4,6 @@ import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
-import com.gmf.user_management.domains.user.UserPaginationRequest;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeDTO;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeRequestDto;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeResponeDTO;
@@ -30,18 +29,8 @@ public class JobCodeController {
             @RequestBody @Valid JobCodeDTO request
     ) throws Exception {
         JobCodeResponeDTO response = jobCodeService.createJobCode(request);
-
-        JobCodeDTO updatedRequest = JobCodeDTO.builder()
-                .id_job_code(response.getId_job_code())
-                .job_code(response.getJob_code())
-                .job_position(response.getJob_position())
-                .created_by(response.getCreated_by())
-                .created_at(response.getCreated_at())
-                .updated_by(response.getUpdate_by())
-                .updated_at(response.getUpdated_at())
-                .build();
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
-                .setResponseHeaders("request", updatedRequest)
+                .setResponseHeaders("request", response)
                 .toResponse();
     }
 
@@ -53,18 +42,8 @@ public class JobCodeController {
     ) throws Exception {
         JobCodeResponeDTO response = jobCodeService.updateJobCode(id_job_code, request);
 
-        // Build a fully populated DTO for headers using the updated data
-        JobCodeDTO updatedRequest = JobCodeDTO.builder()
-                .id_job_code(response.getId_job_code())
-                .job_code(response.getJob_code())
-                .job_position(response.getJob_position())
-                .created_at(response.getCreated_at())
-                .created_by(response.getCreated_by())
-                .updated_at(response.getUpdated_at())
-                .updated_by(response.getUpdate_by())
-                .build();
         return new HttpResponseDTO<>(response,HttpStatus.OK)
-                .setResponseHeaders("request", updatedRequest)
+                .setResponseHeaders("request", response)
                 .toResponse();
     }
 

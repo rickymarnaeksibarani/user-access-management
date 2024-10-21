@@ -10,7 +10,6 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = NoHtmlValidator.class)
 @Documented
 public @interface Sanitizer {
-    // TODO use a better message, look up ValidationMEssages.properties
     String message() default "Not Allowed";
 
     Class<?>[] groups() default {};

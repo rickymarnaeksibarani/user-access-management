@@ -1,14 +1,33 @@
 package com.gmf.user_management.masterData.jobCode;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.JpaResultHelperUtil;
+import com.gmf.user_management.core.utils.ObjectMapperUtil;
+import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.domains.user.UserPaginationRequest;
+import com.gmf.user_management.domains.user.UserPredicate;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeDTO;
+import com.gmf.user_management.masterData.jobCode.dto.JobCodePredicate;
+import com.gmf.user_management.masterData.jobCode.dto.JobCodeRequestDto;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeResponeDTO;
 import com.gmf.user_management.masterData.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.masterData.jobCode.repositories.JobCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 @Service
 public class JobCodeService {
@@ -52,4 +71,27 @@ public class JobCodeService {
     }
 
 
+    public Boolean deleteJobCode(Long idJobCode) {
+        jobCodeRepository.deleteById(idJobCode);
+        return true;
+    }
+
+    public PaginationUtil<JobCodeEntity, JobCodeDTO> getAllJobCode(
+            Integer page, Integer size, JobCodeRequestDto requestDto
+    ){
+        Pageable paging = PageRequest.of(page -1, size);
+        Specification<JobCodeEntity> specs = Specification
+                .where(JobCodePredicate.searchTerm(requestDto.getSearchTerm()));
+        Page<JobCodeEntity> pages = jobCodeRepository.findAll(specs, paging);
+        return new PaginationUtil<>(pages, JobCodeDTO.class);
+    }
+
+
+    public JobCodeResponeDTO getJobCodeById(Long idJobCode)throws NotFoundException {
+        JobCodeEntity jobCode = JpaResultHelperUtil.getSingleResultFromOptional(jobCodeRepository.findById(idJobCode));
+        if (jobCode == null){
+            throw new NotFoundException("id not found");
+        }
+        return ObjectMapperUtil.map(jobCode, JobCodeResponeDTO.class);
+    }
 }

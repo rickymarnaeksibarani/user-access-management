@@ -1,39 +1,36 @@
-package com.gmf.user_management.masterData.businessUnitCode.entities;
+package com.gmf.user_management.masterData.unit.entities;
 
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
+import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Data
-@Table(name = "tb_business_unit_code")
-public class BusinessUnitCodeEntity {
+@EntityListeners({AuditingEntityListener.class})
+@Table(name = "tb_unit")
+public class UnitEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_business_unit_code")
-    private Long idBusinessUnitCode;
+    @Column(name = "id_unit")
+    private Long id_unit;
 
-    @Column(name = "business_unit_code")
-    private String business_unit_code;
+    @ManyToMany
+    @JoinColumn(name = "business_unit_code_id")
+    private List<BusinessUnitCodeEntity> businessUnitCodeList;
 
-    @Column(name = "description", columnDefinition = "text")
-    private String description;
-
-    @Column(name = "dinas")
-    private String dinas;
-
-    @ManyToOne
-    @JoinColumn(name = "partner_id")
-    private PartnerEntity partnerEntityList;
+    @Column(name = "unit")
+    private String unit;
 
     @CreationTimestamp
     @Column(name = "created_at")

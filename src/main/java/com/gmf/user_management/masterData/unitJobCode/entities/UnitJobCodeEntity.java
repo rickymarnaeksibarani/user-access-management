@@ -1,6 +1,7 @@
-package com.gmf.user_management.masterData.businessUnitCode.entities;
+package com.gmf.user_management.masterData.unitJobCode.entities;
 
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
+import com.gmf.user_management.masterData.jobCode.entities.JobCodeEntity;
+import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,25 +16,20 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Data
-@Table(name = "tb_business_unit_code")
-public class BusinessUnitCodeEntity {
+@Table(name = "tb_unit_job_code_entity")
+public class UnitJobCodeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_business_unit_code")
-    private Long idBusinessUnitCode;
-
-    @Column(name = "business_unit_code")
-    private String business_unit_code;
-
-    @Column(name = "description", columnDefinition = "text")
-    private String description;
-
-    @Column(name = "dinas")
-    private String dinas;
+    @Column(name = "id_unit_job_code")
+    private Long id_unit_job_code;
 
     @ManyToOne
-    @JoinColumn(name = "partner_id")
-    private PartnerEntity partnerEntityList;
+    @JoinColumn(name = "unit_id")
+    private UnitEntity unitEntityList;
+
+    @ManyToOne
+    @JoinColumn(name = "job_code_id")
+    private JobCodeEntity jobCodeEntityList;
 
     @CreationTimestamp
     @Column(name = "created_at")

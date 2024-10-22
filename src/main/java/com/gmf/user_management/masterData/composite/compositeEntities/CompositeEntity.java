@@ -1,6 +1,6 @@
-package com.gmf.user_management.masterData.businessUnitCode.entities;
+package com.gmf.user_management.masterData.composite.compositeEntities;
 
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
+import com.gmf.user_management.masterData.jobCode.entities.JobCodeEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,25 +15,18 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Data
-@Table(name = "tb_business_unit_code")
-public class BusinessUnitCodeEntity {
+@Table(name = "tb_composite_roke")
+public class CompositeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_business_unit_code")
-    private Long idBusinessUnitCode;
+    @Column(name = "id_composite_role")
+    private Long id_composite_role;
 
-    @Column(name = "business_unit_code")
-    private String business_unit_code;
+    @ManyToOne @JoinColumn(name = "job_code_id")
+    private JobCodeEntity jobCodeEntityList;
 
-    @Column(name = "description", columnDefinition = "text")
-    private String description;
-
-    @Column(name = "dinas")
-    private String dinas;
-
-    @ManyToOne
-    @JoinColumn(name = "partner_id")
-    private PartnerEntity partnerEntityList;
+    @Column(name = "composite_role")
+    private String composite_role;
 
     @CreationTimestamp
     @Column(name = "created_at")

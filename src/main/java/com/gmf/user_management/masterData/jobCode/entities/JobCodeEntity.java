@@ -3,8 +3,6 @@ package com.gmf.user_management.masterData.jobCode.entities;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Data
-@Table(name = "job_code")
+@Table(name = "tb_job_code")
 public class JobCodeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,11 @@
 package com.gmf.user_management.masterData.businessUnitCode;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.validations.IsNumeric;
+import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +33,7 @@ public class BusinessUnitCodeController {
                 .toResponse();
     }
 
-    @PutMapping(value = "/{id_business_unit_code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/by-id/{id_business_unit_code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> updateBusinessUnitCode(
             @PathVariable Long id_business_unit_code,
             @RequestBody @Valid BusinessUnitCodeDTO request
@@ -42,7 +46,7 @@ public class BusinessUnitCodeController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value ="/{id_business_unit_code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value ="/by-id/{id_business_unit_code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Boolean>> deleteBusinessUnitCode(
             @PathVariable Long id_business_unit_code
     ){
@@ -51,28 +55,28 @@ public class BusinessUnitCodeController {
                 .toResponse();
     }
 
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<HttpResponseDTO<Object>> getAllBusinessUnitCode(
-//            @RequestParam(defaultValue = "1") Integer page,
-//            @RequestParam(defaultValue = "20") Integer size,
-//            BusinessUnitCodeRequestDto requestDto
-//    ){
-//        Object allBusinessUnitCode = businessUnitCodeService.getAllBusinessUnitCode(page, size, requestDto);
-//        return new HttpResponseDTO<>(allBusinessUnitCode, HttpStatus.OK)
-//                .setResponseHeaders("page", page)
-//                .setResponseHeaders("size", size)
-//                .setResponseHeaders("userPaginationRequest", requestDto)
-//                .toResponse();
-//
-//    }
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Object>> getAllBusinessUnitCode(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "20") Integer size,
+            BusinessUnitCodeRequestDto requestDto
+    ){
+        Object allBusinessUnitCode = businessUnitCodeService.getAllBusinessUnitCode(page, size, requestDto);
+        return new HttpResponseDTO<>(allBusinessUnitCode, HttpStatus.OK)
+                .setResponseHeaders("page", page)
+                .setResponseHeaders("size", size)
+                .setResponseHeaders("userPaginationRequest", requestDto)
+                .toResponse();
 
-//
-//    @GetMapping("/by-id/{id_job_code}")
-//    public ResponseEntity<HttpResponseDTO<JobCodeResponeDTO>>getJobCodeById(
-//            @PathVariable @IsNumeric @IsRequired Long id_job_code
-//    )throws NotFoundException {
-//        return new HttpResponseDTO<>(jobCodeService.getJobCodeById(id_job_code), HttpStatus.OK)
-//                .setResponseHeaders("id_job_code", id_job_code)
-//                .toResponse();
-//    }
+    }
+
+
+    @GetMapping("/by-id/{id_business_unit_code}")
+    public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> getBusinessUnitCodeById(
+            @PathVariable @IsNumeric @IsRequired Long id_business_unit_code
+    )throws NotFoundException {
+        return new HttpResponseDTO<>(businessUnitCodeService.getBusinessUnitCodeById(id_business_unit_code), HttpStatus.OK)
+                .setResponseHeaders("id_business_unit_code", id_business_unit_code)
+                .toResponse();
+    }
 }

@@ -1,10 +1,20 @@
 package com.gmf.user_management.masterData.businessUnitCode;
 
+import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.JpaResultHelperUtil;
+import com.gmf.user_management.core.utils.ObjectMapperUtil;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodePredicate;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,7 +26,7 @@ public class BusinessUnitCodeService {
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         return BusinessUnitCodeResponDTO.builder()
-                .id_business_unit_code(businessUnitCodeEntity.getId_business_unit_code())
+                .id_business_unit_code(businessUnitCodeEntity.getIdBusinessUnitCode())
                 .business_unit_code(businessUnitCodeEntity.getBusiness_unit_code())
                 .description(businessUnitCodeEntity.getDescription())
                 .dinas(businessUnitCodeEntity.getDinas())
@@ -55,4 +65,25 @@ public class BusinessUnitCodeService {
         return businessUnitCodeEntity;
     }
 
+    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeDTO> getAllBusinessUnitCode(
+            Integer page, Integer size, BusinessUnitCodeRequestDto requestDto
+    ){
+//        if (requestDto == null || requestDto.getSearchTerm() == null || requestDto.getSearchTerm().isEmpty()) {
+//            throw new ResourceNotFoundException("Dinas not found");
+//        }
+
+        Pageable paging = PageRequest.of(page -1, size);
+        Specification<BusinessUnitCodeEntity> specs = Specification
+                .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()));
+        Page<BusinessUnitCodeEntity> pages = businessUnitCodeRepository.findAll(specs, paging);
+        return new PaginationUtil<>(pages, BusinessUnitCodeDTO.class);
+    }
+
+    public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode) throws NotFoundException {
+        BusinessUnitCodeEntity businessUnitCode = JpaResultHelperUtil.getSingleResultFromOptional(businessUnitCodeRepository.findById(idBusinessUnitCode));
+        if (businessUnitCode == null){
+            throw new NotFoundException("id not found");
+        }
+        return ObjectMapperUtil.map(businessUnitCode, BusinessUnitCodeResponDTO.class);
+    }
 }

@@ -23,7 +23,7 @@ public class BusinessUnitCodeEntity {
     private Long idBusinessUnitCode;
 
     @Column(name = "business_unit_code")
-    private String business_unit_code;
+    private String businessUnitCode;
 
     @Column(name = "description", columnDefinition = "text")
     private String description;
@@ -37,15 +37,15 @@ public class BusinessUnitCodeEntity {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "created_by")
-    private String created_by;
+    private String createdBy;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     @Column(name = "updated_by")
-    private String updated_by;
+    private String updatedBy;
 }

@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BusinessUnitCodeResponDTO {
-    private Long id_business_unit_code;
-    private String business_unit_code;
+    private Long idBusinessUnitCode;
+    private String businessUnitCode;
     private String description;
     private String dinas;
-    private LocalDateTime created_at;
-    private String created_by;
-    private LocalDateTime updated_at;
-    private String updated_by;
+    private LocalDateTime createdAt;
+    private String createdBy;
+    private LocalDateTime updatedAt;
+    private String updatedBy;
 }

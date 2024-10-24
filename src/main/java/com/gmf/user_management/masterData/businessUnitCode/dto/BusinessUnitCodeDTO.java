@@ -13,11 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BusinessUnitCodeDTO {
-    @JsonProperty("id_business_unit_code")
-    private Long id_business_unit_code;
-
-    @JsonProperty("business_unit_code")
-    private String business_unit_code;
+    @JsonProperty("businessUnitCode")
+    private String businessUnitCode;
 
     @JsonProperty("description")
     private String description;
@@ -25,16 +22,10 @@ public class BusinessUnitCodeDTO {
     @JsonProperty("dinas")
     private String dinas;
 
-    @JsonProperty("created_at")
-    private LocalDateTime created_at;
+    @JsonProperty("createdBy")
+    private String createdBy;
 
-    @JsonProperty("created_by")
-    private String created_by;
-
-    @JsonProperty("updated_at")
-    private LocalDateTime updated_at;
-
-    @JsonProperty("updated_by")
-    private String updated_by;
+    @JsonProperty("updatedBy")
+    private String updatedBy;
 
 }

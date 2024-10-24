@@ -1,25 +1,16 @@
-package com.gmf.user_management.masterData.partner.entities;
+package com.gmf.user_management.config.MultipleDataSourceConfiguration.entities;
 
 import com.gmf.user_management.core.enums.Status;
-import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Data
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@EntityListeners({AuditingEntityListener.class})
-@Table(name = "tb_partner")
-public class PartnerEntity {
+@Table(name = "partners")
+public class PrimaryPartnerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_partner")
@@ -31,7 +22,7 @@ public class PartnerEntity {
     @Column(name = "subject")
     private String subject;
 
-    @Column(name = "key_number")
+    @Column(name = "key_number", columnDefinition = "text")
     private String keyNumber;
 
     @Column(name = "start_date")
@@ -57,5 +48,4 @@ public class PartnerEntity {
 
     @Column(name = "updated_by")
     private String updatedBy;
-
 }

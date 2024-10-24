@@ -23,7 +23,7 @@ public class UnitEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_unit")
-    private Long id_unit;
+    private Long idUnit;
 
     @ManyToMany
     @JoinColumn(name = "business_unit_code_id")
@@ -34,15 +34,15 @@ public class UnitEntity {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "created_by")
-    private String created_by;
+    private String createdBy;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     @Column(name = "updated_by")
-    private String updated_by;
+    private String updatedBy;
 }

@@ -20,25 +20,25 @@ public class CompositeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_composite_role")
-    private Long id_composite_role;
+    private Long idCompositeRole;
 
     @ManyToOne @JoinColumn(name = "job_code_id")
     private JobCodeEntity jobCodeEntityList;
 
     @Column(name = "composite_role")
-    private String composite_role;
+    private String compositeRole;
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "created_by")
-    private String created_by;
+    private String createdBy;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     @Column(name = "updated_by")
-    private String updated_by;
+    private String updatedBy;
 }

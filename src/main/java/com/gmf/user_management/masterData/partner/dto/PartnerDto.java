@@ -6,42 +6,32 @@ import lombok.Data;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
 public class PartnerDto {
-    @JsonProperty("id_partner")
-    private Long id_partner;
-
-    @JsonProperty("company_name")
-    private String company_name;
+    @JsonProperty("companyName")
+    private String companyName;
 
     @JsonProperty("subject")
     private String subject;
 
-    @JsonProperty("key_number")
-    private String key_number;
+    @JsonProperty("keyNumber")
+    private String keyNumber;
 
-    @JsonProperty("start_date")
-    private Date start_date;
+    @JsonProperty("startDate")
+    private Date startDate;
 
-    @JsonProperty("expired_date")
-    private Date expired_date;
+    @JsonProperty("expiredDate")
+    private Date expiredDate;
 
     @Enumerated(EnumType.STRING)
-    @JsonProperty("active_status")
-    private Status active_status;
+    @JsonProperty("activeStatus")
+    private Status activeStatus;
 
-    @JsonProperty("created_at")
-    private LocalDateTime created_at;
+    @JsonProperty("createdBy")
+    private String createdBy;
 
-    @JsonProperty("created_by")
-    private String created_by;
-
-    @JsonProperty("updated_at")
-    private LocalDateTime updated_at;
-
-    @JsonProperty("updated_by")
-    private String updated_by;
+    @JsonProperty("updatedBy")
+    private String updatedBy;
 }

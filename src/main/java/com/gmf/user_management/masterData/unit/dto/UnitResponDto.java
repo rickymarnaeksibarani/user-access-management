@@ -15,11 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UnitResponDto {
-    private Long id_unit;
-    private List<BusinessUnitCodeEntity> business_unit_code_id;
+    private Long idUnit;
+    private List<BusinessUnitCodeEntity> businessUnitCodeList;
     private String unit;
-    private LocalDateTime created_at;
-    private String created_by;
-    private LocalDateTime updated_at;
-    private String updated_by;
+    private LocalDateTime createdAt;
+    private String createdBy;
+    private LocalDateTime updatedAt;
+    private String updatedBy;
 }

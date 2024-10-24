@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobCodeResponeDTO {
-    private Long id_job_code;
-    private String job_code;
-    private String job_position;
-    private LocalDateTime created_at;
-    private String created_by;
-    private LocalDateTime updated_at;
-    private String update_by;
+    private Long idJobCode;
+    private String jobCode;
+    private String jobPosition;
+    private LocalDateTime createdAt;
+    private String createdBy;
+    private LocalDateTime updatedAt;
+    private String updatedBy;
 }

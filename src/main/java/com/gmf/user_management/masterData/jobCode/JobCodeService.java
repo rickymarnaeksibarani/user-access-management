@@ -28,13 +28,13 @@ public class JobCodeService {
 
     private JobCodeResponeDTO jobRespone(JobCodeEntity jobCodeEntity)throws JsonProcessingException{
         return JobCodeResponeDTO.builder()
-                .id_job_code(jobCodeEntity.getId_job_code())
-                .job_position(jobCodeEntity.getJob_code())
-                .job_code(jobCodeEntity.getJob_code())
-                .created_at(jobCodeEntity.getCreated_at())
-                .created_by(jobCodeEntity.getCreated_by())
-                .updated_at(jobCodeEntity.getUpdated_at())
-                .update_by(jobCodeEntity.getUpdated_by())
+                .idJobCode(jobCodeEntity.getIdJobCode())
+                .jobPosition(jobCodeEntity.getJobPosition())
+                .jobCode(jobCodeEntity.getJobCode())
+                .createdAt(jobCodeEntity.getCreatedAt())
+                .createdBy(jobCodeEntity.getCreatedBy())
+                .updatedAt(jobCodeEntity.getUpdatedAt())
+                .updatedBy(jobCodeEntity.getUpdatedBy())
                 .build();
     }
     public JobCodeResponeDTO createJobCode(JobCodeDTO request)throws Exception{
@@ -54,10 +54,10 @@ public class JobCodeService {
 
 
     private JobCodeEntity jobCodePayload(JobCodeDTO request, JobCodeEntity jobCode) {
-        jobCode.setJob_position(request.getJob_position());
-        jobCode.setJob_code(request.getJob_code());
-        jobCode.setCreated_by(request.getCreated_by());
-        jobCode.setUpdated_by(request.getUpdated_by());
+        jobCode.setJobPosition(request.getJobPosition());
+        jobCode.setJobCode(request.getJobCode());
+        jobCode.setCreatedBy(request.getCreatedBy());
+        jobCode.setUpdatedBy(request.getUpdatedBy());
         return jobCode;
     }
 

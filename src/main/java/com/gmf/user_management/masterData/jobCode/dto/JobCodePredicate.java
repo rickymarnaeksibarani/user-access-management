@@ -17,7 +17,7 @@ public class JobCodePredicate {
         return (root, query, builder) ->
                 builder.or(
                         builder.like(builder.upper(root.get("jobPosition")), finalSearchTerm.toUpperCase()),
-                        builder.like(builder.upper(root.get("job_code")), finalSearchTerm.toUpperCase()),
+                        builder.like(builder.upper(root.get("jobCode")), finalSearchTerm.toUpperCase()),
                         builder.like(builder.upper(root.get("createdBy")), finalSearchTerm.toUpperCase()),
                         builder.like(builder.upper(root.get("updatedBy")), finalSearchTerm.toUpperCase())
                 );

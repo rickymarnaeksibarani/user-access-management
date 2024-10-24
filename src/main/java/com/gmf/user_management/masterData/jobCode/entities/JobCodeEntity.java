@@ -19,26 +19,26 @@ public class JobCodeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_job_code")
-    private Long id_job_code;
+    private Long idJobCode;
 
     @Column(name = "job_code")
-    private String job_code;
+    private String jobCode;
 
     @Column(name = "job_position")
-    private String job_position;
+    private String jobPosition;
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "created_by")
-    private String created_by;
+    private String createdBy;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     @Column(name = "updated_by")
-    private String updated_by;
+    private String updatedBy;
 
 }

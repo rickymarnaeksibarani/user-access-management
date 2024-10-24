@@ -26,14 +26,14 @@ public class BusinessUnitCodeService {
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         return BusinessUnitCodeResponDTO.builder()
-                .id_business_unit_code(businessUnitCodeEntity.getIdBusinessUnitCode())
-                .business_unit_code(businessUnitCodeEntity.getBusiness_unit_code())
+                .idBusinessUnitCode(businessUnitCodeEntity.getIdBusinessUnitCode())
+                .businessUnitCode(businessUnitCodeEntity.getBusinessUnitCode())
                 .description(businessUnitCodeEntity.getDescription())
                 .dinas(businessUnitCodeEntity.getDinas())
-                .created_at(businessUnitCodeEntity.getCreated_at())
-                .created_by(businessUnitCodeEntity.getCreated_by())
-                .updated_at(businessUnitCodeEntity.getUpdated_at())
-                .updated_by(businessUnitCodeEntity.getUpdated_by())
+                .createdAt(businessUnitCodeEntity.getCreatedAt())
+                .createdBy(businessUnitCodeEntity.getCreatedBy())
+                .updatedAt(businessUnitCodeEntity.getUpdatedAt())
+                .updatedBy(businessUnitCodeEntity.getUpdatedBy())
                 .build();
     }
 
@@ -57,11 +57,11 @@ public class BusinessUnitCodeService {
         return true;
     }
     private BusinessUnitCodeEntity businessUnitCodePayload(BusinessUnitCodeDTO request, BusinessUnitCodeEntity businessUnitCodeEntity) {
-        businessUnitCodeEntity.setBusiness_unit_code(request.getBusiness_unit_code());
+        businessUnitCodeEntity.setBusinessUnitCode(request.getBusinessUnitCode());
         businessUnitCodeEntity.setDescription(request.getDescription());
         businessUnitCodeEntity.setDinas(request.getDinas());
-        businessUnitCodeEntity.setCreated_by(request.getCreated_by());
-        businessUnitCodeEntity.setUpdated_by(request.getUpdated_by());
+        businessUnitCodeEntity.setCreatedBy(request.getCreatedBy());
+        businessUnitCodeEntity.setUpdatedBy(request.getUpdatedBy());
         return businessUnitCodeEntity;
     }
 

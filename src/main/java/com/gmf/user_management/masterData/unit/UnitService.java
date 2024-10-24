@@ -1,12 +1,22 @@
 package com.gmf.user_management.masterData.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gmf.user_management.core.utils.JpaResultHelperUtil;
+import com.gmf.user_management.core.utils.ObjectMapperUtil;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
 import com.gmf.user_management.masterData.unit.dto.UnitDTO;
+import com.gmf.user_management.masterData.unit.dto.UnitPredicate;
+import com.gmf.user_management.masterData.unit.dto.UnitRequestDto;
 import com.gmf.user_management.masterData.unit.dto.UnitResponDto;
 import com.gmf.user_management.masterData.unit.entities.UnitEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UnitService {
     @Autowired
     private UnitRepository unitRepository;
@@ -22,13 +33,13 @@ public class UnitService {
 
     private UnitResponDto unitRespon(UnitEntity unitEntity)throws JsonProcessingException {
         return UnitResponDto.builder()
-                .id_unit(unitEntity.getId_unit())
-                .business_unit_code_id(unitEntity.getBusinessUnitCodeList())
+                .idUnit(unitEntity.getIdUnit())
+                .businessUnitCodeList(unitEntity.getBusinessUnitCodeList())
                 .unit(unitEntity.getUnit())
-                .created_at(unitEntity.getCreated_at())
-                .created_by(unitEntity.getCreated_by())
-                .updated_at(unitEntity.getUpdated_at())
-                .updated_by(unitEntity.getUpdated_by())
+                .createdAt(unitEntity.getCreatedAt())
+                .createdBy(unitEntity.getCreatedBy())
+                .updatedAt(unitEntity.getUpdatedAt())
+                .updatedBy(unitEntity.getUpdatedBy())
                 .build();
     }
     public UnitResponDto createUnit(UnitDTO request)throws Exception {
@@ -38,17 +49,42 @@ public class UnitService {
         return unitRespon(payload);
     }
 
+    public UnitResponDto updatedUnit(Long idUnit, UnitDTO request)throws Exception {
+        UnitEntity data = unitRepository.findById(idUnit).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+        UnitEntity payload = unitPaylod(request, data);
+        unitRepository.save(payload);
+        return unitRespon(payload);
+
+    }
+
+    public Boolean deleteUnit(Long idUnit) {
+        unitRepository.findById(idUnit);
+        return true;
+    }
+
+
+
     private UnitEntity unitPaylod(UnitDTO unitDTO, UnitEntity unitEntity) {
-        List<BusinessUnitCodeEntity> allBusinessUnit = businessUnitCodeRepository.findByIdBusinessUnitCodeIsIn(unitDTO.getBusiness_unit_code_id());
-
+        List<BusinessUnitCodeEntity> allBusinessUnit = businessUnitCodeRepository.findByIdBusinessUnitCodeIsIn(unitDTO.getBusinessUnitCodeList());
         if (allBusinessUnit.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Business code not found!");
-
         unitEntity.setBusinessUnitCodeList(allBusinessUnit);
         unitEntity.setUnit(unitDTO.getUnit());
-//        unitEntity.setCreated_at(unitDTO.getCreated_at());
-        unitEntity.setCreated_by(unitDTO.getCreated_by());
-//        unitEntity.setUpdated_at(unitDTO.getUpdated_at());
-        unitEntity.setUpdated_by(unitDTO.getUpdated_by());
+        unitEntity.setCreatedBy(unitDTO.getCreatedBy());
+        unitEntity.setUpdatedBy(unitDTO.getUpdatedBy());
         return unitEntity;
+    }
+
+    public PaginationUtil<UnitEntity, UnitResponDto> getAllUnit(Integer page, Integer size, UnitRequestDto requestDto) {
+        Pageable paging = PageRequest.of(page -1 ,size);
+        Specification<UnitEntity> specs = Specification.where(UnitPredicate.searchTerm(requestDto.getSearchTerm()));
+        Page<UnitEntity> pages = unitRepository.findAll(specs, paging);
+        return new PaginationUtil<>(pages, UnitResponDto.class);
+    }
+
+
+    public UnitResponDto getUnitById(Long idUnit) {
+        UnitEntity unitEntity = JpaResultHelperUtil.getSingleResultFromOptional(unitRepository.findById(idUnit));
+        if (unitEntity == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
+        return ObjectMapperUtil.map(unitEntity, UnitResponDto.class);
     }
 }

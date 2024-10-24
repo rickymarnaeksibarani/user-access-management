@@ -28,6 +28,12 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-bootstrap</artifactId>
 		</dependency>
+		<!-- Multiple datasource form db eksternal using MySQL-->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.28</version> <!-- Versi driver MySQL -->
+		</dependency>
 		<!-- End of Configuration Client-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

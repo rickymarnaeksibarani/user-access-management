@@ -13,22 +13,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobCodeDTO {
-    @JsonProperty("id_job_code")
-    private Long id_job_code;
-    @JsonProperty("job_code")
-    private String job_code;
-    @JsonProperty("job_position")
-    private String job_position;
+    @JsonProperty("jobCode")
+    private String jobCode;
 
-    @JsonProperty("created_at")
-    private LocalDateTime created_at;
+    @JsonProperty("jobPosition")
+    private String jobPosition;
 
-    @JsonProperty("created_by")
-    private String created_by;
+    @JsonProperty("createdBy")
+    private String createdBy;
 
-    @JsonProperty("updated_at")
-    private LocalDateTime updated_at;
-
-    @JsonProperty("updated_by")
-    private String updated_by;
+    @JsonProperty("updatedBy")
+    private String updatedBy;
 }

@@ -21,8 +21,8 @@ public class UnitDTO {
 //    @JsonProperty("id_unit")
 //    private Long id_unit;
 
-    @JsonProperty("business_unit_code_id")
-    private List<Long> business_unit_code_id;
+    @JsonProperty("businessUnitCodeList")
+    private List<Long> businessUnitCodeList;
 
     @JsonProperty("unit")
     private String unit;
@@ -30,12 +30,12 @@ public class UnitDTO {
 //    @JsonProperty("created_at")
 //    private LocalDateTime created_at;
 
-    @JsonProperty("created_by")
-    private String created_by;
+    @JsonProperty("createdBy")
+    private String createdBy;
 
 //    @JsonProperty("updated_at")
 //    private LocalDateTime updated_at;
 
-    @JsonProperty("updated_by")
-    private String updated_by;
+    @JsonProperty("updatedBy")
+    private String updatedBy;
 }

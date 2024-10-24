@@ -18,8 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UnitDTO {
-//    @JsonProperty("id_unit")
-//    private Long id_unit;
 
     @JsonProperty("businessUnitCodeList")
     private List<Long> businessUnitCodeList;
@@ -27,14 +25,8 @@ public class UnitDTO {
     @JsonProperty("unit")
     private String unit;
 
-//    @JsonProperty("created_at")
-//    private LocalDateTime created_at;
-
     @JsonProperty("createdBy")
     private String createdBy;
-
-//    @JsonProperty("updated_at")
-//    private LocalDateTime updated_at;
 
     @JsonProperty("updatedBy")
     private String updatedBy;

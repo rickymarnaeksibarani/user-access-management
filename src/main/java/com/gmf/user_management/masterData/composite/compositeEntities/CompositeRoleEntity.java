@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -16,14 +17,14 @@ import java.time.LocalDateTime;
 @Setter
 @Data
 @Table(name = "tb_composite_roke")
-public class CompositeEntity {
+public class CompositeRoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_composite_role")
     private Long idCompositeRole;
 
-    @ManyToOne @JoinColumn(name = "job_code_id")
-    private JobCodeEntity jobCodeEntityList;
+    @ManyToMany @JoinColumn(name = "job_code_id")
+    private List<JobCodeEntity> jobCodeEntityList;
 
     @Column(name = "composite_role")
     private String compositeRole;

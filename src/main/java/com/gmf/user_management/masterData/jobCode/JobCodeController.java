@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/job-code")
+@RequestMapping("/api/v1/jobCode")
 public class JobCodeController {
     @Autowired
     private JobCodeService jobCodeService;

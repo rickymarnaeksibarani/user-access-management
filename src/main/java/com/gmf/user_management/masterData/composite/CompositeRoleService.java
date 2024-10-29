@@ -1,8 +1,11 @@
 package com.gmf.user_management.masterData.composite;
 
+import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
+import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleDTO;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRolePredicate;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleRequestDTO;
@@ -14,6 +17,7 @@ import com.gmf.user_management.masterData.unit.dto.UnitPredicate;
 import com.gmf.user_management.masterData.unit.dto.UnitRequestDto;
 import com.gmf.user_management.masterData.unit.dto.UnitResponDto;
 import com.gmf.user_management.masterData.unit.entities.UnitEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.data.domain.Page;
@@ -27,6 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CompositeRoleService {
 
     @Autowired
@@ -44,6 +49,7 @@ public class CompositeRoleService {
                 .createdBy(compositeRoleEntity.getCreatedBy())
                 .updatedAt(compositeRoleEntity.getUpdatedAt())
                 .updatedBy(compositeRoleEntity.getUpdatedBy())
+                .jobCodeCount((compositeRoleEntity.getJobCodeEntityList() != null ? compositeRoleEntity.getJobCodeEntityList().size() : 0))
                 .build();
     }
     public CompositeRoleResponDTO createCompositeRole(CompositeRoleDTO request) {
@@ -76,19 +82,29 @@ public class CompositeRoleService {
     }
 
     public PaginationUtil<CompositeRoleEntity, CompositeRoleResponDTO> getAllCompositeRole(Integer page, Integer size, CompositeRoleRequestDTO requestDto) {
-        Pageable paging = PageRequest.of(page -1 ,size);
+        Pageable paging = PageRequest.of(page - 1, size);
         Specification<CompositeRoleEntity> specs = Specification.where(CompositeRolePredicate.searchTerm(requestDto.getSearchTerm()));
         Page<CompositeRoleEntity> pages = compositeRoleRepository.findAll(specs, paging);
+        List<CompositeRoleResponDTO> responseDTOs = pages.getContent().stream()
+                .map(entity -> {
+                    CompositeRoleResponDTO dto = ObjectMapperUtil.map(entity, CompositeRoleResponDTO.class);
+                    dto.setJobCodeCount(entity.getJobCodeEntityList() != null ? entity.getJobCodeEntityList().size() : 0);
+                    return dto;
+                })
+                .toList();
+
         return new PaginationUtil<>(pages, CompositeRoleResponDTO.class);
     }
 
-    public CompositeRoleResponDTO getCompositeRoleById(Long idCompositeRole) {
-        CompositeRoleEntity data = JpaResultHelperUtil.getSingleResultFromOptional(compositeRoleRepository.findById(idCompositeRole));
-        if (data == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
-        return ObjectMapperUtil.map(data, CompositeRoleResponDTO.class);
-    }
-    public Long countCompositeRoleByJobCodeId(Long jobCodeId) {
-        return compositeRoleRepository.countByJobCodeEntityList(jobCodeId);
+
+    public CompositeRoleResponDTO getCompositeRoleById(Long id_composite_role) throws NotFoundException {
+        CompositeRoleEntity businessUnitCode = JpaResultHelperUtil.getSingleResultFromOptional(compositeRoleRepository.findById(id_composite_role));
+        if (businessUnitCode == null){
+            throw new NotFoundException("id not found");
+        }
+        CompositeRoleResponDTO responseDTO = ObjectMapperUtil.map(businessUnitCode, CompositeRoleResponDTO.class);
+        responseDTO.setJobCodeCount(businessUnitCode.getJobCodeEntityList() != null ? businessUnitCode.getJobCodeEntityList().size() : 0);
+        return responseDTO;
     }
 
 }

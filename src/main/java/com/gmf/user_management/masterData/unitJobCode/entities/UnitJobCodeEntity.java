@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -16,20 +17,22 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Data
-@Table(name = "tb_unit_job_code_entity")
+@Table(name = "tb_unit_job_code")
 public class UnitJobCodeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_unit_job_code")
     private Long idUnitJobCode;
 
-    @ManyToOne
+    //table unit
+    @ManyToMany
     @JoinColumn(name = "unit_id")
-    private UnitEntity unitEntityList;
+    private List<UnitEntity> unitList;
 
-    @ManyToOne
+    //table jobCode
+    @ManyToMany
     @JoinColumn(name = "job_code_id")
-    private JobCodeEntity jobCodeEntityList;
+    private List<JobCodeEntity> jobCodeList;
 
     @CreationTimestamp
     @Column(name = "created_at")

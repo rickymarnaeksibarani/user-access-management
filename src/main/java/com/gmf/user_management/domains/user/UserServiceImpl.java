@@ -122,7 +122,6 @@ public class UserServiceImpl implements UserService {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setPersonalName((user.getFirstName() + " " + user.getLastName()).trim());
         employeeDTO.setPersonalNumber(user.getUsername());
-        // TODO: Please use a proper Image
         employeeDTO.setPersonalImage("https://raw.githubusercontent.com/antoniosai/gmf-assets/master/blank-avatar.png");
         employeeDTO.setPersonalUnit(user.getWorkstation());
         employeeDTO.setPersonalTitle(user.getTitle());

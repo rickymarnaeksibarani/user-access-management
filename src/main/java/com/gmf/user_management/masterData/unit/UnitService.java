@@ -11,6 +11,7 @@ import com.gmf.user_management.masterData.unit.dto.UnitPredicate;
 import com.gmf.user_management.masterData.unit.dto.UnitRequestDto;
 import com.gmf.user_management.masterData.unit.dto.UnitResponDto;
 import com.gmf.user_management.masterData.unit.entities.UnitEntity;
+import com.gmf.user_management.masterData.unit.repository.UnitRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

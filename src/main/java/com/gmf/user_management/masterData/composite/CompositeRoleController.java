@@ -1,6 +1,7 @@
 package com.gmf.user_management.masterData.composite;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleDTO;
@@ -65,22 +66,13 @@ public class CompositeRoleController {
                 .toResponse();
     }
 
-    @GetMapping("/by-id/{idCompositeRole}")
+    @GetMapping("/by-id/{id_composite_role}")
     public ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>>getCompositeRoleById(
-            @PathVariable @IsNumeric @IsRequired Long idCompositeRole
-    ){
-        return new HttpResponseDTO<>(compositeRoleService.getCompositeRoleById(idCompositeRole))
-                .setResponseHeaders("idCompositeRole", idCompositeRole)
+            @PathVariable @IsNumeric @IsRequired Long id_composite_role
+    ) throws NotFoundException {
+        return new HttpResponseDTO<>(compositeRoleService.getCompositeRoleById(id_composite_role), HttpStatus.OK)
+                .setResponseHeaders("idCompositeRole", id_composite_role)
                 .toResponse();
     }
 
-    @GetMapping("/count/by-job-code/{jobCodeId}")
-    public ResponseEntity<HttpResponseDTO<Long>> countCompositeRoleByJobCodeId(
-            @PathVariable Long jobCodeId
-    ) {
-        Long count = compositeRoleService.countCompositeRoleByJobCodeId(jobCodeId);
-        return new HttpResponseDTO<>(count, HttpStatus.OK)
-                .setResponseHeaders("jobCodeId", jobCodeId)
-                .toResponse();
-    }
 }

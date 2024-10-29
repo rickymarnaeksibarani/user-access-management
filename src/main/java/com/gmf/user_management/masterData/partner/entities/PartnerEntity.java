@@ -21,7 +21,7 @@ import java.util.Date;
 @Table(name = "tb_partner")
 public class PartnerEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id_partner")
     private Long idPartner;
 

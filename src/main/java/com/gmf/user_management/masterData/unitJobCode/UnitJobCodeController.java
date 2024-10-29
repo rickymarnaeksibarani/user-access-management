@@ -1,0 +1,78 @@
+package com.gmf.user_management.masterData.unitJobCode;
+
+import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.validations.IsNumeric;
+import com.gmf.user_management.core.validations.IsRequired;
+import com.gmf.user_management.masterData.unit.dto.UnitDTO;
+import com.gmf.user_management.masterData.unit.dto.UnitRequestDto;
+import com.gmf.user_management.masterData.unit.dto.UnitResponDto;
+import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeDTO;
+import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeRequestDTO;
+import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeResponDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/api/v1/unit-jobCode")
+public class UnitJobCodeController {
+    @Autowired
+    private UnitJobCodeService unitJobCodeService;
+
+    @PostMapping
+    public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>> createUnitJobCode(
+            @RequestPart @Valid UnitJobCodeDTO request
+    ) throws Exception {
+        UnitJobCodeResponDTO response = unitJobCodeService.createUnitJobCode(request);
+        return new HttpResponseDTO<>(response, HttpStatus.CREATED)
+                .setResponseHeaders("request", response)
+                .toResponse();
+    }
+
+    @PutMapping(value = "/by-id/{id_unit_job_code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>>updateUnitJobCode(
+            @RequestPart @Valid UnitJobCodeDTO request,
+            @PathVariable Long id_unit_job_code
+    )throws Exception{
+        UnitJobCodeResponDTO responDto = unitJobCodeService.updatedUnit(id_unit_job_code, request);
+        return new HttpResponseDTO<>(responDto,HttpStatus.OK)
+                .setResponseHeaders("responDto", responDto)
+                .toResponse();
+    }
+
+    @DeleteMapping(value = "/by-id/{id_unit_job_code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Boolean>> deleteUnitJobCode(
+            @PathVariable Long id_unit_job_code
+    ){
+        return new HttpResponseDTO<>(unitJobCodeService.deleteUnitJobCode(id_unit_job_code))
+                .setResponseHeaders("idUnitJobCode", id_unit_job_code)
+                .toResponse();
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Object>>getAllJobCode(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "20") Integer size,
+            UnitJobCodeRequestDTO requestDto
+    ){
+        Object allDataUnitJobCode = unitJobCodeService.getAllJobCode(page, size, requestDto);
+        return new HttpResponseDTO<>(allDataUnitJobCode, HttpStatus.OK)
+                .setResponseHeaders("page", page)
+                .setResponseHeaders("size", size)
+                .setResponseHeaders("requestDto", requestDto)
+                .toResponse();
+    }
+
+    @GetMapping("/by-id/{idUnitJobCode}")
+    public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>>getUnitJobCodeById(
+            @PathVariable @IsNumeric @IsRequired Long idUnitJobCode
+    ){
+        return new HttpResponseDTO<>(unitJobCodeService.getUnitJobCodeById(idUnitJobCode))
+                .setResponseHeaders("idUnitJobCode", idUnitJobCode)
+                .toResponse();
+    }
+}

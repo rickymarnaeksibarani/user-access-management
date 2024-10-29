@@ -1,33 +1,30 @@
-package com.gmf.user_management.masterData.composite.compositeEntities;
+package com.gmf.user_management.masterData.licenseType.entities;
 
-import com.gmf.user_management.masterData.jobCode.entities.JobCodeEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Data
-@Table(name = "tb_composite_role")
-public class CompositeRoleEntity {
+@EntityListeners({AuditingEntityListener.class})
+@Table(name = "tb_license_type")
+public class LicenseTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_composite_role")
-    private Long idCompositeRole;
+    @Column(name = "id_license_type")
+    private Long idLicenseType;
 
-    @ManyToMany @JoinColumn(name = "job_code_id")
-    private List<JobCodeEntity> jobCodeEntityList;
-
-    @Column(name = "composite_role")
-    private String compositeRole;
+    @Column(name = "license_name")
+    private String licenseName;
 
     @CreationTimestamp
     @Column(name = "created_at")

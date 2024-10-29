@@ -5,6 +5,10 @@ import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodePredicate;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
+import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeDTO;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodePredicate;
 import com.gmf.user_management.masterData.jobCode.dto.JobCodeRequestDto;
@@ -48,7 +52,7 @@ public class JobCodeService {
         JobCodeEntity jobCode = jobCodeRepository.findById(id_job_code)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "data not found"));
         JobCodeEntity payload = jobCodePayload(request, jobCode);
-        jobCodeRepository.save(payload);
+        jobCodeRepository.saveAndFlush(payload);
         return jobRespone(payload);
     }
 
@@ -67,14 +71,14 @@ public class JobCodeService {
         return true;
     }
 
-    public PaginationUtil<JobCodeEntity, JobCodeDTO> getAllJobCode(
+    public PaginationUtil<JobCodeEntity, JobCodeResponeDTO> getAllJobCode(
             Integer page, Integer size, JobCodeRequestDto requestDto
     ){
         Pageable paging = PageRequest.of(page -1, size);
         Specification<JobCodeEntity> specs = Specification
                 .where(JobCodePredicate.searchTerm(requestDto.getSearchTerm()));
         Page<JobCodeEntity> pages = jobCodeRepository.findAll(specs, paging);
-        return new PaginationUtil<>(pages, JobCodeDTO.class);
+        return new PaginationUtil<>(pages, JobCodeResponeDTO.class);
     }
 
 

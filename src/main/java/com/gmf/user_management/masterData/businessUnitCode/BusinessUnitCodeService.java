@@ -1,5 +1,6 @@
 package com.gmf.user_management.masterData.businessUnitCode;
 
+import com.gmf.user_management.core.ResourceNotFoundException;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
@@ -10,6 +11,7 @@ import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeR
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
+import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +39,7 @@ public class BusinessUnitCodeService {
                 .build();
     }
 
-    public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request)throws Exception{
+    public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
         BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
         businessUnitCodeRepository.save(payload);
@@ -45,10 +47,9 @@ public class BusinessUnitCodeService {
     }
 
     public BusinessUnitCodeResponDTO updateBusinessUnitCode(Long id_business_unit_code, BusinessUnitCodeDTO request)throws Exception{
-        BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+        BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
-        businessUnitCodeRepository.save(payload);
+        businessUnitCodeRepository.saveAndFlush(payload);
         return businessRespone(payload);
     }
 
@@ -68,9 +69,9 @@ public class BusinessUnitCodeService {
     public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeDTO> getAllBusinessUnitCode(
             Integer page, Integer size, BusinessUnitCodeRequestDto requestDto
     ){
-//        if (requestDto == null || requestDto.getSearchTerm() == null || requestDto.getSearchTerm().isEmpty()) {
-//            throw new ResourceNotFoundException("Dinas not found");
-//        }
+        if (requestDto == null || requestDto.getSearchTerm() == null || requestDto.getSearchTerm().isEmpty()) {
+            throw new ResourceNotFoundException("License Name not found");
+        }
 
         Pageable paging = PageRequest.of(page -1, size);
         Specification<BusinessUnitCodeEntity> specs = Specification

@@ -53,7 +53,7 @@ public class UnitService {
     public UnitResponDto updatedUnit(Long idUnit, UnitDTO request)throws Exception {
         UnitEntity data = unitRepository.findById(idUnit).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
         UnitEntity payload = unitPaylod(request, data);
-        unitRepository.save(payload);
+        unitRepository.saveAndFlush(payload);
         return unitRespon(payload);
 
     }

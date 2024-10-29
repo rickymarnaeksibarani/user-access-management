@@ -62,8 +62,10 @@ public class CompositeRoleService {
     public CompositeRoleResponDTO updateCompositeRole(Long idCompositeRole,CompositeRoleDTO request){
         CompositeRoleEntity data = compositeRoleRepository.findById(idCompositeRole).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
         CompositeRoleEntity payload = compositePayload(request, data);
-        compositeRoleRepository.save(payload);
+        compositeRoleRepository.saveAndFlush(payload);
         return compositeRoleRespon(payload);
+
+
     }
 
     public Boolean deleteCompositeRole(Long idCompositeRole) {

@@ -67,7 +67,7 @@ public class UnitJobCodeService {
         try {
             UnitJobCodeEntity data = unitJobCodeRepository.findById(idUnitJobCode).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Unit Job Code not found"));
             UnitJobCodeEntity payload = unitJobCodePayload(request, data);
-            unitJobCodeRepository.save(payload);
+            unitJobCodeRepository.saveAndFlush(payload);
             return unitJobCodeResponDTO(payload);
         }catch (Exception e){
             throw new RuntimeException(e);

@@ -1,0 +1,38 @@
+package com.gmf.user_management.masterData.usersAccessDomain.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserAccessDomainDTO {
+    @JsonProperty("personalList")
+    private List<PersonalEntity> personalList;
+
+    @JsonProperty("isNetworkAccess")
+    private Boolean isNetworkAccess = false;
+
+    @JsonProperty("isDomainAccess")
+    private Boolean isDomainAccess = false;
+
+    @JsonProperty("username")
+    private String username;
+
+    @JsonProperty("password")
+    private String password;
+
+    @JsonProperty("createdBy")
+    private String createdBy;
+
+    @JsonProperty("updatedBy")
+    private String updatedBy;
+}

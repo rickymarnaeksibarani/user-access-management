@@ -82,4 +82,7 @@ public class PersonalDTO {
 
     @JsonProperty("updatedBy")
     private String updatedBy;
+    private String searchTerm;
+    private Integer page;
+    private Integer size;
 }

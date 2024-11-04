@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -73,6 +74,16 @@ public class UnitController {
     ){
         return new HttpResponseDTO<>(unitService.getUnitById(idUnit))
                 .setResponseHeaders("idUnit", idUnit)
+                .toResponse();
+    }
+
+    @GetMapping("/by-business-unit-code/{businessUnitCodeId}")
+    public ResponseEntity<HttpResponseDTO<List<UnitResponDto>>> getUnitByBusinessUnitCodeId(
+            @PathVariable Long businessUnitCodeId
+    ) {
+        List<UnitResponDto> units = unitService.getUnitByBusinessUnitCodeId(businessUnitCodeId);
+        return new HttpResponseDTO<>(units, HttpStatus.OK)
+                .setResponseHeaders("businessUnitCodeId", businessUnitCodeId)
                 .toResponse();
     }
 }

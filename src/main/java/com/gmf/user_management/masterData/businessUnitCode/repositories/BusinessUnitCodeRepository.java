@@ -15,4 +15,6 @@ import java.util.List;
 @Repository
 public interface BusinessUnitCodeRepository extends JpaRepository<BusinessUnitCodeEntity, Long>, JpaSpecificationExecutor<BusinessUnitCodeEntity> {
     List<BusinessUnitCodeEntity> findByIdBusinessUnitCodeIsIn(List<Long> id);
+
+    List<BusinessUnitCodeEntity> findByDinas(String dinas);
 }

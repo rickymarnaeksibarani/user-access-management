@@ -75,4 +75,11 @@ public class UnitJobCodeController {
                 .setResponseHeaders("idUnitJobCode", idUnitJobCode)
                 .toResponse();
     }
+
+    @GetMapping("/unit-ids/by-job-code/{jobCodeId}")
+    public ResponseEntity<int[]> getUnitIdsByJobCodeId(@PathVariable Long jobCodeId) {
+        int[] unitIds = unitJobCodeService.getUnitIdByJobCodeId(jobCodeId);
+        return ResponseEntity.ok(unitIds);
+    }
+
 }

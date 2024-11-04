@@ -110,4 +110,16 @@ public class UnitJobCodeService {
         respone.setUnitCount(unitJobCode.getUnitList()!= null ? unitJobCode.getUnitList().size() : 0);
         return respone;
     }
+
+    public int[] getUnitIdByJobCodeId(Long jobCodeId) {
+        List<UnitJobCodeEntity> entities = unitJobCodeRepository.findByJobCodeList_IdJobCode(jobCodeId);
+        return entities.stream()
+                .flatMap(entity -> entity.getUnitList().stream())
+                .map(UnitEntity::getIdUnit)
+                .mapToInt(Long::intValue) // Convert Long to int
+                .distinct() // Ensure unique unit IDs
+                .toArray();
+    }
+
+
 }

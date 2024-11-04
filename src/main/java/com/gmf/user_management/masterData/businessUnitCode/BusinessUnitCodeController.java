@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -56,18 +57,10 @@ public class BusinessUnitCodeController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<Object>> getAllBusinessUnitCode(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
-            BusinessUnitCodeRequestDto requestDto
-    ){
-        Object allBusinessUnitCode = businessUnitCodeService.getAllBusinessUnitCode(page, size, requestDto);
-        return new HttpResponseDTO<>(allBusinessUnitCode, HttpStatus.OK)
-                .setResponseHeaders("page", page)
-                .setResponseHeaders("size", size)
-                .setResponseHeaders("userPaginationRequest", requestDto)
+    public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO[]>> getAllBusinessUnitCode() {
+        BusinessUnitCodeResponDTO[] response = businessUnitCodeService.getAllBusinessUnitCode();
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .toResponse();
-
     }
 
 
@@ -79,4 +72,15 @@ public class BusinessUnitCodeController {
                 .setResponseHeaders("id_business_unit_code", id_business_unit_code)
                 .toResponse();
     }
+
+    @GetMapping("/by-dinas")
+    public ResponseEntity<HttpResponseDTO<List<BusinessUnitCodeResponDTO>>> getBusinessUnitCodeByDinas(
+            @RequestParam String dinas
+    ) {
+        List<BusinessUnitCodeResponDTO> response = businessUnitCodeService.getBusinessUnitCodeByDinas(dinas);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("dinas", dinas)
+                .toResponse();
+    }
+
 }

@@ -21,6 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class BusinessUnitCodeService {
     @Autowired
@@ -66,19 +69,27 @@ public class BusinessUnitCodeService {
         return businessUnitCodeEntity;
     }
 
-    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeDTO> getAllBusinessUnitCode(
-            Integer page, Integer size, BusinessUnitCodeRequestDto requestDto
-    ){
-        if (requestDto == null || requestDto.getSearchTerm() == null || requestDto.getSearchTerm().isEmpty()) {
-            throw new ResourceNotFoundException("License Name not found");
-        }
+//    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeDTO> getAllBusinessUnitCode(
+//            Integer page, Integer size, BusinessUnitCodeRequestDto requestDto
+//    ){
+//        if (requestDto == null || requestDto.getSearchTerm() == null || requestDto.getSearchTerm().isEmpty()) {
+//            throw new ResourceNotFoundException("License Name not found");
+//        }
+//
+//        Pageable paging = PageRequest.of(page -1, size);
+//        Specification<BusinessUnitCodeEntity> specs = Specification
+//                .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()));
+//        Page<BusinessUnitCodeEntity> pages = businessUnitCodeRepository.findAll(specs, paging);
+//        return new PaginationUtil<>(pages, BusinessUnitCodeDTO.class);
+//    }
 
-        Pageable paging = PageRequest.of(page -1, size);
-        Specification<BusinessUnitCodeEntity> specs = Specification
-                .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()));
-        Page<BusinessUnitCodeEntity> pages = businessUnitCodeRepository.findAll(specs, paging);
-        return new PaginationUtil<>(pages, BusinessUnitCodeDTO.class);
+    public BusinessUnitCodeResponDTO[] getAllBusinessUnitCode() {
+        List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll();
+        return businessUnitCodes.stream()
+                .map(this::businessRespone)
+                .toArray(BusinessUnitCodeResponDTO[]::new);
     }
+
 
     public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode) throws NotFoundException {
         BusinessUnitCodeEntity businessUnitCode = JpaResultHelperUtil.getSingleResultFromOptional(businessUnitCodeRepository.findById(idBusinessUnitCode));
@@ -87,4 +98,17 @@ public class BusinessUnitCodeService {
         }
         return ObjectMapperUtil.map(businessUnitCode, BusinessUnitCodeResponDTO.class);
     }
+
+    public List<BusinessUnitCodeResponDTO> getBusinessUnitCodeByDinas(String dinas) {
+        List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findByDinas(dinas);
+        if (businessUnitCodes.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No business unit codes found for the given dinas");
+        }
+
+        // Map each BusinessUnitCodeEntity to BusinessUnitCodeResponDTO
+        return businessUnitCodes.stream()
+                .map(this::businessRespone)
+                .collect(Collectors.toList());
+    }
+
 }

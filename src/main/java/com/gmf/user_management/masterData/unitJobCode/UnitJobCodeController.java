@@ -76,10 +76,30 @@ public class UnitJobCodeController {
                 .toResponse();
     }
 
-    @GetMapping("/unit-ids/by-job-code/{jobCodeId}")
-    public ResponseEntity<int[]> getUnitIdsByJobCodeId(@PathVariable Long jobCodeId) {
-        int[] unitIds = unitJobCodeService.getUnitIdByJobCodeId(jobCodeId);
-        return ResponseEntity.ok(unitIds);
+    @GetMapping(value = "/job-codes/by-unit/{unitId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<int[]>> getJobCodeIdByUnitId(
+            @PathVariable Long unitId
+    ) {
+        int[] jobCodeIds = unitJobCodeService.getJobCodeIdByUnitId(unitId);
+        return new HttpResponseDTO<>(jobCodeIds, HttpStatus.OK)
+                .setResponseHeaders("unitId", unitId)
+                .toResponse();
     }
+
+    @GetMapping("/unit-ids/by-job-code/{jobCodeId}")
+    public ResponseEntity<HttpResponseDTO<int[]>> getUnitIdsByJobCodeId(
+            @PathVariable Long jobCodeId) {
+        int[] unitIds = unitJobCodeService.getUnitIdByJobCodeId(jobCodeId);
+        return new HttpResponseDTO<>(unitIds, HttpStatus.OK)
+                .setResponseHeaders("unitIds", unitIds)
+                .toResponse();
+    }
+
+    @GetMapping("/count-job-codes-by-unit/{unitId}")
+    public ResponseEntity<Integer> countJobCodesByUnitId(@PathVariable Long unitId) {
+        int count = unitJobCodeService.countJobCodeByUnitId(unitId);
+        return ResponseEntity.ok(count);
+    }
+
 
 }

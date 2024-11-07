@@ -3,13 +3,8 @@ package com.gmf.user_management.masterData.unitJobCode;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.masterData.jobCode.repositories.JobCodeRepository;
-import com.gmf.user_management.masterData.unit.dto.UnitDTO;
-import com.gmf.user_management.masterData.unit.dto.UnitPredicate;
-import com.gmf.user_management.masterData.unit.dto.UnitRequestDto;
-import com.gmf.user_management.masterData.unit.dto.UnitResponDto;
 import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import com.gmf.user_management.masterData.unit.repository.UnitRepository;
 import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeDTO;
@@ -111,6 +106,17 @@ public class UnitJobCodeService {
         return respone;
     }
 
+    public int[] getJobCodeIdByUnitId(Long unitId) {
+        List<UnitJobCodeEntity> unitJobCodes = unitJobCodeRepository.findByUnitList_IdUnit(unitId);
+        return unitJobCodes.stream()
+                .flatMap(unitJobCode -> unitJobCode.getJobCodeList().stream()
+                        .map(JobCodeEntity::getIdJobCode))
+                .mapToInt(Long::intValue)
+                .distinct()
+                .toArray();
+
+    }
+
     public int[] getUnitIdByJobCodeId(Long jobCodeId) {
         List<UnitJobCodeEntity> entities = unitJobCodeRepository.findByJobCodeList_IdJobCode(jobCodeId);
         return entities.stream()
@@ -119,6 +125,13 @@ public class UnitJobCodeService {
                 .mapToInt(Long::intValue) // Convert Long to int
                 .distinct() // Ensure unique unit IDs
                 .toArray();
+    }
+
+    public int countJobCodeByUnitId(Long unitId) {
+        List<UnitJobCodeEntity> unitJobCodes = unitJobCodeRepository.findByUnitList_IdUnit(unitId);
+        return unitJobCodes.stream()
+                .mapToInt(unitJobCode -> unitJobCode.getJobCodeList().size())
+                .sum();
     }
 
 

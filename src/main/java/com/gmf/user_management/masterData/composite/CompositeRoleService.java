@@ -4,22 +4,16 @@ import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
-import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleDTO;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRolePredicate;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleRequestDTO;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleResponDTO;
 import com.gmf.user_management.masterData.composite.compositeEntities.CompositeRoleEntity;
+import com.gmf.user_management.masterData.composite.repository.CompositeRoleRepository;
 import com.gmf.user_management.masterData.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.masterData.jobCode.repositories.JobCodeRepository;
-import com.gmf.user_management.masterData.unit.dto.UnitPredicate;
-import com.gmf.user_management.masterData.unit.dto.UnitRequestDto;
-import com.gmf.user_management.masterData.unit.dto.UnitResponDto;
-import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -107,6 +102,18 @@ public class CompositeRoleService {
         CompositeRoleResponDTO responseDTO = ObjectMapperUtil.map(businessUnitCode, CompositeRoleResponDTO.class);
         responseDTO.setJobCodeCount(businessUnitCode.getJobCodeEntityList() != null ? businessUnitCode.getJobCodeEntityList().size() : 0);
         return responseDTO;
+    }
+
+    public int countCompositeRoleByJobCodeId(Long jobCodeId) {
+        // Fetch all CompositeRoleEntity instances containing the specified JobCodeId
+        return compositeRoleRepository.countByJobCodeEntityList_idJobCode(jobCodeId);
+    }
+
+    public List<CompositeRoleResponDTO> getCompositeRoleByJobCodeId(Long jobCodeId) {
+        List<CompositeRoleEntity> compositeRoles = compositeRoleRepository.findByJobCodeEntityList_idJobCode(jobCodeId);
+        return compositeRoles.stream()
+                .map(this::compositeRoleRespon)
+                .collect(Collectors.toList());
     }
 
 }

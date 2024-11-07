@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -72,6 +73,27 @@ public class CompositeRoleController {
     ) throws NotFoundException {
         return new HttpResponseDTO<>(compositeRoleService.getCompositeRoleById(id_composite_role), HttpStatus.OK)
                 .setResponseHeaders("idCompositeRole", id_composite_role)
+                .toResponse();
+    }
+
+    @GetMapping("/count-by-job-code/{jobCodeId}")
+    public ResponseEntity<HttpResponseDTO<Integer>> countCompositeRoleByJobCodeId(
+            @PathVariable Long jobCodeId
+    ) {
+        int count = compositeRoleService.countCompositeRoleByJobCodeId(jobCodeId);
+        return new HttpResponseDTO<>(count, HttpStatus.OK)
+                .setResponseHeaders("jobCodeId", jobCodeId)
+                .toResponse();
+    }
+
+
+    @GetMapping("/by-job-code/{jobCodeId}")
+    public ResponseEntity<HttpResponseDTO<List<CompositeRoleResponDTO>>> getCompositeRoleByJobCodeId(
+            @PathVariable Long jobCodeId
+    ) {
+        List<CompositeRoleResponDTO> response = compositeRoleService.getCompositeRoleByJobCodeId(jobCodeId);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("jobCodeId", jobCodeId)
                 .toResponse();
     }
 

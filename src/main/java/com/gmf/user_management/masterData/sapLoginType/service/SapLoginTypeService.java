@@ -10,7 +10,7 @@ public interface SapLoginTypeService {
     SapLoginTypeResponDTO createSapLoginType (SapLoginTypeDTO requestDto);
     SapLoginTypeResponDTO updateSapLoginType (Long idSapLoginType, SapLoginTypeDTO requestDto) throws NotFoundException;
     Boolean deleteSapLoginType(Long idSapLoginType)throws NotFoundException;
-    PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO[]> getAllSapLoginType(Integer page, Integer size, SapLoginTypeDTO requestDTO);
+    PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO> getAllSapLoginType(Integer page, Integer size, SapLoginTypeDTO requestDTO);
     SapLoginTypeResponDTO getSapLoginTypeById(Long idSapLoginType)throws NotFoundException;
 
 

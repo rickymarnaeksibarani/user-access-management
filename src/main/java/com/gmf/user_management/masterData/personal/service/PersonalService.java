@@ -8,14 +8,19 @@ import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
 public interface PersonalService {
     PersonalResponDTO createPersonal(PersonalDTO request) throws JsonProcessingException;
-    PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws NotFoundException;
-    PaginationUtil<PersonalEntity, PersonalResponDTO> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO);
-    PersonalResponDTO getPersonalById(Long idPersonal)throws NotFoundException;
-    PersonalResponDTO getPersonalByPersonalNumber(String personalNumber)throws NotFoundException;
+    PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws NotFoundException, IOException, NoSuchAlgorithmException, InvalidKeyException;
+    PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO)throws JsonProcessingException;
+    PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException, JsonProcessingException;
+    PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalByPartnerId(String partnerId)throws NotFoundException;
-    PersonalResponDTO getPersonalByDinas(String dinas)throws NotFoundException;
+    List<PersonalResponDTO> getPersonalByDinas(String dinas) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalAsPartnerPIC(Integer parntnerId)throws NotFoundException;
-    Long countUIDByDinas(String dinas);
+    String countUIDByDinas();
 }

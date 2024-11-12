@@ -2,6 +2,9 @@ package com.gmf.user_management.masterData.personal.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.validations.IsNumeric;
+import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.personal.dto.PersonalDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
@@ -70,12 +73,46 @@ public class PersonalControllerImpl {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "20") Integer size,
             PersonalRequestDTO requestDto
-    ){
+    ) throws JsonProcessingException {
         Object allDataPersonal = personalService.getAllPersonal(page, size, requestDto);
         return new HttpResponseDTO<>(allDataPersonal, HttpStatus.OK)
                 .setResponseHeaders("page", page)
                 .setResponseHeaders("size", size)
                 .setResponseHeaders("requestDto", requestDto)
                 .toResponse();
+    }
+
+    @GetMapping("/by-id/{id_personal}")
+    public ResponseEntity<HttpResponseDTO<PersonalResponDTO>>getPersonalById(
+            @PathVariable Long id_personal
+    ) throws NotFoundException, JsonProcessingException {
+        return new HttpResponseDTO<>(personalService.getPersonalById(id_personal), HttpStatus.OK)
+                .setResponseHeaders("id_personal", id_personal)
+                .toResponse();
+    }
+
+    @GetMapping("/by-number/{personalNumber}")
+    public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> getPersonalByPersonalNumber(
+            @PathVariable String personalNumber
+    ) throws NotFoundException, JsonProcessingException {
+        PersonalResponDTO response = personalService.getPersonalByPersonalNumber(personalNumber);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("personalNumber", personalNumber)
+                .toResponse();
+    }
+
+    @GetMapping("/by-dinas/{dinas}")
+    public ResponseEntity<HttpResponseDTO<List<PersonalResponDTO>>> getPersonalByDinas(
+            @PathVariable String dinas
+    ) throws NotFoundException, JsonProcessingException {
+        List<PersonalResponDTO> response = personalService.getPersonalByDinas(dinas);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("dinas", dinas)
+                .toResponse();
+    }
+
+    @GetMapping(value = "/count-uid-by-dinas", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String countUIDByDinas() {
+        return personalService.countUIDByDinas();
     }
 }

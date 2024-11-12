@@ -5,21 +5,26 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.storage.StorageService;
+import com.gmf.user_management.core.utils.JpaResultHelperUtil;
+import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.masterData.licenseType.repository.LicenseTypeRespository;
 import com.gmf.user_management.masterData.partner.PartnerRepository;
 import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
-import com.gmf.user_management.masterData.personal.dto.ApplicationFileDTO;
-import com.gmf.user_management.masterData.personal.dto.PersonalDTO;
-import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
-import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
+import com.gmf.user_management.masterData.personal.dto.*;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import com.gmf.user_management.masterData.personal.repository.PersonalRepository;
 import io.minio.ObjectWriteResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,6 +33,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonalServiceImpl implements PersonalService{
@@ -87,23 +94,60 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Override
-    public PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws NotFoundException {
-        return null;
+    public PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws NotFoundException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+        PersonalEntity personal = personalRepository.findById(idPersonal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Id " + idPersonal + " not found"));
+
+        List<ApplicationFileDTO> img = objectMapper.readValue(personal.getPersonalPicture(), new TypeReference<ArrayList<ApplicationFileDTO>>() {});
+        List<String> imgPathList = img.stream().map(ApplicationFileDTO::getPath).toList();
+        List<String> imgFileName = img.stream().map(ApplicationFileDTO::getFilename).toList();
+
+        boolean isNewImgNameAndOldImgNameEqual = request.getPersonalPicture()!= null
+                && Objects.equals(request.getPersonalPicture().stream().map(MultipartFile::getOriginalFilename).toList(), imgFileName);
+
+        if (!imgPathList.isEmpty()&& !isNewImgNameAndOldImgNameEqual){
+            storageService.deleteAllFileS3(imgPathList);
+        }
+
+        List<ApplicationFileDTO> imagePaths = isNewImgNameAndOldImgNameEqual ? img : new ArrayList<>();
+        if (!isNewImgNameAndOldImgNameEqual){
+            imagePaths = uploadImage(request.getPersonalPicture());
+        }
+
+        PersonalEntity payload = personalPayload(request, personal, imagePaths);
+        personalRepository.saveAndFlush(payload);
+        return personalRespon(payload);
+    }
+
+    @Transactional(readOnly = true)
+    public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
+        Pageable paging = PageRequest.of(page-1, size);
+        Specification<PersonalEntity> specification = (root, query, builder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (Objects.nonNull(requestDTO.getSearchTerm())) {
+                predicates.add(
+                        (Predicate) builder.or(
+                                builder.like(builder.upper(root.get("personalName")), "%" + requestDTO.getSearchTerm().toUpperCase() + "%"),
+                                builder.like(builder.upper(root.get("personalNumber")), requestDTO.getSearchTerm().toUpperCase())
+                        )
+                );
+            }
+            return query.where(predicates.toArray(new javax.persistence.criteria.Predicate[]{})).getRestriction();
+        };
+        Page<PersonalEntity> mobileApp = personalRepository.findAll(specification, paging);
+        return new PaginationUtil<>(mobileApp, PersonalEntity.class);
+    }
+
+    public PersonalResponDTO getPersonalById(Long id_personal) throws NotFoundException, JsonProcessingException {
+        PersonalEntity personal = personalRepository.findById(id_personal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+        return personalRespon(personal);
     }
 
     @Override
-    public PaginationUtil<PersonalEntity, PersonalResponDTO> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
-        return null;
-    }
-
-    @Override
-    public PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException {
-        return null;
-    }
-
-    @Override
-    public PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException {
-        return null;
+    public PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException {
+        PersonalEntity personal = (PersonalEntity) personalRepository.findByPersonalNumber(personalNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal with number " + personalNumber + " not found"));
+        return personalRespon(personal);
     }
 
     @Override
@@ -111,18 +155,34 @@ public class PersonalServiceImpl implements PersonalService{
         return null;
     }
 
-    @Override
-    public PersonalResponDTO getPersonalByDinas(String dinas) throws NotFoundException {
-        return null;
+    @Transactional(readOnly = true)
+    public List<PersonalResponDTO> getPersonalByDinas(String dinas) throws JsonProcessingException {
+        if (dinas == null || dinas.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Dinas not found");
+        List<PersonalEntity> personalEntities = personalRepository.findAllByDinas(dinas);
+        return personalEntities.stream()
+                .map(personalEntity -> {
+                    try {
+                        return personalRespon(personalEntity); // Ensure this method returns a PersonalResponDTO
+                    } catch (JsonProcessingException e) {
+                        // Log the error or handle as appropriate
+                        throw new RuntimeException("Error processing JSON for personal entity with ID: " + personalEntity.getIdPersonal(), e);
+                    }
+                })
+                .collect(Collectors.toList()); // Collect as List<PersonalResponDTO>
     }
+
 
     @Override
     public PersonalResponDTO getPersonalAsPartnerPIC(Integer parntnerId) throws NotFoundException {
         return null;
     }
-    @Override
-    public Long countUIDByDinas(String dinas) {
-        return null;
+    public String countUIDByDinas() {
+        List<Map<String, Object>> results = personalRepository.countUIDByDinas();
+        try {
+            return objectMapper.writeValueAsString(results);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error converting countUIDByDinas result to JSON", e);
+        }
     }
 
 

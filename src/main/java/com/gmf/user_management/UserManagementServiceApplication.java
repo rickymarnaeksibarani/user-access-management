@@ -7,7 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableEurekaClient
-@ComponentScan(basePackages = {"com.gmf.user_management.config.MultipleDataSourceConfiguration"})
+//@ComponentScan(basePackages = {"com.gmf.user_management.config.MultipleDataSourceConfiguration"})
+
 public class UserManagementServiceApplication {
 
 	public static void main(String[] args) {

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@Slf4j
 @RequestMapping("/api/v1/license_type")
 public class LicenseTypeController {
     @Autowired

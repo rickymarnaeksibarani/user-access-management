@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserAccessDomainDTO {
     @JsonProperty("personalList")
-    private List<PersonalEntity> personalList;
+    private List<Long> personalList;
 
     @JsonProperty("isNetworkAccess")
     private Boolean isNetworkAccess = false;

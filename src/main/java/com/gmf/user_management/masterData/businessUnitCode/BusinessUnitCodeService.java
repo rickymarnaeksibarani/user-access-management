@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class BusinessUnitCodeService {
     @Autowired
     private BusinessUnitCodeRepository businessUnitCodeRepository;
 
+//    @Transactional("postgresTransactionManager")
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         return BusinessUnitCodeResponDTO.builder()
                 .idBusinessUnitCode(businessUnitCodeEntity.getIdBusinessUnitCode())
@@ -42,6 +44,7 @@ public class BusinessUnitCodeService {
                 .build();
     }
 
+//    @Transactional("postgresTransactionManager")
     public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
         BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);

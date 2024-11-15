@@ -1,6 +1,8 @@
 package com.gmf.user_management.masterData.usersAccessDomain.service;
 
+import com.gmf.user_management.core.enums.HashEnum;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PasswordUtil;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import com.gmf.user_management.masterData.personal.repository.PersonalRepository;
 import com.gmf.user_management.masterData.usersAccessDomain.dto.UserAccessDomainDTO;
@@ -74,7 +76,7 @@ public class UserAccessDomainImpl implements UserAccessDomain{
         userAccessDomainEntity.setIsDomainAccess(userAccessDomainDTO.getIsDomainAccess());
         userAccessDomainEntity.setIsNetworkAccess(userAccessDomainDTO.getIsNetworkAccess());
         userAccessDomainEntity.setUsername(userAccessDomainDTO.getUsername());
-        userAccessDomainEntity.setPassword(userAccessDomainDTO.getPassword());
+        userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
         userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
         userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());
         return userAccessDomainEntity;

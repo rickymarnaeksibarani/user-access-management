@@ -61,7 +61,7 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
 
     @Override
     public Boolean deleteSapLoginType(Long idSapLoginType) throws NotFoundException {
-        sapLoginTypeRepository.findById(idSapLoginType);
+        sapLoginTypeRepository.deleteById(idSapLoginType);
         return true;
     }
 

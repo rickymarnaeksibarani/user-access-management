@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,6 +13,9 @@ import java.time.LocalDateTime;
 public class BusinessUnitCodeDTO {
     @JsonProperty("businessUnitCode")
     private String businessUnitCode;
+
+    @JsonProperty("contractId")
+    private Long contractId;
 
     @JsonProperty("description")
     private String description;

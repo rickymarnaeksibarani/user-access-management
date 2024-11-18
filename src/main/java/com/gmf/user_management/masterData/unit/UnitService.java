@@ -63,7 +63,7 @@ public class UnitService {
     }
 
     public Boolean deleteUnit(Long idUnit) {
-        unitRepository.findById(idUnit);
+        unitRepository.deleteById(idUnit);
         return true;
     }
 
@@ -106,7 +106,7 @@ public class UnitService {
 
     public UnitResponDto getUnitById(Long idUnit) {
         UnitEntity unitEntity = JpaResultHelperUtil.getSingleResultFromOptional(unitRepository.findById(idUnit));
-        if (unitEntity == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
+        if (unitEntity == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + idUnit + " Not Found");
         return ObjectMapperUtil.map(unitEntity, UnitResponDto.class);
     }
 }

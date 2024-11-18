@@ -64,7 +64,7 @@ public class UserLicenseServiceImpl implements UserLicenseService{
 
     @Override
     public Boolean deleteUserLicense(Long idUserLicense) throws NotFoundException {
-        userLicenseRepository.findById(idUserLicense);
+        userLicenseRepository.deleteById(idUserLicense);
         return true;
     }
 

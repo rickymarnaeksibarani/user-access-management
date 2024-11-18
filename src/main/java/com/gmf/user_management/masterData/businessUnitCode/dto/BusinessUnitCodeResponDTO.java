@@ -1,12 +1,12 @@
 package com.gmf.user_management.masterData.businessUnitCode.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @Builder
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class BusinessUnitCodeResponDTO {
     private Long idBusinessUnitCode;
     private String businessUnitCode;
+    private Map<String, Object> contractDetails;
     private String description;
     private String dinas;
     private LocalDateTime createdAt;

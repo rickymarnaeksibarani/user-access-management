@@ -1,7 +1,6 @@
 package com.gmf.user_management.masterData.userLicense.entities;
 
 import com.gmf.user_management.masterData.applicationLicense.entities.ApplicationLicenseEntity;
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

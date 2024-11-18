@@ -55,7 +55,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
     @Override
     public Boolean deleteUserAccessDomain(Long idUser) {
-        uadRepository.findById(idUser);
+        uadRepository.deleteById(idUser);
         return true;
     }
 

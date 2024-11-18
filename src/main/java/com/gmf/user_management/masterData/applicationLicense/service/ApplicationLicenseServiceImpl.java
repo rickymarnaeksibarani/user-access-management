@@ -62,7 +62,7 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
 
     @Override
     public Boolean deleteLicense(Long idApplicationLicense) {
-        applicationLicenseRepository.findById(idApplicationLicense);
+        applicationLicenseRepository.deleteById(idApplicationLicense);
         return true;
     }
 

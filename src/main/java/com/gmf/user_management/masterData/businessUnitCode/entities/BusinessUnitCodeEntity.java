@@ -1,6 +1,5 @@
 package com.gmf.user_management.masterData.businessUnitCode.entities;
 
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,6 +21,9 @@ public class BusinessUnitCodeEntity {
     @Column(name = "id_business_unit_code")
     private Long idBusinessUnitCode;
 
+    @Column(name = "contract_id")
+    private Long contractId;
+
     @Column(name = "business_unit_code")
     private String businessUnitCode;
 
@@ -30,10 +32,6 @@ public class BusinessUnitCodeEntity {
 
     @Column(name = "dinas")
     private String dinas;
-
-    @ManyToOne
-    @JoinColumn(name = "partner_id")
-    private PartnerEntity partnerEntityList;
 
     @CreationTimestamp
     @Column(name = "created_at")

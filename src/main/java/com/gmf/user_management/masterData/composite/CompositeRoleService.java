@@ -64,7 +64,7 @@ public class CompositeRoleService {
     }
 
     public Boolean deleteCompositeRole(Long idCompositeRole) {
-        compositeRoleRepository.findById(idCompositeRole);
+        compositeRoleRepository.deleteById(idCompositeRole);
         return true;
     }
 

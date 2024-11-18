@@ -53,7 +53,7 @@ public class LicenseTypeService {
     }
 
     public Boolean deleteLicenseType(Long idLicenseType) {
-        licenseTypeRespository.findById(idLicenseType);
+        licenseTypeRespository.deleteById(idLicenseType);
         return true;
     }
 

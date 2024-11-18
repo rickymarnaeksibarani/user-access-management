@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmf.user_management.core.enums.IdentityType;
 import com.gmf.user_management.core.enums.Status;
-import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,8 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 public class PersonalDTO {
 
-    @JsonProperty("partnerList")
-    private List<Long> partnerList;
+    @JsonProperty("contractId")
+    private Long contractId;
 
     @JsonProperty("licenseTypeList")
     private List<Long> licenseTypeList;

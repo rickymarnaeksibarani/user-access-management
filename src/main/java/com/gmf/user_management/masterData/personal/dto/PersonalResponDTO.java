@@ -1,22 +1,17 @@
 package com.gmf.user_management.masterData.personal.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmf.user_management.core.enums.IdentityType;
 import com.gmf.user_management.core.enums.Status;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -24,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PersonalResponDTO {
     private Long idPersonal;
-    private List<PartnerEntity> partnerList;
+    private Map<String, Object> contractDetails;
     private List<LicenseTypeEntity> licenseTypeList;
     private String personalName;
     private String personalNumber;

@@ -3,13 +3,12 @@ package com.gmf.user_management.masterData.personal.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.storage.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.masterData.licenseType.repository.LicenseTypeRespository;
-import com.gmf.user_management.masterData.partner.PartnerRepository;
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
 import com.gmf.user_management.masterData.personal.dto.ApplicationFileDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
@@ -45,9 +44,9 @@ public class PersonalServiceImpl implements PersonalService{
     @Autowired
     private StorageService storageService;
     @Autowired
-    private PartnerRepository partnerRepository;
-    @Autowired
     private LicenseTypeRespository licenseTypeRespository;
+    @Autowired
+    private DataSourceService dataSourceService;
     private final Date date = new Date();
     private final Long time = date.getTime();
 
@@ -56,9 +55,17 @@ public class PersonalServiceImpl implements PersonalService{
 
     private PersonalResponDTO personalRespon(PersonalEntity personalEntity)throws JsonProcessingException {
         List<ApplicationFileDTO> img = objectMapper.readValue(personalEntity.getPersonalPicture(), new TypeReference<>(){});
+        Map<String, Object> contractDetails = null;
+        if (personalEntity.getContractId() != null) {
+            try {
+                contractDetails = dataSourceService.getContractById(personalEntity.getContractId());
+            } catch (ResponseStatusException e) {
+                contractDetails = Map.of("error", Objects.requireNonNull(e.getReason()));
+            }
+        }
         return PersonalResponDTO.builder()
                 .idPersonal(personalEntity.getIdPersonal())
-                .partnerList(personalEntity.getPartnerList())
+                .contractDetails(contractDetails)
                 .licenseTypeList(personalEntity.getLicenseTypeList())
                 .personalName(personalEntity.getPersonalName())
                 .personalNumber(personalEntity.getPersonalNumber())
@@ -83,14 +90,15 @@ public class PersonalServiceImpl implements PersonalService{
     }
     @Override
     public PersonalResponDTO createPersonal(PersonalDTO request) throws JsonProcessingException {
-
+        try {
             List<ApplicationFileDTO> personalPicture = uploadImage(request.getPersonalPicture());
             PersonalEntity personal = new PersonalEntity();
             PersonalEntity payload = personalPayload(request, personal, personalPicture);
             personalRepository.save(payload);
             return personalRespon(payload);
-
-
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -162,13 +170,13 @@ public class PersonalServiceImpl implements PersonalService{
         return personalEntities.stream()
                 .map(personalEntity -> {
                     try {
-                        return personalRespon(personalEntity); // Ensure this method returns a PersonalResponDTO
+                        return personalRespon(personalEntity);
                     } catch (JsonProcessingException e) {
                         // Log the error or handle as appropriate
                         throw new RuntimeException("Error processing JSON for personal entity with ID: " + personalEntity.getIdPersonal(), e);
                     }
                 })
-                .collect(Collectors.toList()); // Collect as List<PersonalResponDTO>
+                .collect(Collectors.toList());
     }
 
 
@@ -188,13 +196,9 @@ public class PersonalServiceImpl implements PersonalService{
 
     //payload
     private PersonalEntity personalPayload(PersonalDTO personalDTO, PersonalEntity personalEntity, List<ApplicationFileDTO> personalPicture) throws JsonProcessingException {
-        List<PartnerEntity> allPartner = partnerRepository.findByIdPartnerIsIn(personalDTO.getPartnerList());
-//        if (allPartner.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Partner not found");
 
         List<LicenseTypeEntity> allLicenseType = licenseTypeRespository.findByIdLicenseTypeIsIn(personalDTO.getLicenseTypeList());
         if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
-
-        personalEntity.setPartnerList(allPartner);
         personalEntity.setLicenseTypeList(allLicenseType);
         personalEntity.setPersonalName(personalDTO.getPersonalName());
         personalEntity.setPersonalNumber(personalDTO.getPersonalNumber());
@@ -213,6 +217,9 @@ public class PersonalServiceImpl implements PersonalService{
         personalEntity.setExpiredDate(personalDTO.getExpiredDate());
         personalEntity.setCreatedBy(personalDTO.getCreatedBy());
         personalEntity.setUpdatedBy(personalDTO.getUpdatedBy());
+        if (personalDTO.getContractId() != null) {
+            personalEntity.setContractId(personalDTO.getContractId());
+        }
         return personalEntity;
 
     }

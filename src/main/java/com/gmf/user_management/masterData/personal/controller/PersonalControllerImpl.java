@@ -40,7 +40,7 @@ public class PersonalControllerImpl {
         }
         PersonalResponDTO response = personalService.createPersonal(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
-                .setResponseHeaders("request", response)
+                .setResponseHeaders("respon", response)
                 .toResponse();
     }
 

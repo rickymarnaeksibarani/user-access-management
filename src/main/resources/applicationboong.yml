@@ -43,13 +43,13 @@
 #    hikari:
 #      read-only: true
 #  jpa:
-#    open-in-view: false
+##    open-in-view: false
+#  hibernate:
+#    ddl-auto: create
+#  properties:
 #    hibernate:
-#      ddl-auto: create
-#    properties:
-#      hibernate:
-#        format_sql: false
-#    show-sql: true
+#      format_sql: false
+#  show-sql: true
 #  output:
 #    ansi:
 #      enabled: ALWAYS

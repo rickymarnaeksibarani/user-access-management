@@ -17,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-public class UserAccessDomainImpl implements UserAccessDomain{
+public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     @Autowired
     private UADRepository uadRepository;
     @Autowired

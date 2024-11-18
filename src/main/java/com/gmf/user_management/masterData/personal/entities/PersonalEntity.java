@@ -3,7 +3,6 @@ package com.gmf.user_management.masterData.personal.entities;
 import com.gmf.user_management.core.enums.IdentityType;
 import com.gmf.user_management.core.enums.Status;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
-import com.gmf.user_management.masterData.partner.entities.PartnerEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -29,8 +28,8 @@ public class PersonalEntity {
     @Column(name = "id_personal")
     private Long idPersonal;
 
-    @ManyToMany @JoinColumn(name = "partner_id")
-    private List<PartnerEntity> partnerList;
+    @Column(name = "contract_id")
+    private Long contractId;
 
     @ManyToMany @JoinColumn(name = "license_type_id")
     private List<LicenseTypeEntity> licenseTypeList;

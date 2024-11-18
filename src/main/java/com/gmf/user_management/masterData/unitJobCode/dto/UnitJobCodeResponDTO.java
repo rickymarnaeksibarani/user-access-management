@@ -16,9 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UnitJobCodeResponDTO {
     private Long idUnitJobCode;
-    //table unit
     private List<UnitEntity> unitList;
-    //table jobCode
     private List<JobCodeEntity> jobCodeList;
     private LocalDateTime createdAt;
     private String createdBy;

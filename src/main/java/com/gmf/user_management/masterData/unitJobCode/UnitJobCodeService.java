@@ -86,7 +86,7 @@ public class UnitJobCodeService {
 
 
     public Boolean deleteUnitJobCode(Long idUnitJobCode) {
-        unitJobCodeRepository.findById(idUnitJobCode);
+        unitJobCodeRepository.deleteById(idUnitJobCode);
         return true;
     }
 

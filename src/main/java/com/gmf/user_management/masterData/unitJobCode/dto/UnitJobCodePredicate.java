@@ -1,6 +1,5 @@
 package com.gmf.user_management.masterData.unitJobCode.dto;
 
-import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import com.gmf.user_management.masterData.unitJobCode.entities.UnitJobCodeEntity;
 import org.springframework.data.jpa.domain.Specification;
 

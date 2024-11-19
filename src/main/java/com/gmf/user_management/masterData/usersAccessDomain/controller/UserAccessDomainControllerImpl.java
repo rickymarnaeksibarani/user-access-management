@@ -52,7 +52,6 @@ public class UserAccessDomainControllerImpl {
                 .toResponse();
     }
 
-    //getUserAccessDomainByPersonalId
     @GetMapping("/by-id/{personal_id}")
     public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>getUserAccessDomainByPersonalId(
             @PathVariable Long personal_id

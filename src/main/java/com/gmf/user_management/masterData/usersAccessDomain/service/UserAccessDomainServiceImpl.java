@@ -76,7 +76,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         userAccessDomainEntity.setIsDomainAccess(userAccessDomainDTO.getIsDomainAccess());
         userAccessDomainEntity.setIsNetworkAccess(userAccessDomainDTO.getIsNetworkAccess());
         userAccessDomainEntity.setUsername(userAccessDomainDTO.getUsername());
-        userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
+        userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), HashEnum.SHA256.getDisplayName()));
         userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
         userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());
         return userAccessDomainEntity;

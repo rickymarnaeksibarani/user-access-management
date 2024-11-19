@@ -20,12 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,7 +33,6 @@ public class UnitService {
     @Autowired
     private BusinessUnitCodeRepository businessUnitCodeRepository;
 
-//    @Transactional("postgresTransactionManager")
     private UnitResponDto unitRespon(UnitEntity unitEntity)throws JsonProcessingException {
         return UnitResponDto.builder()
                 .idUnit(unitEntity.getIdUnit())
@@ -72,7 +69,6 @@ public class UnitService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business Unit Code not found"));
         List<UnitEntity> units = unitRepository.findByBusinessUnitCodeListContains(businessUnitCode);
 
-        // Convert the list of UnitEntity to UnitResponDto
         List<UnitResponDto> unitResponses = new ArrayList<>();
         for (UnitEntity unit : units) {
             try {

@@ -2,8 +2,6 @@ package com.gmf.user_management.masterData.businessUnitCode;
 
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
 import com.gmf.user_management.core.exceptions.NotFoundException;
-import com.gmf.user_management.core.utils.JpaResultHelperUtil;
-import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
@@ -76,34 +74,44 @@ public class BusinessUnitCodeService {
         }
         return businessUnitCodeEntity;
     }
-    // TODO: 18/11/2024 > Get Data Business Unit Code by Id fixing contractId
 
     public BusinessUnitCodeResponDTO[] getAllBusinessUnitCode() {
-        List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll();
-        return businessUnitCodes.stream()
-                .map(this::businessRespone)
-                .toArray(BusinessUnitCodeResponDTO[]::new);
+        try {
+            List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll();
+            return businessUnitCodes.stream()
+                    .map(this::businessRespone)
+                    .toArray(BusinessUnitCodeResponDTO[]::new);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 
     public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode) throws NotFoundException {
-        BusinessUnitCodeEntity businessUnitCode = JpaResultHelperUtil.getSingleResultFromOptional(businessUnitCodeRepository.findById(idBusinessUnitCode));
-        if (businessUnitCode == null){
-            throw new NotFoundException("id not found");
+        try {
+            BusinessUnitCodeEntity businessUnitCodeEntity = businessUnitCodeRepository.findById(idBusinessUnitCode)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+            return businessRespone(businessUnitCodeEntity);
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Error while retrieving Business Unit Code by ID", e);
         }
-        return ObjectMapperUtil.map(businessUnitCode, BusinessUnitCodeResponDTO.class);
     }
 
     public List<BusinessUnitCodeResponDTO> getBusinessUnitCodeByDinas(String dinas) {
-        List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findByDinas(dinas);
-        if (businessUnitCodes.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No business unit codes found for the given dinas");
-        }
+        try {
+            List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findByDinas(dinas);
+            if (businessUnitCodes.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No business unit codes found for the given dinas");
+            }
 
-        // Map each BusinessUnitCodeEntity to BusinessUnitCodeResponDTO
-        return businessUnitCodes.stream()
-                .map(this::businessRespone)
-                .collect(Collectors.toList());
+            return businessUnitCodes.stream()
+                    .map(this::businessRespone)
+                    .collect(Collectors.toList());
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 }

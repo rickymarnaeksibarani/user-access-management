@@ -25,9 +25,9 @@ public class BusinessUnitCodeService {
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         Map<String, Object> contractDetails = null;
-        if (businessUnitCodeEntity.getContractId() != null){
+        if (businessUnitCodeEntity.getPartnerId() != null){
             try {
-                contractDetails = dataSourceService.getContractById(businessUnitCodeEntity.getContractId());
+                contractDetails = dataSourceService.getContractById(businessUnitCodeEntity.getPartnerId());
             }catch (ResponseStatusException e){
                 contractDetails = Map.of("error", Objects.requireNonNull(e.getReason()));
             }
@@ -69,8 +69,8 @@ public class BusinessUnitCodeService {
         businessUnitCodeEntity.setDinas(request.getDinas());
         businessUnitCodeEntity.setCreatedBy(request.getCreatedBy());
         businessUnitCodeEntity.setUpdatedBy(request.getUpdatedBy());
-        if (request.getContractId() !=null){
-            businessUnitCodeEntity.setContractId(request.getContractId());
+        if (request.getPartnerId() !=null){
+            businessUnitCodeEntity.setPartnerId(request.getPartnerId());
         }
         return businessUnitCodeEntity;
     }

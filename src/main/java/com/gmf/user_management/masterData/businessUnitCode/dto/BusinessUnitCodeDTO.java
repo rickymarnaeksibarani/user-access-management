@@ -14,8 +14,8 @@ public class BusinessUnitCodeDTO {
     @JsonProperty("businessUnitCode")
     private String businessUnitCode;
 
-    @JsonProperty("contractId")
-    private Long contractId;
+    @JsonProperty("partnerId")
+    private Long partnerId;
 
     @JsonProperty("description")
     private String description;

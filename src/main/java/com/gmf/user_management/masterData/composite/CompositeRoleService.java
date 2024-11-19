@@ -54,7 +54,8 @@ public class CompositeRoleService {
         return compositeRoleRespon(payload);
     }
 
-    public CompositeRoleResponDTO updateCompositeRole(Long idCompositeRole,CompositeRoleDTO request){
+    public CompositeRoleResponDTO updateCompositeRole(
+            Long idCompositeRole,CompositeRoleDTO request) {
         CompositeRoleEntity data = compositeRoleRepository.findById(idCompositeRole).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
         CompositeRoleEntity payload = compositePayload(request, data);
         compositeRoleRepository.saveAndFlush(payload);
@@ -105,7 +106,6 @@ public class CompositeRoleService {
     }
 
     public int countCompositeRoleByJobCodeId(Long jobCodeId) {
-        // Fetch all CompositeRoleEntity instances containing the specified JobCodeId
         return compositeRoleRepository.countByJobCodeEntityList_idJobCode(jobCodeId);
     }
 

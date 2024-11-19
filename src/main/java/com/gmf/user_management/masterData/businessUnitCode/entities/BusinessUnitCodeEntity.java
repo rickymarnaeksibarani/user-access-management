@@ -21,8 +21,8 @@ public class BusinessUnitCodeEntity {
     @Column(name = "id_business_unit_code")
     private Long idBusinessUnitCode;
 
-    @Column(name = "contract_id")
-    private Long contractId;
+    @Column(name = "partner_id")
+    private Long partnerId;
 
     @Column(name = "business_unit_code")
     private String businessUnitCode;

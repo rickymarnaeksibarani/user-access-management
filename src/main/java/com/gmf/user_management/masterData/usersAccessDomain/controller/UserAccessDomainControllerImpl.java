@@ -1,19 +1,16 @@
 package com.gmf.user_management.masterData.usersAccessDomain.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
-import com.gmf.user_management.domains.user.UserService;
+import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.masterData.usersAccessDomain.dto.UserAccessDomainDTO;
 import com.gmf.user_management.masterData.usersAccessDomain.dto.UserAccessDomainResponDTO;
 import com.gmf.user_management.masterData.usersAccessDomain.service.UserAccessDomainService;
-import com.gmf.user_management.masterData.usersAccessDomain.service.UserAccessDomainServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -33,4 +30,37 @@ public class UserAccessDomainControllerImpl {
                 .setResponseHeaders("respon", respone)
                 .toResponse();
     }
+
+    @PutMapping(value = "/by-id/{idUserAccessDomain}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>updateUserAccessDomain(
+        @RequestPart @Valid UserAccessDomainDTO request,
+        @PathVariable Long idUserAccessDomain
+    )throws Exception{
+        UserAccessDomainResponDTO responDTO = userAccessDomainService.updateUserAccessDomain(idUserAccessDomain, request);
+        return new HttpResponseDTO<>(responDTO, HttpStatus.OK)
+                .setResponseHeaders("responDTO", responDTO)
+                .toResponse();
+
+    }
+
+    @DeleteMapping(value = "/by-id/{idUserAccessDomain}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Boolean>>deleteUserAccessDomain(
+            @PathVariable Long idUserAccessDomain
+    ){
+        return new HttpResponseDTO<>(userAccessDomainService.deleteUserAccessDomain(idUserAccessDomain))
+                .setResponseHeaders("idUserAccessDomain", idUserAccessDomain)
+                .toResponse();
+    }
+
+    //getUserAccessDomainByPersonalId
+    @GetMapping("/by-id/{personal_id}")
+    public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>getUserAccessDomainByPersonalId(
+            @PathVariable Long personal_id
+    ) throws NotFoundException {
+        UserAccessDomainResponDTO response = userAccessDomainService.getUserAccessDomainByPersonalId(personal_id, null);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("response", response)
+                .toResponse();
+    }
+
 }

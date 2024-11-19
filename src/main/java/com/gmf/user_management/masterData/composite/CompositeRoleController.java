@@ -28,7 +28,7 @@ public class CompositeRoleController {
     @PostMapping
     public ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>> createCompositeRole(
             @RequestPart @Valid CompositeRoleDTO request
-    ) throws Exception {
+    ) {
         CompositeRoleResponDTO response = compositeRoleService.createCompositeRole(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
                 .setResponseHeaders("request", response)
@@ -39,7 +39,7 @@ public class CompositeRoleController {
     public  ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>> updateCompositeRole(
             @RequestPart @Valid CompositeRoleDTO request,
             @PathVariable Long idCompositeRole
-    )throws Exception{
+    ) {
         CompositeRoleResponDTO responDTO = compositeRoleService.updateCompositeRole(idCompositeRole, request);
         return new HttpResponseDTO<>(responDTO,HttpStatus.OK).setResponseHeaders("responDTO", responDTO).toResponse();
     }

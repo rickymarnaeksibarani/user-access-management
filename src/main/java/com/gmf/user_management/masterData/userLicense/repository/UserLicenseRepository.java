@@ -11,5 +11,5 @@ import java.util.List;
 public interface UserLicenseRepository extends JpaRepository<UserLicenseEntity, Long>, JpaSpecificationExecutor<UserLicenseEntity> {
     List<UserLicenseEntity> findByApplicationLicenseList_IdApplicationLicense(Long applicationLicenseId);
 
-    List<UserLicenseEntity> findByPersonalList_IdPersonal(Long userId);
+    List<UserLicenseEntity> findByPersonalList_IdPersonal(Long idUserLicense);
 }

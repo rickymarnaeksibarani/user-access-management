@@ -4,12 +4,68 @@ import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.masterData.userLicense.dto.UserLicenseDTO;
 import com.gmf.user_management.masterData.userLicense.dto.UserLicenseResponeDTO;
+import com.gmf.user_management.masterData.userLicense.service.UserLicenseServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-public interface UserLicenseController {
-    ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO>> createUserLicense(UserLicenseDTO requestDto);
-    ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO>> updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto)throws NotFoundException;
-    ResponseEntity<HttpResponseDTO<Boolean>> deleteUserLicense(Long idUserLicense)throws NotFoundException;
-    ResponseEntity<HttpResponseDTO<UserLicenseDTO[]>> getPersonalIdByApplicationLicenseId(Long applicationLicenseId)throws NotFoundException;
-    ResponseEntity<HttpResponseDTO<UserLicenseDTO[]>>getApplicationLicenseIdByUserId(Long userId)throws NotFoundException;
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/api/v1/userLicense")
+public class UserLicenseController {
+    @Autowired
+    private UserLicenseServiceImpl userLicenseService;
+
+    @PostMapping
+    public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO>>createUserLicense(
+            @RequestBody @Valid UserLicenseDTO request
+            ){
+        UserLicenseResponeDTO respone = userLicenseService.createUserLicense(request);
+        return new HttpResponseDTO<>(respone, HttpStatus.CREATED)
+                .setResponseHeaders("respon", respone)
+                .toResponse();
+    }
+
+    @PutMapping(value = "/by-id/{idUserLicense}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO>>updateUserLicense(
+            @RequestBody @Valid UserLicenseDTO request,
+            @PathVariable Long idUserLicense
+    ) throws NotFoundException {
+        UserLicenseResponeDTO responeDTO = userLicenseService.updateUserLicense(idUserLicense, request);
+        return new HttpResponseDTO<>(responeDTO, HttpStatus.OK)
+                .setResponseHeaders("responDTO", responeDTO)
+                .toResponse();
+    }
+
+    @DeleteMapping(value = "/by-id/{idUserLicense}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Boolean>>deleteUserLicense(
+            @PathVariable Long idUserLicense
+    ) throws NotFoundException {
+        return new HttpResponseDTO<>(userLicenseService.deleteUserLicense(idUserLicense))
+                .setResponseHeaders("idUserLicense", idUserLicense)
+                .toResponse();
+    }
+
+    @GetMapping(value = "/personal/{applicationLicenseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO[]>> getPersonalIdByApplicationLicenseId(
+            @PathVariable Long applicationLicenseId
+    ) {
+        UserLicenseResponeDTO[] response = userLicenseService.getPersonalIdByApplicationLicenseId(applicationLicenseId);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("applicationLicenseId", applicationLicenseId)
+                .toResponse();
+    }
+
+    @GetMapping(value = "/application/{idUserLicense}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO[]>> getApplicationLicenseIdByUserId(
+            @PathVariable Long idUserLicense
+    ) {
+        UserLicenseResponeDTO[] response = userLicenseService.getApplicationLicenseIdByUserId(idUserLicense);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("idUserLicense", idUserLicense)
+                .toResponse();
+    }
 }

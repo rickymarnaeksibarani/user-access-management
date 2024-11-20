@@ -27,7 +27,7 @@ public class CompositeRoleController {
 
     @PostMapping
     public ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>> createCompositeRole(
-            @RequestPart @Valid CompositeRoleDTO request
+            @RequestBody @Valid CompositeRoleDTO request
     ) {
         CompositeRoleResponDTO response = compositeRoleService.createCompositeRole(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
@@ -37,7 +37,7 @@ public class CompositeRoleController {
 
     @PutMapping(value = "/by-id/{idCompositeRole}")
     public  ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>> updateCompositeRole(
-            @RequestPart @Valid CompositeRoleDTO request,
+            @RequestBody @Valid CompositeRoleDTO request,
             @PathVariable Long idCompositeRole
     ) {
         CompositeRoleResponDTO responDTO = compositeRoleService.updateCompositeRole(idCompositeRole, request);

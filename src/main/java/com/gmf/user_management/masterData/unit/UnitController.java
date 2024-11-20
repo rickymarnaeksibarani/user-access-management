@@ -25,7 +25,7 @@ public class UnitController {
 
     @PostMapping
     public ResponseEntity<HttpResponseDTO<UnitResponDto>> createUnit(
-            @RequestPart @Valid UnitDTO request
+            @RequestBody @Valid UnitDTO request
     ) throws Exception {
         UnitResponDto response = unitService.createUnit(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
@@ -35,7 +35,7 @@ public class UnitController {
 
     @PutMapping(value = "/by-id/{id_unit}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitResponDto>>updateUnit(
-            @RequestPart @Valid UnitDTO request,
+            @RequestBody @Valid UnitDTO request,
             @PathVariable Long id_unit
     )throws Exception{
         UnitResponDto responDto = unitService.updatedUnit(id_unit, request);

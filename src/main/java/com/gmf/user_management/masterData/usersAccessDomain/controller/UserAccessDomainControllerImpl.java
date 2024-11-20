@@ -23,7 +23,7 @@ public class UserAccessDomainControllerImpl {
 
     @PostMapping
     public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>createUserAccessDomain(
-            @RequestPart @Valid UserAccessDomainDTO request
+            @RequestBody @Valid UserAccessDomainDTO request
     ){
         UserAccessDomainResponDTO respone = userAccessDomainService.createUserAccessDomain(request);
         return new HttpResponseDTO<>(respone, HttpStatus.CREATED)
@@ -33,7 +33,7 @@ public class UserAccessDomainControllerImpl {
 
     @PutMapping(value = "/by-id/{idUserAccessDomain}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>updateUserAccessDomain(
-        @RequestPart @Valid UserAccessDomainDTO request,
+        @RequestBody @Valid UserAccessDomainDTO request,
         @PathVariable Long idUserAccessDomain
     )throws Exception{
         UserAccessDomainResponDTO responDTO = userAccessDomainService.updateUserAccessDomain(idUserAccessDomain, request);

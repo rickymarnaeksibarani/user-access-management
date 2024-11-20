@@ -22,8 +22,8 @@ public class UnitJobCodeController {
 
     @PostMapping
     public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>> createUnitJobCode(
-            @RequestPart @Valid UnitJobCodeDTO request
-    ) throws Exception {
+            @RequestBody @Valid UnitJobCodeDTO request
+    ){
         UnitJobCodeResponDTO response = unitJobCodeService.createUnitJobCode(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
                 .setResponseHeaders("request", response)
@@ -32,9 +32,9 @@ public class UnitJobCodeController {
 
     @PutMapping(value = "/by-id/{id_unit_job_code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>>updateUnitJobCode(
-            @RequestPart @Valid UnitJobCodeDTO request,
+            @RequestBody @Valid UnitJobCodeDTO request,
             @PathVariable Long id_unit_job_code
-    )throws Exception{
+    ) {
         UnitJobCodeResponDTO responDto = unitJobCodeService.updatedUnit(id_unit_job_code, request);
         return new HttpResponseDTO<>(responDto,HttpStatus.OK)
                 .setResponseHeaders("responDto", responDto)

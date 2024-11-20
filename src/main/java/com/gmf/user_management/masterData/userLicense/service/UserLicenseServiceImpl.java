@@ -31,13 +31,12 @@ public class UserLicenseServiceImpl implements UserLicenseService{
                 .idUserLicense(userLicenseEntity.getIdUserLicense())
                 .applicationLicenseList(userLicenseEntity.getApplicationLicenseList())
                 .personalList(userLicenseEntity.getPersonalList())
-                .createdAt(userLicenseEntity.getCreatedAt())
                 .createdBy(userLicenseEntity.getCreatedBy())
-                .updatedAt(userLicenseEntity.getUpdatedAt())
                 .updatedBy(userLicenseEntity.getUpdatedBy())
+                .createdAt(userLicenseEntity.getCreatedAt())
+                .updatedAt(userLicenseEntity.getUpdatedAt())
                 .build();
     }
-    @Transactional
     @Override
     public UserLicenseResponeDTO createUserLicense(UserLicenseDTO requestDto) {
         try {
@@ -80,8 +79,8 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    public UserLicenseResponeDTO[] getApplicationLicenseIdByUserId(Long userId) {
-        List<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByPersonalList_IdPersonal(userId);
+    public UserLicenseResponeDTO[] getApplicationLicenseIdByUserId(Long idUserLicense) {
+        List<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByPersonalList_IdPersonal(idUserLicense);
         if (userLicenseEntities.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user licenses found for the given user ID");
         }

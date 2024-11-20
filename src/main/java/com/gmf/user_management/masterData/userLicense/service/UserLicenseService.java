@@ -9,6 +9,6 @@ public interface UserLicenseService {
     UserLicenseResponeDTO updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto) throws NotFoundException;
     Boolean deleteUserLicense(Long idUserLicense)throws NotFoundException;
     UserLicenseResponeDTO[] getPersonalIdByApplicationLicenseId(Long applicationLicenseId);
-    UserLicenseResponeDTO[] getApplicationLicenseIdByUserId(Long userId);
+    UserLicenseResponeDTO[] getApplicationLicenseIdByUserId(Long idUserLicense);
 
 }

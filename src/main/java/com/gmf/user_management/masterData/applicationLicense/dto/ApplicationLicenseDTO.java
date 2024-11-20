@@ -1,5 +1,6 @@
 package com.gmf.user_management.masterData.applicationLicense.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmf.user_management.core.enums.LicenseCategory;
 import com.gmf.user_management.core.enums.Status;
@@ -21,10 +22,11 @@ public class ApplicationLicenseDTO {
     @JsonProperty("licenseType")
     private String licenseType;
     @JsonProperty("quantity")
-    private Integer quantity;
+    private int quantity;
     @JsonProperty("licenseCategory")
     private LicenseCategory licenseCategory;
     @JsonProperty("expiredDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date expiredDate;
     @JsonProperty("activeStatus")
     private Status activeStatus;

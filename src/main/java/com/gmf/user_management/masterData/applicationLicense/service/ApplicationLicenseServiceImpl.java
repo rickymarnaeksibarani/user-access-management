@@ -81,8 +81,8 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
         applicationLicenseEntity.setLicenseCategory(applicationLicenseDTO.getLicenseCategory());
         applicationLicenseEntity.setExpiredDate(applicationLicenseDTO.getExpiredDate());
         applicationLicenseEntity.setActiveStatus(applicationLicenseDTO.getActiveStatus());
-        applicationLicenseEntity.setCreatedBy(applicationLicenseEntity.getCreatedBy());
-        applicationLicenseEntity.setUpdatedBy(applicationLicenseEntity.getUpdatedBy());
+        applicationLicenseEntity.setCreatedBy(applicationLicenseDTO.getCreatedBy());
+        applicationLicenseEntity.setUpdatedBy(applicationLicenseDTO.getUpdatedBy());
         return applicationLicenseEntity;
     }
 }

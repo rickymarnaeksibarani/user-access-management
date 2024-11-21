@@ -6,6 +6,7 @@ import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.sapLoginType.dto.SapLoginTypeDTO;
 import com.gmf.user_management.masterData.sapLoginType.dto.SapLoginTypePredicate;
+import com.gmf.user_management.masterData.sapLoginType.dto.SapLoginTypeRequest;
 import com.gmf.user_management.masterData.sapLoginType.dto.SapLoginTypeResponDTO;
 import com.gmf.user_management.masterData.sapLoginType.entities.SapLoginTypeEntity;
 import com.gmf.user_management.masterData.sapLoginType.repository.SapLoginTypeRepository;
@@ -66,9 +67,9 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
     }
 
     @Override
-    public PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO> getAllSapLoginType(Integer page, Integer size, SapLoginTypeDTO requestDTO) {
+    public PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO> getAllSapLoginType(Integer page, Integer size, SapLoginTypeRequest requestDTO) {
         Pageable paging = PageRequest.of(page -1, size);
-        Specification<SapLoginTypeEntity> specs = Specification.where(SapLoginTypePredicate.searchTerm(requestDTO.getLoginType()));
+        Specification<SapLoginTypeEntity> specs = Specification.where(SapLoginTypePredicate.searchTerm(requestDTO.getSearchTerm()));
         Page<SapLoginTypeEntity> pages = sapLoginTypeRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, SapLoginTypeResponDTO.class);
     }

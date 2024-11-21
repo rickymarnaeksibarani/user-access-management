@@ -183,7 +183,7 @@ public class PersonalServiceImpl implements PersonalService{
     @Override
     public PersonalResponDTO getPersonalAsPartnerPIC(Integer parntnerId) throws NotFoundException {
         return null;
-        // TODO: 18/11/2024 : getPersonalAsPartnerPIC
+
     }
     public String countUIDByDinas() {
         List<Map<String, Object>> results = personalRepository.countUIDByDinas();

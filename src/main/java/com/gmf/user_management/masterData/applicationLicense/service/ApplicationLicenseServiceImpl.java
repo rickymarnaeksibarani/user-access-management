@@ -3,9 +3,14 @@ package com.gmf.user_management.masterData.applicationLicense.service;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseDTO;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicensePredicate;
+import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseRequest;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseResponDTO;
 import com.gmf.user_management.masterData.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.masterData.applicationLicense.repository.ApplicationLicenseRepository;
+import com.gmf.user_management.masterData.jobCode.dto.JobCodePredicate;
+import com.gmf.user_management.masterData.jobCode.dto.JobCodeRequestDto;
+import com.gmf.user_management.masterData.jobCode.dto.JobCodeResponeDTO;
+import com.gmf.user_management.masterData.jobCode.entities.JobCodeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,10 +72,13 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     }
 
     @Override
-    public PaginationUtil<ApplicationLicenseEntity, ApplicationLicenseResponDTO> getAllLicense(Integer page, Integer size, ApplicationLicenseDTO requestDTO) {
-        Pageable paging = PageRequest.of(page-1, size);
-        Specification<ApplicationLicenseEntity> specification = Specification.where(ApplicationLicensePredicate.searchTerm(requestDTO.getLicenseType()));
-        Page<ApplicationLicenseEntity> pages = applicationLicenseRepository.findAll(specification, paging);
+    public PaginationUtil<ApplicationLicenseEntity, ApplicationLicenseResponDTO> getAllLicense(
+            Integer page, Integer size, ApplicationLicenseRequest requestDto
+    ){
+        Pageable paging = PageRequest.of(page -1, size);
+        Specification<ApplicationLicenseEntity> specs = Specification
+                .where(ApplicationLicensePredicate.searchTerm(requestDto.getSearchTerm()));
+        Page<ApplicationLicenseEntity> pages = applicationLicenseRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, ApplicationLicenseResponDTO.class);
     }
 

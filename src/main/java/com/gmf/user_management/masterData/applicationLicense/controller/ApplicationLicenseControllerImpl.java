@@ -2,6 +2,7 @@ package com.gmf.user_management.masterData.applicationLicense.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseDTO;
+import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseRequest;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseResponDTO;
 import com.gmf.user_management.masterData.applicationLicense.service.ApplicationLicenseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class ApplicationLicenseControllerImpl {
     public ResponseEntity<HttpResponseDTO<Object>>getAllLicense(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "20") Integer size,
-            ApplicationLicenseDTO requestDto
+            ApplicationLicenseRequest requestDto
     ){
         Object allComposite = applicationLicenseService.getAllLicense(page, size, requestDto);
         return new HttpResponseDTO<>(allComposite, HttpStatus.OK)

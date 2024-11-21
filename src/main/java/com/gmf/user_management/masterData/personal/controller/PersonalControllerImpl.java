@@ -3,8 +3,6 @@ package com.gmf.user_management.masterData.personal.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
-import com.gmf.user_management.core.validations.IsNumeric;
-import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.personal.dto.PersonalDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
@@ -17,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -114,5 +113,20 @@ public class PersonalControllerImpl {
     @GetMapping(value = "/count-uid-by-dinas", produces = MediaType.APPLICATION_JSON_VALUE)
     public String countUIDByDinas() {
         return personalService.countUIDByDinas();
+    }
+
+
+    @GetMapping("/by-partner-id/{partnerId}")
+    public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> getPersonalByPartnerId(
+            @PathVariable Long partnerId
+    ) {
+        try {
+            PersonalResponDTO response = personalService.getPersonalByPartnerId(partnerId);
+            return new HttpResponseDTO<>(response, HttpStatus.OK)
+                    .setResponseHeaders("partnerId", partnerId)
+                    .toResponse();
+        } catch (ResponseStatusException | NotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

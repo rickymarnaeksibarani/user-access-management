@@ -28,8 +28,8 @@ public class PersonalEntity {
     @Column(name = "id_personal")
     private Long idPersonal;
 
-    @Column(name = "contract_id")
-    private Long contractId;
+    @Column(name = "partner_id")
+    private Long partnerId;
 
     @ManyToMany @JoinColumn(name = "license_type_id")
     private List<LicenseTypeEntity> licenseTypeList;

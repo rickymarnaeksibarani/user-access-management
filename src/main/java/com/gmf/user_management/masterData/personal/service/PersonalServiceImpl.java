@@ -56,9 +56,9 @@ public class PersonalServiceImpl implements PersonalService{
     private PersonalResponDTO personalRespon(PersonalEntity personalEntity)throws JsonProcessingException {
         List<ApplicationFileDTO> img = objectMapper.readValue(personalEntity.getPersonalPicture(), new TypeReference<>(){});
         Map<String, Object> contractDetails = null;
-        if (personalEntity.getContractId() != null) {
+        if (personalEntity.getPartnerId() != null) {
             try {
-                contractDetails = dataSourceService.getContractById(personalEntity.getContractId());
+                contractDetails = dataSourceService.getContractById(personalEntity.getPartnerId());
             } catch (ResponseStatusException e) {
                 contractDetails = Map.of("error", Objects.requireNonNull(e.getReason()));
             }
@@ -218,8 +218,8 @@ public class PersonalServiceImpl implements PersonalService{
         personalEntity.setExpiredDate(personalDTO.getExpiredDate());
         personalEntity.setCreatedBy(personalDTO.getCreatedBy());
         personalEntity.setUpdatedBy(personalDTO.getUpdatedBy());
-        if (personalDTO.getContractId() != null) {
-            personalEntity.setContractId(personalDTO.getContractId());
+        if (personalDTO.getPartnerId() != null) {
+            personalEntity.setPartnerId(personalDTO.getPartnerId());
         }
         return personalEntity;
 

@@ -21,8 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 public class PersonalDTO {
 
-    @JsonProperty("contractId")
-    private Long contractId;
+    @JsonProperty("partnerId")
+    private Long partnerId;
 
     @JsonProperty("licenseTypeList")
     private List<Long> licenseTypeList;

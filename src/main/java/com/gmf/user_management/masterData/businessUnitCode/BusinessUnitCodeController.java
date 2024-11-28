@@ -57,12 +57,18 @@ public class BusinessUnitCodeController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO[]>> getAllBusinessUnitCode() {
-        BusinessUnitCodeResponDTO[] response = businessUnitCodeService.getAllBusinessUnitCode();
-        return new HttpResponseDTO<>(response, HttpStatus.OK)
+    public ResponseEntity<HttpResponseDTO<Object>>getAllBusinessUnitCode(
+            @RequestParam(defaultValue = "1")Integer page,
+            @RequestParam(defaultValue = "20")Integer size,
+            BusinessUnitCodeRequestDto businessUnitCodeRequestDto
+    ){
+        Object allBusiness = businessUnitCodeService.getAllBusinessUnitCode(page, size, businessUnitCodeRequestDto);
+        return new HttpResponseDTO<>(allBusiness, HttpStatus.OK)
+                .setResponseHeaders("page", page)
+                .setResponseHeaders("size", size)
+                .setResponseHeaders("pagination", businessUnitCodeRequestDto)
                 .toResponse();
     }
-
 
     @GetMapping("/by-id/{id_business_unit_code}")
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> getBusinessUnitCodeById(

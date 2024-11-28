@@ -24,7 +24,7 @@ public class CompositeRoleEntity {
     private Long idCompositeRole;
 
     @ManyToMany @JoinColumn(name = "job_code_id")
-    private List<JobCodeEntity> jobCodeEntityList;
+    private List<JobCodeEntity> jobCodeList;
 
     @Column(name = "composite_role")
     private String compositeRole;

@@ -142,8 +142,8 @@ public class PersonalServiceImpl implements PersonalService{
             }
             return query.where(predicates.toArray(new javax.persistence.criteria.Predicate[]{})).getRestriction();
         };
-        Page<PersonalEntity> mobileApp = personalRepository.findAll(specification, paging);
-        return new PaginationUtil<>(mobileApp, PersonalEntity.class);
+        Page<PersonalEntity> personal = personalRepository.findAll(specification, paging);
+        return new PaginationUtil<>(personal, PersonalEntity.class);
     }
 
     public PersonalResponDTO getPersonalById(Long id_personal) throws NotFoundException, JsonProcessingException {
@@ -227,7 +227,6 @@ public class PersonalServiceImpl implements PersonalService{
             personalEntity.setPartnerId(personalDTO.getPartnerId());
         }
         return personalEntity;
-
     }
 
     //Upload image

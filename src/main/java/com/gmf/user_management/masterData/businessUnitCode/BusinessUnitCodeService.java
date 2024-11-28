@@ -2,18 +2,28 @@ package com.gmf.user_management.masterData.businessUnitCode;
 
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodePredicate;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
+import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,18 +84,14 @@ public class BusinessUnitCodeService {
         }
         return businessUnitCodeEntity;
     }
-
-    public BusinessUnitCodeResponDTO[] getAllBusinessUnitCode() {
-        try {
-            List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll();
-            return businessUnitCodes.stream()
-                    .map(this::businessRespone)
-                    .toArray(BusinessUnitCodeResponDTO[]::new);
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
+    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeEntity>getAllBusinessUnitCode(
+            Integer page, Integer size, BusinessUnitCodeRequestDto requestDto
+    ){
+        Pageable paging = PageRequest.of(page - 1,size);
+        Specification<BusinessUnitCodeEntity> specification = Specification.where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()));
+        Page<BusinessUnitCodeEntity> pages = businessUnitCodeRepository.findAll(specification, paging);
+        return new PaginationUtil<>(pages, BusinessUnitCodeEntity.class);
     }
-
 
     public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode) throws NotFoundException {
         try {

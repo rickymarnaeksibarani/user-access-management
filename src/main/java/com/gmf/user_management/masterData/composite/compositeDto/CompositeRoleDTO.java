@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompositeRoleDTO {
-    @JsonProperty("jobCodeEntityList")
-    private List<Long> jobCodeEntityList;
+    @JsonProperty("jobCodeList")
+    private List<Long> jobCodeList;
 
     @JsonProperty("compositeRole")
     private String compositeRole;

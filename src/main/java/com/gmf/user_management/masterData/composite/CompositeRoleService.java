@@ -38,13 +38,13 @@ public class CompositeRoleService {
         return CompositeRoleResponDTO
                 .builder()
                 .idCompositeRole(compositeRoleEntity.getIdCompositeRole())
-                .jobCodeEntityList(compositeRoleEntity.getJobCodeEntityList())
+                .jobCodeList(compositeRoleEntity.getJobCodeList())
                 .compositeRole(compositeRoleEntity.getCompositeRole())
                 .createdAt(compositeRoleEntity.getCreatedAt())
                 .createdBy(compositeRoleEntity.getCreatedBy())
                 .updatedAt(compositeRoleEntity.getUpdatedAt())
                 .updatedBy(compositeRoleEntity.getUpdatedBy())
-                .jobCodeCount((compositeRoleEntity.getJobCodeEntityList() != null ? compositeRoleEntity.getJobCodeEntityList().size() : 0))
+                .jobCodeCount((compositeRoleEntity.getJobCodeList() != null ? compositeRoleEntity.getJobCodeList().size() : 0))
                 .build();
     }
     public CompositeRoleResponDTO createCompositeRole(CompositeRoleDTO request) {
@@ -70,15 +70,15 @@ public class CompositeRoleService {
     }
 
     private CompositeRoleEntity compositePayload(CompositeRoleDTO request, CompositeRoleEntity compositeRole) {
-        List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(request.getJobCodeEntityList());
-        if (allJobCode.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
-        compositeRole.setJobCodeEntityList(allJobCode);
+        List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(request.getJobCodeList());
+        if (allJobCode.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Job Code not found");
+        compositeRole.setJobCodeList(allJobCode);
         compositeRole.setCompositeRole(request.getCompositeRole());
         compositeRole.setCreatedBy(request.getCreatedBy());
         compositeRole.setUpdatedBy(request.getUpdatedBy());
         return compositeRole;
     }
-
+//todo: jobCodeList
     public PaginationUtil<CompositeRoleEntity, CompositeRoleResponDTO> getAllCompositeRole(Integer page, Integer size, CompositeRoleRequestDTO requestDto) {
         Pageable paging = PageRequest.of(page - 1, size);
         Specification<CompositeRoleEntity> specs = Specification.where(CompositeRolePredicate.searchTerm(requestDto.getSearchTerm()));
@@ -86,7 +86,7 @@ public class CompositeRoleService {
         List<CompositeRoleResponDTO> responseDTOs = pages.getContent().stream()
                 .map(entity -> {
                     CompositeRoleResponDTO dto = ObjectMapperUtil.map(entity, CompositeRoleResponDTO.class);
-                    dto.setJobCodeCount(entity.getJobCodeEntityList() != null ? entity.getJobCodeEntityList().size() : 0);
+                    dto.setJobCodeCount(entity.getJobCodeList() != null ? entity.getJobCodeList().size() : 0);
                     return dto;
                 })
                 .toList();
@@ -94,23 +94,22 @@ public class CompositeRoleService {
         return new PaginationUtil<>(pages, CompositeRoleResponDTO.class);
     }
 
-
     public CompositeRoleResponDTO getCompositeRoleById(Long id_composite_role) throws NotFoundException {
         CompositeRoleEntity businessUnitCode = JpaResultHelperUtil.getSingleResultFromOptional(compositeRoleRepository.findById(id_composite_role));
         if (businessUnitCode == null){
             throw new NotFoundException("id not found");
         }
         CompositeRoleResponDTO responseDTO = ObjectMapperUtil.map(businessUnitCode, CompositeRoleResponDTO.class);
-        responseDTO.setJobCodeCount(businessUnitCode.getJobCodeEntityList() != null ? businessUnitCode.getJobCodeEntityList().size() : 0);
+        responseDTO.setJobCodeCount(businessUnitCode.getJobCodeList() != null ? businessUnitCode.getJobCodeList().size() : 0);
         return responseDTO;
     }
 
     public int countCompositeRoleByJobCodeId(Long jobCodeId) {
-        return compositeRoleRepository.countByJobCodeEntityList_idJobCode(jobCodeId);
+        return compositeRoleRepository.countByJobCodeList_idJobCode(jobCodeId);
     }
 
     public List<CompositeRoleResponDTO> getCompositeRoleByJobCodeId(Long jobCodeId) {
-        List<CompositeRoleEntity> compositeRoles = compositeRoleRepository.findByJobCodeEntityList_idJobCode(jobCodeId);
+        List<CompositeRoleEntity> compositeRoles = compositeRoleRepository.findByJobCodeList_idJobCode(jobCodeId);
         return compositeRoles.stream()
                 .map(this::compositeRoleRespon)
                 .collect(Collectors.toList());

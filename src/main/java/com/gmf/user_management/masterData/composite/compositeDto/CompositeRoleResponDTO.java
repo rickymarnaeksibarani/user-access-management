@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CompositeRoleResponDTO {
     private Long idCompositeRole;
-    private List<JobCodeEntity> jobCodeEntityList;
+    private List<JobCodeEntity> jobCodeList;
     private String compositeRole;
     private LocalDateTime createdAt;
     private String createdBy;

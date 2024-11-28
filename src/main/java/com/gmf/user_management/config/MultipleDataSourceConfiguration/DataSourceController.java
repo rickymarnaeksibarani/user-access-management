@@ -1,5 +1,6 @@
 package com.gmf.user_management.config.MultipleDataSourceConfiguration;
 
+import com.gmf.user_management.core.utils.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +15,14 @@ public class DataSourceController {
     private DataSourceService dataSourceService;
 
     @GetMapping("/relationExternal")
-    public List<Map<String, Object>>getExternalDataRelation(
-            @RequestParam(defaultValue = "1")int page,
-            @RequestParam(defaultValue = "10")int size
-    ){
-        return dataSourceService.getExternalDataRelation(page, size);
+    public ResponseEntity<PaginationUtil<Map<String, Object>, Map<String, Object>>> getExternalDataRelation(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        if (page < 1) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        PaginationUtil<Map<String, Object>, Map<String, Object>> response = dataSourceService.getExternalDataRelation(page, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

@@ -45,4 +45,9 @@ public class ExternalRepository {
         }
     }
 
+    public long countContracts() {
+        String sql = "SELECT COUNT(*) FROM partner_contracts";
+        return jdbcTemplate.queryForObject(sql, Long.class);
+    }
+
 }

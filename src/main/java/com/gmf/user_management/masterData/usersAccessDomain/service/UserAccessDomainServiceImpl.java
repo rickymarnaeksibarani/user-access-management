@@ -9,19 +9,25 @@ import com.gmf.user_management.masterData.usersAccessDomain.dto.UserAccessDomain
 import com.gmf.user_management.masterData.usersAccessDomain.dto.UserAccessDomainResponDTO;
 import com.gmf.user_management.masterData.usersAccessDomain.entities.UserAccessDomainEntity;
 import com.gmf.user_management.masterData.usersAccessDomain.repository.UADRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.swing.*;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     @Autowired
     private UADRepository uadRepository;
     @Autowired
     private PersonalRepository personalRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private UserAccessDomainResponDTO userAccessDomainResponDTO(UserAccessDomainEntity userAccessDomainEntity){
         return UserAccessDomainResponDTO.builder()
@@ -70,13 +76,14 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
 
     private UserAccessDomainEntity uadPayload(UserAccessDomainDTO userAccessDomainDTO, UserAccessDomainEntity userAccessDomainEntity){
+        log.info("dto {}", userAccessDomainDTO.getPassword());
         List<PersonalEntity> allPersonal = personalRepository.findByIdPersonalIsIn(userAccessDomainDTO.getPersonalList());
         if (allPersonal.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal not found");
         userAccessDomainEntity.setPersonalList(allPersonal);
         userAccessDomainEntity.setIsDomainAccess(userAccessDomainDTO.getIsDomainAccess());
         userAccessDomainEntity.setIsNetworkAccess(userAccessDomainDTO.getIsNetworkAccess());
         userAccessDomainEntity.setUsername(userAccessDomainDTO.getUsername());
-        userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), HashEnum.SHA256.getDisplayName()));
+        userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), passwordEncoder));
         userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
         userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());
         return userAccessDomainEntity;

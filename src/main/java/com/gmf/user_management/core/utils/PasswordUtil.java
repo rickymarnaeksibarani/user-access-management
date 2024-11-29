@@ -6,10 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class PasswordUtil {
 
-    @Autowired
-    protected static PasswordEncoder passwordEncoder;
+//    @Autowired
+//    protected static PasswordEncoder passwordEncoder;
 
-    public static String generatePassword(String input, String hash) {
+    public static String generatePassword(String input, PasswordEncoder passwordEncoder) {
         return passwordEncoder.encode(input);
     }
 }

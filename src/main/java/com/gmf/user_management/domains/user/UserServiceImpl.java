@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMainRepository userMainRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserLoginMainRepository userLoginMainRepository;
@@ -177,7 +181,7 @@ public class UserServiceImpl implements UserService {
         updateLoginEntity.setPersonalNumber(userLoginDTO.getPersonalNumber());
         updateLoginEntity.setActiveStatus(userLoginDTO.getActiveStatus());
         updateLoginEntity.setPassCardNumber(userLoginDTO.getPassCardNumber());
-        updateLoginEntity.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
+        updateLoginEntity.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), passwordEncoder));
 
         UserLoginEntity userLoginEntity = userLoginMainRepository.saveAndFlush(updateLoginEntity);
 
@@ -202,7 +206,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userLoginDTO.setUserDetailId(userId);
-        userLoginDTO.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
+        userLoginDTO.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(),passwordEncoder));
         userLoginMainRepository.saveAndFlush(ObjectMapperUtil.map(userLoginDTO, UserLoginEntity.class));
 
         return ObjectMapperUtil.map(JpaResultHelperUtil.getSingleResultFromOptional(userActiveMainRepository.findById(userId)), UserActiveDTO.class);

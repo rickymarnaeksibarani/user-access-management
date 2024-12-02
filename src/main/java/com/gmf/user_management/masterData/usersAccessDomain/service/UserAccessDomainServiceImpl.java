@@ -76,7 +76,6 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
 
     private UserAccessDomainEntity uadPayload(UserAccessDomainDTO userAccessDomainDTO, UserAccessDomainEntity userAccessDomainEntity){
-        log.info("dto {}", userAccessDomainDTO.getPassword());
         List<PersonalEntity> allPersonal = personalRepository.findByIdPersonalIsIn(userAccessDomainDTO.getPersonalList());
         if (allPersonal.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal not found");
         userAccessDomainEntity.setPersonalList(allPersonal);

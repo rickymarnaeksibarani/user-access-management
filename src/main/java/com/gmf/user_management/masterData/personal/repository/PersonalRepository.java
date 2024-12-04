@@ -1,9 +1,12 @@
 package com.gmf.user_management.masterData.personal.repository;
 
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -17,14 +20,15 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
 
     Optional<Object> findByPersonalNumber(String personalNumber);
 
-    Optional<Object> findByDinas(String dinas);
-
-    List<PersonalEntity> findAllByDinas(String dinas);
-
-    List<PersonalEntity> findByDinasIsNotNull();
+    Page<PersonalEntity> findAllByDinas(String dinas, Pageable pageable);
 
     @Query("SELECT p.dinas AS dinas, COUNT(DISTINCT p.uid) AS uidCount FROM PersonalEntity p GROUP BY p.dinas")
     List<Map<String, Object>> countUIDByDinas();
 
-    List<PersonalEntity> findAllByPartnerId(Long partnerId);
+    @Query("SELECT p FROM PersonalEntity p WHERE p.partnerId = :partnerId")
+    Page<PersonalEntity> findAllByPartnerId(@Param("partnerId") Long partnerId, Pageable pageable);
+
+    @Query("SELECT p FROM PersonalEntity p WHERE p.partnerId = :partnerId AND p.isPic = true")
+    Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerId") Long partnerId, Pageable pageable);
+
 }

@@ -4,12 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
-import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.storage.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicensePredicate;
-import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseResponDTO;
-import com.gmf.user_management.masterData.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.masterData.licenseType.repository.LicenseTypeRespository;
 import com.gmf.user_management.masterData.personal.dto.*;
@@ -32,7 +28,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,10 +45,7 @@ public class PersonalServiceImpl implements PersonalService{
     private final Date date = new Date();
     private final Long time = date.getTime();
 
-
-    //Respone
-
-    private PersonalResponDTO personalRespon(PersonalEntity personalEntity)throws JsonProcessingException {
+    private PersonalResponDTO personalResponse(PersonalEntity personalEntity)throws JsonProcessingException {
         List<ApplicationFileDTO> img = objectMapper.readValue(personalEntity.getPersonalPicture(), new TypeReference<>(){});
         Map<String, Object> contractDetails = null;
         if (personalEntity.getPartnerId() != null) {
@@ -89,20 +81,20 @@ public class PersonalServiceImpl implements PersonalService{
                 .build();
     }
     @Override
-    public PersonalResponDTO createPersonal(PersonalDTO request) throws JsonProcessingException {
+    public PersonalResponDTO createPersonal(PersonalDTO request){
         try {
             List<ApplicationFileDTO> personalPicture = uploadImage(request.getPersonalPicture());
             PersonalEntity personal = new PersonalEntity();
             PersonalEntity payload = personalPayload(request, personal, personalPicture);
             personalRepository.save(payload);
-            return personalRespon(payload);
+            return personalResponse(payload);
         }catch (Exception e){
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws NotFoundException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws  IOException, NoSuchAlgorithmException, InvalidKeyException {
         PersonalEntity personal = personalRepository.findById(idPersonal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Id " + idPersonal + " not found"));
 
         List<ApplicationFileDTO> img = objectMapper.readValue(personal.getPersonalPicture(), new TypeReference<ArrayList<ApplicationFileDTO>>() {});
@@ -123,7 +115,7 @@ public class PersonalServiceImpl implements PersonalService{
 
         PersonalEntity payload = personalPayload(request, personal, imagePaths);
         personalRepository.saveAndFlush(payload);
-        return personalRespon(payload);
+        return personalResponse(payload);
     }
 
     @Transactional(readOnly = true)
@@ -138,56 +130,79 @@ public class PersonalServiceImpl implements PersonalService{
         return new PaginationUtil<>(pages, PersonalEntity.class);
     }
 
-    public PersonalResponDTO getPersonalById(Long id_personal) throws NotFoundException, JsonProcessingException {
+    public PersonalResponDTO getPersonalById(Long id_personal) throws JsonProcessingException {
         PersonalEntity personal = personalRepository.findById(id_personal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
-        return personalRespon(personal);
+        return personalResponse(personal);
     }
 
     @Override
-    public PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException {
+    public PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws JsonProcessingException {
         PersonalEntity personal = (PersonalEntity) personalRepository.findByPersonalNumber(personalNumber)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal with number " + personalNumber + " not found"));
-        return personalRespon(personal);
+        return personalResponse(personal);
     }
 
     @Override
-    public List<PersonalResponDTO> getPersonalByPartnerId(Long partnerId) throws NotFoundException {
-        List<PersonalEntity> personalEntities = personalRepository.findAllByPartnerId(partnerId);
-        if (personalEntities.isEmpty()) {
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerId, Integer page, Integer size) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<PersonalEntity> personalEntitiesPage = personalRepository.findAllByPartnerId(partnerId, paging);
+
+        if (personalEntitiesPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No personal records found for partnerId: " + partnerId);
         }
-        return personalEntities.stream()
+        personalEntitiesPage.stream()
                 .map(personalEntity -> {
                     try {
-                        return personalRespon(personalEntity);
+                        return personalResponse(personalEntity);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException("Error processing personal data", e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
+
+        return new PaginationUtil<>(personalEntitiesPage, PersonalEntity.class);
     }
 
+
     @Transactional(readOnly = true)
-    public List<PersonalResponDTO> getPersonalByDinas(String dinas) throws JsonProcessingException {
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size){
+        Pageable paging = PageRequest.of(page - 1, size);
         if (dinas == null || dinas.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Dinas not found");
-        List<PersonalEntity> personalEntities = personalRepository.findAllByDinas(dinas);
-        return personalEntities.stream()
+        Page<PersonalEntity> personalEntities = personalRepository.findAllByDinas(dinas, paging);
+        personalEntities.stream()
                 .map(personalEntity -> {
                     try {
-                        return personalRespon(personalEntity);
+                        return personalResponse(personalEntity);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException("Error processing JSON for personal entity with ID: " + personalEntity.getIdPersonal(), e);
                     }
                 })
                 .collect(Collectors.toList());
+        return new PaginationUtil<>(personalEntities, PersonalEntity.class);
+
     }
 
 
     @Override
-    public PersonalResponDTO getPersonalAsPartnerPIC(Integer parntnerId) throws NotFoundException {
-        return null;
-
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerId, Integer page, Integer size) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<PersonalEntity> personalEntities = personalRepository.findAllPersonalAsPartnerPIC(partnerId, paging);
+        if (personalEntities.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,"partnertId: " + partnerId + " is not PIC for partner");
+        }
+        personalEntities.stream()
+                .map(personalEntity -> {
+                    try {
+                        return personalResponse(personalEntity);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error processing personal data for PIC", e);
+                    }
+                })
+                .collect(Collectors.toList());
+        return new PaginationUtil<>(personalEntities, PersonalEntity.class);
     }
+
     public String countUIDByDinas() {
         List<Map<String, Object>> results = personalRepository.countUIDByDinas();
         try {
@@ -268,6 +283,5 @@ public class PersonalServiceImpl implements PersonalService{
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
-
 }
 

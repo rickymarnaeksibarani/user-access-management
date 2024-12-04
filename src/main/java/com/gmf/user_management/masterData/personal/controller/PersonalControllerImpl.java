@@ -3,12 +3,15 @@ package com.gmf.user_management.masterData.personal.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.personal.dto.PersonalDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
+import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import com.gmf.user_management.masterData.personal.service.PersonalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,19 +61,10 @@ public class PersonalControllerImpl {
                 .toResponse();
     }
 
-//    @DeleteMapping(value = "/by-id/{id_personal}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<HttpResponseDTO<Boolean>> deletePersonal(
-//            @PathVariable Long id_personal
-//    ) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-//        return new HttpResponseDTO<>(personalService.deletePersonal(id_personal))
-//                .setResponseHeaders("id_personal", id_personal)
-//                .toResponse();
-//    }
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>>getAllPersonal(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             PersonalRequestDTO requestDto
     ) throws JsonProcessingException {
         Object allDataPersonal = personalService.getAllPersonal(page, size, requestDto);
@@ -100,11 +94,13 @@ public class PersonalControllerImpl {
                 .toResponse();
     }
 
-    @GetMapping("/by-dinas/{dinas}")
-    public ResponseEntity<HttpResponseDTO<List<PersonalResponDTO>>> getPersonalByDinas(
-            @PathVariable String dinas
+    @GetMapping(value = "/by-dinas/{dinas}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalByDinas(
+            @PathVariable String dinas,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) throws NotFoundException, JsonProcessingException {
-        List<PersonalResponDTO> response = personalService.getPersonalByDinas(dinas);
+        PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalByDinas(dinas,page, size);
         return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .setResponseHeaders("dinas", dinas)
                 .toResponse();
@@ -115,13 +111,33 @@ public class PersonalControllerImpl {
         return personalService.countUIDByDinas();
     }
 
-
     @GetMapping(value = "/by-partner-id/{partnerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<List<PersonalResponDTO>>> getPersonalByPartnerId(
-            @PathVariable Long partnerId
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity,PersonalEntity>>> getPersonalByPartnerId(
+            @PathVariable Long partnerId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
         try {
-            List<PersonalResponDTO> response = personalService.getPersonalByPartnerId(partnerId);
+            PaginationUtil<PersonalEntity,PersonalEntity> response = personalService.getPersonalByPartnerId(partnerId, page, size);
+            return new HttpResponseDTO<>(response, HttpStatus.OK)
+                    .setResponseHeaders("partnerId", partnerId)
+                    .setResponseHeaders("page", page)
+                    .setResponseHeaders("size", size)
+                    .toResponse();
+        } catch (ResponseStatusException | NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @GetMapping(value = "/as-pic/by-partner-id/{partnerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalAsPartnerPIC(
+            @PathVariable Long partnerId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        try {
+            PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalAsPartnerPIC(partnerId, page, size);
             return new HttpResponseDTO<>(response, HttpStatus.OK)
                     .setResponseHeaders("partnerId", partnerId)
                     .toResponse();
@@ -129,4 +145,5 @@ public class PersonalControllerImpl {
             throw new RuntimeException(e);
         }
     }
+
 }

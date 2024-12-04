@@ -19,7 +19,7 @@ public interface PersonalService {
     PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO)throws JsonProcessingException;
     PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException;
-    PersonalResponDTO getPersonalByPartnerId(Long partnerId)throws NotFoundException;
+    List<PersonalResponDTO> getPersonalByPartnerId(Long partnerId)throws NotFoundException;
     List<PersonalResponDTO> getPersonalByDinas(String dinas) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalAsPartnerPIC(Integer parntnerId)throws NotFoundException;
     String countUIDByDinas();

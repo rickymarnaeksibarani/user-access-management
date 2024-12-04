@@ -26,5 +26,5 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     @Query("SELECT p.dinas AS dinas, COUNT(DISTINCT p.uid) AS uidCount FROM PersonalEntity p GROUP BY p.dinas")
     List<Map<String, Object>> countUIDByDinas();
 
-    Optional<PersonalEntity> findByPartnerId(Long partnerId);
+    List<PersonalEntity> findAllByPartnerId(Long partnerId);
 }

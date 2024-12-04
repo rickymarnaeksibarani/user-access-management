@@ -116,12 +116,12 @@ public class PersonalControllerImpl {
     }
 
 
-    @GetMapping("/by-partner-id/{partnerId}")
-    public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> getPersonalByPartnerId(
+    @GetMapping(value = "/by-partner-id/{partnerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<List<PersonalResponDTO>>> getPersonalByPartnerId(
             @PathVariable Long partnerId
     ) {
         try {
-            PersonalResponDTO response = personalService.getPersonalByPartnerId(partnerId);
+            List<PersonalResponDTO> response = personalService.getPersonalByPartnerId(partnerId);
             return new HttpResponseDTO<>(response, HttpStatus.OK)
                     .setResponseHeaders("partnerId", partnerId)
                     .toResponse();

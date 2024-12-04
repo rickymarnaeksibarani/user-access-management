@@ -151,14 +151,20 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Override
-    public PersonalResponDTO getPersonalByPartnerId(Long partnerId) throws NotFoundException {
-        PersonalEntity personalEntity = personalRepository.findByPartnerId(partnerId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No personal record found for partnerId: " + partnerId));
-        try {
-            return personalRespon(personalEntity);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error processing personal data", e);
+    public List<PersonalResponDTO> getPersonalByPartnerId(Long partnerId) throws NotFoundException {
+        List<PersonalEntity> personalEntities = personalRepository.findAllByPartnerId(partnerId);
+        if (personalEntities.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No personal records found for partnerId: " + partnerId);
         }
+        return personalEntities.stream()
+                .map(personalEntity -> {
+                    try {
+                        return personalRespon(personalEntity);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error processing personal data", e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

@@ -182,7 +182,7 @@ public class PersonalServiceImpl implements PersonalService{
 
     }
 
-
+    //Get All Personal Partner if isPic(default = true)
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerId, Integer page, Integer size) {
         Pageable paging = PageRequest.of(page - 1, size);
@@ -199,7 +199,7 @@ public class PersonalServiceImpl implements PersonalService{
                         throw new RuntimeException("Error processing personal data for PIC", e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
         return new PaginationUtil<>(personalEntities, PersonalEntity.class);
     }
 
@@ -211,7 +211,6 @@ public class PersonalServiceImpl implements PersonalService{
             throw new RuntimeException("Error converting countUIDByDinas result to JSON", e);
         }
     }
-
 
     //payload
     private PersonalEntity personalPayload(PersonalDTO personalDTO, PersonalEntity personalEntity, List<ApplicationFileDTO> personalPicture) throws JsonProcessingException {

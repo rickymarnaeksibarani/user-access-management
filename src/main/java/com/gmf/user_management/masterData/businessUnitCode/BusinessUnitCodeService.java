@@ -92,6 +92,12 @@ public class BusinessUnitCodeService {
         Page<BusinessUnitCodeEntity> pages = businessUnitCodeRepository.findAll(specification, paging);
         return new PaginationUtil<>(pages, BusinessUnitCodeEntity.class);
     }
+    /*
+    TODO: sub tasks:
+    1. filterBusinessUnitCode
+    2. filterByPartner
+    3. filterByDinas
+     */
 
     public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode) throws NotFoundException {
         try {

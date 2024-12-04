@@ -1,9 +1,11 @@
 package com.gmf.user_management.masterData.applicationLicense.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseDTO;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseRequest;
 import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseResponDTO;
+import com.gmf.user_management.masterData.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.masterData.applicationLicense.service.ApplicationLicenseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ public class ApplicationLicenseControllerImpl {
     @Autowired
     private ApplicationLicenseServiceImpl applicationLicenseService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<ApplicationLicenseResponDTO>> createLicense(
             @RequestBody @Valid ApplicationLicenseDTO request
     ){
@@ -63,4 +65,5 @@ public class ApplicationLicenseControllerImpl {
                 .setResponseHeaders("requestDto", requestDto)
                 .toResponse();
     }
+
 }

@@ -18,6 +18,13 @@ public class DataSourceService {
         this.externalRepository=externalRepository;
     }
 
+    /*
+    TODO: 03/12/2024 > sub tasks:
+    1. filterByStatus
+    2. filterByStartDate
+    3. filterByExpiredDate
+     */
+
     public PaginationUtil<Map<String, Object>, Map<String, Object>> getExternalDataRelation(int page, int size) {
         int offset = (page-1) * size;
 

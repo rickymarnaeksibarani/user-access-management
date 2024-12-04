@@ -7,12 +7,12 @@ import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSource
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.storage.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicensePredicate;
+import com.gmf.user_management.masterData.applicationLicense.dto.ApplicationLicenseResponDTO;
+import com.gmf.user_management.masterData.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.masterData.licenseType.repository.LicenseTypeRespository;
-import com.gmf.user_management.masterData.personal.dto.ApplicationFileDTO;
-import com.gmf.user_management.masterData.personal.dto.PersonalDTO;
-import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
-import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
+import com.gmf.user_management.masterData.personal.dto.*;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import com.gmf.user_management.masterData.personal.repository.PersonalRepository;
 import io.minio.ObjectWriteResponse;
@@ -127,23 +127,15 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Transactional(readOnly = true)
-    public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
-        Pageable paging = PageRequest.of(page-1, size);
-        Specification<PersonalEntity> specification = (root, query, builder) -> {
-            List<Predicate> predicates = new ArrayList<>();
+    public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO)
+    {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Specification<PersonalEntity> specs = Specification
+                .where(PersonalPredicate.searchTerm(requestDTO.getSearchTerm()))
+                .and(PersonalPredicate.activeStatus(requestDTO.getActiveStatus()));
 
-            if (Objects.nonNull(requestDTO.getSearchTerm())) {
-                predicates.add(
-                        (Predicate) builder.or(
-                                builder.like(builder.upper(root.get("personalName")), "%" + requestDTO.getSearchTerm().toUpperCase() + "%"),
-                                builder.like(builder.upper(root.get("personalNumber")), requestDTO.getSearchTerm().toUpperCase())
-                        )
-                );
-            }
-            return query.where(predicates.toArray(new javax.persistence.criteria.Predicate[]{})).getRestriction();
-        };
-        Page<PersonalEntity> personal = personalRepository.findAll(specification, paging);
-        return new PaginationUtil<>(personal, PersonalEntity.class);
+        Page<PersonalEntity> pages = personalRepository.findAll(specs, paging);
+        return new PaginationUtil<>(pages, PersonalEntity.class);
     }
 
     public PersonalResponDTO getPersonalById(Long id_personal) throws NotFoundException, JsonProcessingException {

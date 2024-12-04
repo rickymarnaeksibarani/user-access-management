@@ -29,7 +29,7 @@ public class PersonalControllerImpl {
     @Autowired
     private PersonalService personalService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> createPersonal(
             @RequestPart @Valid PersonalDTO request,
             @RequestPart(value = "personalPicture", required = false) List<MultipartFile> personalPicture
@@ -90,7 +90,7 @@ public class PersonalControllerImpl {
                 .toResponse();
     }
 
-    @GetMapping("/by-number/{personalNumber}")
+    @GetMapping(value = "/by-number/{personalNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> getPersonalByPersonalNumber(
             @PathVariable String personalNumber
     ) throws NotFoundException, JsonProcessingException {

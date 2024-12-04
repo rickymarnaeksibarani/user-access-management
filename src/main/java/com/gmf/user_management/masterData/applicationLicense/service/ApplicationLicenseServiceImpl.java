@@ -15,10 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 @Service
 public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
@@ -75,9 +81,11 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     public PaginationUtil<ApplicationLicenseEntity, ApplicationLicenseResponDTO> getAllLicense(
             Integer page, Integer size, ApplicationLicenseRequest requestDto
     ){
-        Pageable paging = PageRequest.of(page -1, size);
+        Pageable paging = PageRequest.of(page - 1, size);
         Specification<ApplicationLicenseEntity> specs = Specification
-                .where(ApplicationLicensePredicate.searchTerm(requestDto.getSearchTerm()));
+                .where(ApplicationLicensePredicate.searchTerm(requestDto.getSearchTerm()))
+                .and(ApplicationLicensePredicate.activeStatus(requestDto.getActiveStatus()));
+
         Page<ApplicationLicenseEntity> pages = applicationLicenseRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, ApplicationLicenseResponDTO.class);
     }

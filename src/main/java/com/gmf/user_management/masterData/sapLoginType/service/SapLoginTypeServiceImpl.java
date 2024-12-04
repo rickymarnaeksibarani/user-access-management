@@ -73,6 +73,11 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
         Page<SapLoginTypeEntity> pages = sapLoginTypeRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, SapLoginTypeResponDTO.class);
     }
+    /*
+    TODO: sub tasks:
+    1. filterBySAPLoginType
+
+     */
 
     @Override
     public SapLoginTypeResponDTO getSapLoginTypeById(Long idSapLoginType) throws NotFoundException {

@@ -61,10 +61,6 @@ public class LicenseTypeService {
         Page<LicenseTypeEntity> pages = licenseTypeRespository.findAll(specs, paging);
         return new PaginationUtil<>(pages, LicenseTypeDTO.class);
     }
-    /*
-    TODO: sub tasks:
-    1. filterByLicenseType
-     */
 
     private LicenseTypeEntity licenseTypePayload(LicenseTypeDTO request, LicenseTypeEntity licenseTypeEntity) {
         licenseTypeEntity.setLicenseName(request.getLicenseName());

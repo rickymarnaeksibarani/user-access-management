@@ -21,7 +21,7 @@ public class LicenseTypeController {
     @Autowired
     private LicenseTypeService licenseTypeService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<LicenseTypeResponDTO>> createLicenseType(
             @RequestBody @Valid LicenseTypeDTO request
     ) throws Exception {

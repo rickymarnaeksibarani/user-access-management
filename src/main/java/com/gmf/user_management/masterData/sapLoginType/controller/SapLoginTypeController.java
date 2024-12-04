@@ -22,10 +22,10 @@ public class SapLoginTypeController {
     @Autowired
     private SapLoginTypeServiceImpl sapLoginTypeService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<SapLoginTypeResponDTO>> createSapLoginType(
             @RequestBody @Valid SapLoginTypeDTO request
-    ) throws Exception {
+    ){
         SapLoginTypeResponDTO response = sapLoginTypeService.createSapLoginType(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
                 .setResponseHeaders("request", response)

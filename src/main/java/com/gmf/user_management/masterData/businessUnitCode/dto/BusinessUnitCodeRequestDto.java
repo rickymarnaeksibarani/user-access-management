@@ -9,4 +9,5 @@ import lombok.Data;
 public class BusinessUnitCodeRequestDto {
     @Sanitizer
     private String searchTerm;
+    private String dinas;
 }

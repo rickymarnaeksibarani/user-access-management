@@ -5,6 +5,7 @@ import com.gmf.user_management.core.utils.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -25,11 +26,11 @@ public class DataSourceService {
     3. filterByExpiredDate
      */
 
-    public PaginationUtil<Map<String, Object>, Map<String, Object>> getExternalDataRelation(int page, int size) {
-        int offset = (page-1) * size;
-
-        List<Map<String, Object>> data = externalRepository.findContractsWithPartners(size, offset);
-        long totalItems = externalRepository.countContracts();
+    public PaginationUtil<Map<String, Object>, Map<String, Object>> getExternalDataRelation(
+            int page, int size, String filterByStatus, LocalDate filterByStart, LocalDate filterByEnd) {
+        int offset = (page - 1) * size;
+        List<Map<String, Object>> data = externalRepository.findContractsWithPartners(size, offset, filterByStatus, filterByStart, filterByEnd);
+        long totalItems = externalRepository.countContracts(filterByStatus, filterByStart, filterByEnd);
         int lastPage = (int) Math.ceil((double) totalItems / size);
 
         return new PaginationUtil<>(

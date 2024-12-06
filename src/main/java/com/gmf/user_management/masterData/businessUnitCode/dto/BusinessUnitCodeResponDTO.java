@@ -15,7 +15,7 @@ import java.util.Map;
 public class BusinessUnitCodeResponDTO {
     private Long idBusinessUnitCode;
     private String businessUnitCode;
-    private Map<String, Object> contractDetails;
+    private Map<String, Object> partnerExternal;
     private String description;
     private String dinas;
     private LocalDateTime createdAt;

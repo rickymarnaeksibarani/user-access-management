@@ -9,12 +9,17 @@ import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeR
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -24,7 +29,7 @@ public class BusinessUnitCodeController {
     @Autowired
     private BusinessUnitCodeService businessUnitCodeService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> createBusinessUnitCode(
             @RequestBody @Valid BusinessUnitCodeDTO request
     ) throws Exception {
@@ -57,16 +62,15 @@ public class BusinessUnitCodeController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<Object>>getAllBusinessUnitCode(
-            @RequestParam(defaultValue = "1")Integer page,
-            @RequestParam(defaultValue = "20")Integer size,
-            BusinessUnitCodeRequestDto businessUnitCodeRequestDto
-    ){
-        Object allBusiness = businessUnitCodeService.getAllBusinessUnitCode(page, size, businessUnitCodeRequestDto);
-        return new HttpResponseDTO<>(allBusiness, HttpStatus.OK)
-                .setResponseHeaders("page", page)
-                .setResponseHeaders("size", size)
-                .setResponseHeaders("pagination", businessUnitCodeRequestDto)
+    public ResponseEntity<HttpResponseDTO<Page<BusinessUnitCodeResponDTO>>> getAllBusinessUnitCode(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            BusinessUnitCodeRequestDto requestDto) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<BusinessUnitCodeResponDTO> response = businessUnitCodeService.getAllBusinessUnitCode(pageable, requestDto);
+
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("request", "getAllBusinessUnitCode")
                 .toResponse();
     }
 

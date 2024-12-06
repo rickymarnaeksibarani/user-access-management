@@ -177,7 +177,7 @@ public class PersonalServiceImpl implements PersonalService{
                         throw new RuntimeException("Error processing JSON for personal entity with ID: " + personalEntity.getIdPersonal(), e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
         return new PaginationUtil<>(personalEntities, PersonalEntity.class);
 
     }

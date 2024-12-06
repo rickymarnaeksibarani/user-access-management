@@ -34,18 +34,18 @@ public class BusinessUnitCodeService {
     private DataSourceService dataSourceService;
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
-        Map<String, Object> contractDetails = null;
-        if (businessUnitCodeEntity.getPartnerId() != null){
+        Map<String, Object> partnerExternal = null;
+        if (businessUnitCodeEntity.getPartnerExternal() != null){
             try {
-                contractDetails = dataSourceService.getContractById(businessUnitCodeEntity.getPartnerId());
+                partnerExternal = dataSourceService.getContractById(businessUnitCodeEntity.getPartnerExternal());
             }catch (ResponseStatusException e){
-                contractDetails = Map.of("error", Objects.requireNonNull(e.getReason()));
+                partnerExternal = Map.of("error", Objects.requireNonNull(e.getReason()));
             }
         }
         return BusinessUnitCodeResponDTO.builder()
                 .idBusinessUnitCode(businessUnitCodeEntity.getIdBusinessUnitCode())
                 .businessUnitCode(businessUnitCodeEntity.getBusinessUnitCode())
-                .contractDetails(contractDetails)
+                .partnerExternal(partnerExternal)
                 .description(businessUnitCodeEntity.getDescription())
                 .dinas(businessUnitCodeEntity.getDinas())
                 .createdAt(businessUnitCodeEntity.getCreatedAt())
@@ -79,27 +79,25 @@ public class BusinessUnitCodeService {
         businessUnitCodeEntity.setDinas(request.getDinas());
         businessUnitCodeEntity.setCreatedBy(request.getCreatedBy());
         businessUnitCodeEntity.setUpdatedBy(request.getUpdatedBy());
-        if (request.getPartnerId() !=null){
-            businessUnitCodeEntity.setPartnerId(request.getPartnerId());
+        if (request.getPartnerExternal() !=null){
+            businessUnitCodeEntity.setPartnerExternal(request.getPartnerExternal());
         }
         return businessUnitCodeEntity;
     }
-    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeEntity>getAllBusinessUnitCode(
-            Integer page, Integer size, BusinessUnitCodeRequestDto requestDto
-    ){
-        Pageable paging = PageRequest.of(page - 1,size);
-        Specification<BusinessUnitCodeEntity> specification = Specification.where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()));
-        Page<BusinessUnitCodeEntity> pages = businessUnitCodeRepository.findAll(specification, paging);
-        return new PaginationUtil<>(pages, BusinessUnitCodeEntity.class);
-    }
-    /*
-    TODO: sub tasks:
-    1. filterBusinessUnitCode
-    2. filterByPartner
-    3. filterByDinas
-     */
 
-    public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode) throws NotFoundException {
+    public Page<BusinessUnitCodeResponDTO> getAllBusinessUnitCode(Pageable pageable, BusinessUnitCodeRequestDto requestDto) {
+        try {
+            Specification<BusinessUnitCodeEntity> specification = Specification
+                .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()))
+                .and(BusinessUnitCodePredicate.dinas(requestDto.getDinas()));
+            Page<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll(specification, pageable);
+            return businessUnitCodes.map(this::businessRespone);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while retrieving all Business Unit Codes", e);
+        }
+    }
+
+    public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode){
         try {
             BusinessUnitCodeEntity businessUnitCodeEntity = businessUnitCodeRepository.findById(idBusinessUnitCode)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
@@ -127,3 +125,11 @@ public class BusinessUnitCodeService {
     }
 
 }
+
+    /*
+    TODO: sub tasks:
+    1. filterBusinessUnitCode
+    2. filterByPartner
+    3. filterByDinas
+     */
+

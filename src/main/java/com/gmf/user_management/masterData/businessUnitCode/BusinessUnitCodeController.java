@@ -16,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,7 +30,7 @@ public class BusinessUnitCodeController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> createBusinessUnitCode(
             @RequestBody @Valid BusinessUnitCodeDTO request
-    ) throws Exception {
+    ){
         BusinessUnitCodeResponDTO response = businessUnitCodeService.createBusinessUnitCode(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
                 .setResponseHeaders("request", response)

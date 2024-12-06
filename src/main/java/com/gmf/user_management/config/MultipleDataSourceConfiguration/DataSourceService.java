@@ -19,18 +19,17 @@ public class DataSourceService {
         this.externalRepository=externalRepository;
     }
 
-    /*
-    TODO: 03/12/2024 > sub tasks:
-    1. filterByStatus
-    2. filterByStartDate
-    3. filterByExpiredDate
-     */
-
     public PaginationUtil<Map<String, Object>, Map<String, Object>> getExternalDataRelation(
-            int page, int size, String filterByStatus, LocalDate filterByStart, LocalDate filterByEnd) {
+            int page,
+            int size,
+            String searchTerm,
+            String filterByStatus,
+            LocalDate filterByStart,
+            LocalDate filterByEnd
+            ) {
         int offset = (page - 1) * size;
-        List<Map<String, Object>> data = externalRepository.findContractsWithPartners(size, offset, filterByStatus, filterByStart, filterByEnd);
-        long totalItems = externalRepository.countContracts(filterByStatus, filterByStart, filterByEnd);
+        List<Map<String, Object>> data = externalRepository.findContractsWithPartners(size, offset,searchTerm, filterByStatus, filterByStart, filterByEnd);
+        long totalItems = externalRepository.countContracts(searchTerm,filterByStatus,filterByStart, filterByEnd);
         int lastPage = (int) Math.ceil((double) totalItems / size);
 
         return new PaginationUtil<>(

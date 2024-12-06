@@ -27,4 +27,16 @@ public class BusinessUnitCodePredicate {
             return null;
         };
     }
+
+    public static Specification<BusinessUnitCodeEntity> searchNamePartner(String partnerName){
+        return (root, query, builder) ->{
+            if (partnerName != null && !partnerName.isEmpty()) {
+                return builder.like(
+                        builder.lower(root.get("partnerName")),
+                        "%" + partnerName.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
 }

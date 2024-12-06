@@ -24,6 +24,9 @@ public class BusinessUnitCodeEntity {
     @Column(name = "partner_external")
     private Long partnerExternal;
 
+    @Column(name = "partner_name")
+    private String partnerName;
+
     @Column(name = "business_unit_code")
     private String businessUnitCode;
 

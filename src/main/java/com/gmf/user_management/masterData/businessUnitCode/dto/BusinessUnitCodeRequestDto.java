@@ -10,4 +10,5 @@ public class BusinessUnitCodeRequestDto {
     @Sanitizer
     private String searchTerm;
     private String dinas;
+    private String partnerName;
 }

@@ -1,6 +1,7 @@
 package com.gmf.user_management.masterData.businessUnitCode;
 
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
+import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
@@ -10,6 +11,7 @@ import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeR
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +29,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BusinessUnitCodeService {
     @Autowired
     private BusinessUnitCodeRepository businessUnitCodeRepository;
     @Autowired
     private DataSourceService dataSourceService;
+    @Autowired
+    private ExternalRepository externalRepository;
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         Map<String, Object> partnerExternal = null;
@@ -56,13 +61,20 @@ public class BusinessUnitCodeService {
     }
 
     public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
+        Map<String, Object> exPartner = externalRepository.findContractById(request.getPartnerExternal());
+
+        if (exPartner.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
+        log.info("maura {}", exPartner.get("id"));
+
         BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
+        payload.setPartnerExternal((Long) exPartner.get("id"));
+        payload.setPartnerName((String) exPartner.get("name"));
         businessUnitCodeRepository.save(payload);
         return businessRespone(payload);
     }
 
-    public BusinessUnitCodeResponDTO updateBusinessUnitCode(Long id_business_unit_code, BusinessUnitCodeDTO request)throws Exception{
+    public BusinessUnitCodeResponDTO updateBusinessUnitCode(Long id_business_unit_code, BusinessUnitCodeDTO request){
         BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
         businessUnitCodeRepository.saveAndFlush(payload);
@@ -81,6 +93,7 @@ public class BusinessUnitCodeService {
         businessUnitCodeEntity.setUpdatedBy(request.getUpdatedBy());
         if (request.getPartnerExternal() !=null){
             businessUnitCodeEntity.setPartnerExternal(request.getPartnerExternal());
+            businessUnitCodeEntity.setPartnerName(request.getPartnerName());
         }
         return businessUnitCodeEntity;
     }
@@ -88,8 +101,9 @@ public class BusinessUnitCodeService {
     public Page<BusinessUnitCodeResponDTO> getAllBusinessUnitCode(Pageable pageable, BusinessUnitCodeRequestDto requestDto) {
         try {
             Specification<BusinessUnitCodeEntity> specification = Specification
-                .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()))
-                .and(BusinessUnitCodePredicate.dinas(requestDto.getDinas()));
+                    .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()))
+                    .and(BusinessUnitCodePredicate.dinas(requestDto.getDinas()))
+                    .and(BusinessUnitCodePredicate.searchNamePartner(requestDto.getPartnerName()));
             Page<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll(specification, pageable);
             return businessUnitCodes.map(this::businessRespone);
         } catch (Exception e) {

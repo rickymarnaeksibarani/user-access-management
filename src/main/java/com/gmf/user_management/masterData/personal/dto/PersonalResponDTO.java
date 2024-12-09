@@ -19,7 +19,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class PersonalResponDTO {
     private Long idPersonal;
-    private Map<String, Object> contractDetails;
+    private Map<String, Object> partnerExternal;
     private List<LicenseTypeEntity> licenseTypeList;
     private String personalName;
     private String personalNumber;

@@ -1,6 +1,7 @@
 package com.gmf.user_management.masterData.personal.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmf.user_management.core.enums.IdentityType;
 import com.gmf.user_management.core.enums.Status;
@@ -21,8 +22,11 @@ import java.util.List;
 @NoArgsConstructor
 public class PersonalDTO {
 
-    @JsonProperty("partnerId")
-    private Long partnerId;
+    @JsonProperty("partnerExternal")
+    private Long partnerExternal;
+
+    @JsonIgnore
+    private String partnerName;
 
     @JsonProperty("licenseTypeList")
     private List<Long> licenseTypeList;

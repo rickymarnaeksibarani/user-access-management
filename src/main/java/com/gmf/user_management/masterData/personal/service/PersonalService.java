@@ -7,6 +7,8 @@ import com.gmf.user_management.masterData.personal.dto.PersonalDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -16,11 +18,11 @@ import java.util.List;
 public interface PersonalService {
     PersonalResponDTO createPersonal(PersonalDTO request) throws JsonProcessingException;
     PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws NotFoundException, IOException, NoSuchAlgorithmException, InvalidKeyException;
-    PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO)throws JsonProcessingException;
+    Page<PersonalResponDTO> getAllPersonal(Pageable pageable, PersonalRequestDTO requestDTO);
     PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException;
-    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerId, Integer page, Integer size)throws NotFoundException;
+    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size) throws NotFoundException, JsonProcessingException;
-    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long parntnerId, Integer page, Integer size)throws NotFoundException;
+    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
     String countUIDByDinas();
 }

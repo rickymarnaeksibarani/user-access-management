@@ -4,8 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
+import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.storage.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodePredicate;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
+import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
+import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.masterData.licenseType.repository.LicenseTypeRespository;
 import com.gmf.user_management.masterData.personal.dto.*;
@@ -42,22 +47,24 @@ public class PersonalServiceImpl implements PersonalService{
     private LicenseTypeRespository licenseTypeRespository;
     @Autowired
     private DataSourceService dataSourceService;
+    @Autowired
+    private ExternalRepository externalRepository;
     private final Date date = new Date();
     private final Long time = date.getTime();
 
     private PersonalResponDTO personalResponse(PersonalEntity personalEntity)throws JsonProcessingException {
         List<ApplicationFileDTO> img = objectMapper.readValue(personalEntity.getPersonalPicture(), new TypeReference<>(){});
-        Map<String, Object> contractDetails = null;
-        if (personalEntity.getPartnerId() != null) {
+        Map<String, Object> partnerExternal = null;
+        if (personalEntity.getPartnerExternal() != null){
             try {
-                contractDetails = dataSourceService.getContractById(personalEntity.getPartnerId());
-            } catch (ResponseStatusException e) {
-                contractDetails = Map.of("error", Objects.requireNonNull(e.getReason()));
+                partnerExternal = dataSourceService.getContractById(personalEntity.getPartnerExternal());
+            }catch (ResponseStatusException e){
+                partnerExternal = Map.of("error", Objects.requireNonNull(e.getReason()));
             }
         }
         return PersonalResponDTO.builder()
                 .idPersonal(personalEntity.getIdPersonal())
-                .contractDetails(contractDetails)
+                .partnerExternal(partnerExternal)
                 .licenseTypeList(personalEntity.getLicenseTypeList())
                 .personalName(personalEntity.getPersonalName())
                 .personalNumber(personalEntity.getPersonalNumber())
@@ -84,8 +91,12 @@ public class PersonalServiceImpl implements PersonalService{
     public PersonalResponDTO createPersonal(PersonalDTO request){
         try {
             List<ApplicationFileDTO> personalPicture = uploadImage(request.getPersonalPicture());
+            Map<String, Object>exPartner = externalRepository.findContractById(request.getPartnerExternal());
+            if (exPartner.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner External not found");
             PersonalEntity personal = new PersonalEntity();
             PersonalEntity payload = personalPayload(request, personal, personalPicture);
+            payload.setPartnerExternal((Long) exPartner.get("id"));
+            payload.setPartnerName((String) exPartner.get("name"));
             personalRepository.save(payload);
             return personalResponse(payload);
         }catch (Exception e){
@@ -118,19 +129,39 @@ public class PersonalServiceImpl implements PersonalService{
         return personalResponse(payload);
     }
 
-    @Transactional(readOnly = true)
-    public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO)
-    {
-        Pageable paging = PageRequest.of(page - 1, size);
-        Specification<PersonalEntity> specs = Specification
-                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
-                .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
-                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
+//    @Transactional(readOnly = true)
+//    public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO)
+//    {
+//        Pageable paging = PageRequest.of(page - 1, size);
+//        Specification<PersonalEntity> specs = Specification
+//                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+//                .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
+//                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
+//
+//        Page<PersonalEntity> pages = personalRepository.findAll(specs, paging);
+//        return new PaginationUtil<>(pages, PersonalEntity.class);
+//    }
+    @Override
+    public Page<PersonalResponDTO> getAllPersonal(Pageable pageable, PersonalRequestDTO requestDTO) {
+        try {
+            Specification<PersonalEntity> specification = Specification
+                    .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                    .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
+                    .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
+            Page<PersonalEntity> personals = personalRepository.findAll(specification, pageable);
 
-        Page<PersonalEntity> pages = personalRepository.findAll(specs, paging);
-        return new PaginationUtil<>(pages, PersonalEntity.class);
+            return personals.map(personalEntity -> {
+                try {
+                    return personalResponse(personalEntity);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("Error processing personal response", e);
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException("Error while retrieving all Personals", e);
+        }
     }
-
+    @Override
     public PersonalResponDTO getPersonalById(Long id_personal) throws JsonProcessingException {
         PersonalEntity personal = personalRepository.findById(id_personal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
         return personalResponse(personal);
@@ -144,12 +175,12 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Override
-    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerId, Integer page, Integer size) {
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size) {
         Pageable paging = PageRequest.of(page - 1, size);
-        Page<PersonalEntity> personalEntitiesPage = personalRepository.findAllByPartnerId(partnerId, paging);
+        Page<PersonalEntity> personalEntitiesPage = personalRepository.findAllByPartnerId(partnerExternal, paging);
 
         if (personalEntitiesPage.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No personal records found for partnerId: " + partnerId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No personal records found for partnerId: " + partnerExternal);
         }
         personalEntitiesPage.stream()
                 .map(personalEntity -> {
@@ -185,12 +216,12 @@ public class PersonalServiceImpl implements PersonalService{
 
     //Get All Personal Partner if isPic(default = true)
     @Override
-    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerId, Integer page, Integer size) {
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size) {
         Pageable paging = PageRequest.of(page - 1, size);
-        Page<PersonalEntity> personalEntities = personalRepository.findAllPersonalAsPartnerPIC(partnerId, paging);
+        Page<PersonalEntity> personalEntities = personalRepository.findAllPersonalAsPartnerPIC(partnerExternal, paging);
         if (personalEntities.isEmpty()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,"partnertId: " + partnerId + " is not PIC for partner or not record by personal");
+                    HttpStatus.NOT_FOUND,"partnerExternal: " + partnerExternal + " is not PIC for partner or not record by personal");
         }
         personalEntities.stream()
                 .map(personalEntity -> {
@@ -236,8 +267,8 @@ public class PersonalServiceImpl implements PersonalService{
         personalEntity.setExpiredDate(personalDTO.getExpiredDate());
         personalEntity.setCreatedBy(personalDTO.getCreatedBy());
         personalEntity.setUpdatedBy(personalDTO.getUpdatedBy());
-        if (personalDTO.getPartnerId() != null) {
-            personalEntity.setPartnerId(personalDTO.getPartnerId());
+        if (personalDTO.getPartnerExternal() != null) {
+            personalEntity.setPartnerExternal(personalDTO.getPartnerExternal());
         }
         return personalEntity;
     }

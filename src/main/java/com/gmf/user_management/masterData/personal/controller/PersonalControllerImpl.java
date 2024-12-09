@@ -12,6 +12,8 @@ import com.gmf.user_management.masterData.personal.service.PersonalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -62,16 +64,15 @@ public class PersonalControllerImpl {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<Object>>getAllPersonal(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            PersonalRequestDTO requestDto
-    ) throws JsonProcessingException {
-        Object allDataPersonal = personalService.getAllPersonal(page, size, requestDto);
-        return new HttpResponseDTO<>(allDataPersonal, HttpStatus.OK)
-                .setResponseHeaders("page", page)
-                .setResponseHeaders("size", size)
-                .setResponseHeaders("requestDto", requestDto)
+    public ResponseEntity<HttpResponseDTO<Page<PersonalResponDTO>>> getAllPersonal(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            PersonalRequestDTO requestDto) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<PersonalResponDTO> response = personalService.getAllPersonal(pageable, requestDto);
+
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("request", "getAllBusinessUnitCode")
                 .toResponse();
     }
 
@@ -111,16 +112,16 @@ public class PersonalControllerImpl {
         return personalService.countUIDByDinas();
     }
 
-    @GetMapping(value = "/by-partner-id/{partnerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/by-partner-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity,PersonalEntity>>> getPersonalByPartnerId(
-            @PathVariable Long partnerId,
+            @PathVariable Long partnerExternal,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
         try {
-            PaginationUtil<PersonalEntity,PersonalEntity> response = personalService.getPersonalByPartnerId(partnerId, page, size);
+            PaginationUtil<PersonalEntity,PersonalEntity> response = personalService.getPersonalByPartnerId(partnerExternal, page, size);
             return new HttpResponseDTO<>(response, HttpStatus.OK)
-                    .setResponseHeaders("partnerId", partnerId)
+                    .setResponseHeaders("partnerExternal", partnerExternal)
                     .setResponseHeaders("page", page)
                     .setResponseHeaders("size", size)
                     .toResponse();
@@ -130,16 +131,16 @@ public class PersonalControllerImpl {
     }
 
 
-    @GetMapping(value = "/as-pic/by-partner-id/{partnerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/as-pic/by-partner-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalAsPartnerPIC(
-            @PathVariable Long partnerId,
+            @PathVariable Long partnerExternal,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
         try {
-            PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalAsPartnerPIC(partnerId, page, size);
+            PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalAsPartnerPIC(partnerExternal, page, size);
             return new HttpResponseDTO<>(response, HttpStatus.OK)
-                    .setResponseHeaders("partnerId", partnerId)
+                    .setResponseHeaders("partnerExternal", partnerExternal)
                     .toResponse();
         } catch (ResponseStatusException | NotFoundException e) {
             throw new RuntimeException(e);

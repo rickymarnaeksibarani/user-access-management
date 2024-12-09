@@ -25,10 +25,10 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     @Query("SELECT p.dinas AS dinas, COUNT(DISTINCT p.uid) AS uidCount FROM PersonalEntity p GROUP BY p.dinas")
     List<Map<String, Object>> countUIDByDinas();
 
-    @Query("SELECT p FROM PersonalEntity p WHERE p.partnerId = :partnerId")
-    Page<PersonalEntity> findAllByPartnerId(@Param("partnerId") Long partnerId, Pageable pageable);
+    @Query("SELECT p FROM PersonalEntity p WHERE p.partnerExternal = :partnerExternal")
+    Page<PersonalEntity> findAllByPartnerId(@Param("partnerExternal") Long partnerExternal, Pageable pageable);
 
-    @Query("SELECT p FROM PersonalEntity p WHERE p.partnerId = :partnerId AND p.isPic = true")
-    Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerId") Long partnerId, Pageable pageable);
+    @Query("SELECT p FROM PersonalEntity p WHERE p.partnerExternal = :partnerExternal AND p.isPic = true")
+    Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerExternal") Long partnerExternal, Pageable pageable);
 
 }

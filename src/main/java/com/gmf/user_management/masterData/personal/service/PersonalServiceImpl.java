@@ -123,8 +123,9 @@ public class PersonalServiceImpl implements PersonalService{
     {
         Pageable paging = PageRequest.of(page - 1, size);
         Specification<PersonalEntity> specs = Specification
-                .where(PersonalPredicate.searchTerm(requestDTO.getSearchTerm()))
-                .and(PersonalPredicate.activeStatus(requestDTO.getActiveStatus()));
+                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
+                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
 
         Page<PersonalEntity> pages = personalRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, PersonalEntity.class);
@@ -189,7 +190,7 @@ public class PersonalServiceImpl implements PersonalService{
         Page<PersonalEntity> personalEntities = personalRepository.findAllPersonalAsPartnerPIC(partnerId, paging);
         if (personalEntities.isEmpty()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,"partnertId: " + partnerId + " is not PIC for partner");
+                    HttpStatus.NOT_FOUND,"partnertId: " + partnerId + " is not PIC for partner or not record by personal");
         }
         personalEntities.stream()
                 .map(personalEntity -> {

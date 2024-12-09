@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class PersonalRequestDTO {
-    private String searchTerm;
-    private List<Status> activeStatus;
+    private String filterByName;
+    private List<Status> filterByStatus;
+    private String searchByName;
 }

@@ -8,24 +8,38 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
 
 public class PersonalPredicate {
-    public static Specification<PersonalEntity> searchTerm(String searchTerm) {
+    public static Specification<PersonalEntity> filterByName(String filterByName) {
         return (root, query, criteriaBuilder) -> {
-            if (searchTerm != null && !searchTerm.isEmpty()) {
+            if (filterByName != null && !filterByName.isEmpty()) {
                 return criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("personalName")),
-                        "%" + searchTerm.toLowerCase() + "%"
+                        "%" + filterByName.toLowerCase() + "%"
                 );
             }
             return null;
         };
     }
 
-    public static Specification<PersonalEntity> activeStatus(List<Status> activeStatus) {
-        return (root, query, criteriaBuilder) -> {
-            if (activeStatus != null && !activeStatus.isEmpty()) {
-                return root.get("activeStatus").in(activeStatus);
+    public static Specification<PersonalEntity>searchByName(String searchByName){
+        return (root, query, builder) -> {
+            if (searchByName != null && !searchByName.isEmpty()){
+                return builder.like(
+                        builder.lower(root.get("personalName")),
+                        "%" + searchByName.toLowerCase() + "%"
+                );
             }
             return null;
         };
     }
+
+    public static Specification<PersonalEntity> filterByStatus(List<Status> filterByStatus) {
+        return (root, query, criteriaBuilder) -> {
+            if (filterByStatus != null && !filterByStatus.isEmpty()) {
+                return root.get("activeStatus").in(filterByStatus);
+            }
+            return null;
+        };
+    }
+
+
 }

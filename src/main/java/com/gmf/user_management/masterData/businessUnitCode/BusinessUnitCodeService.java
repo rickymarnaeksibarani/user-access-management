@@ -2,30 +2,24 @@ package com.gmf.user_management.masterData.businessUnitCode;
 
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
-import com.gmf.user_management.core.exceptions.NotFoundException;
-import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodePredicate;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
-import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,9 +56,7 @@ public class BusinessUnitCodeService {
 
     public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
         Map<String, Object> exPartner = externalRepository.findContractById(request.getPartnerExternal());
-
         if (exPartner.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
-        log.info("maura {}", exPartner.get("id"));
 
         BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
@@ -140,10 +132,4 @@ public class BusinessUnitCodeService {
 
 }
 
-    /*
-    TODO: sub tasks:
-    1. filterBusinessUnitCode
-    2. filterByPartner
-    3. filterByDinas
-     */
 

@@ -1,6 +1,8 @@
 package com.gmf.user_management;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -31,5 +33,9 @@ public class WebConfiguration implements WebMvcConfigurer {
                 jsonConverter.setSupportedMediaTypes(Arrays.asList(MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON));
             }
         }
+    }
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(new DateFormatter("dd-MM-yyyy"));
     }
 }

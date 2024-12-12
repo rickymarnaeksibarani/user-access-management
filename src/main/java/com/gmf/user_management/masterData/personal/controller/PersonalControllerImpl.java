@@ -116,20 +116,30 @@ public class PersonalControllerImpl {
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity,PersonalEntity>>> getPersonalByPartnerId(
             @PathVariable Long partnerExternal,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "10") Integer size,
+            PersonalRequestDTO requestDTO
     ) {
         try {
-            PaginationUtil<PersonalEntity,PersonalEntity> response = personalService.getPersonalByPartnerId(partnerExternal, page, size);
+            PaginationUtil<PersonalEntity,PersonalEntity> response = personalService.getPersonalByPartnerId(partnerExternal, page, size, requestDTO);
             return new HttpResponseDTO<>(response, HttpStatus.OK)
                     .setResponseHeaders("partnerExternal", partnerExternal)
                     .setResponseHeaders("page", page)
                     .setResponseHeaders("size", size)
                     .toResponse();
-        } catch (ResponseStatusException | NotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (ResponseStatusException e) {
+            throw e; // ResponseStatusException already provides proper HTTP status codes
+        } catch (Exception e) {
+            log.error("Error occurred while fetching personal data", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "An unexpected error occurred.", e);
         }
     }
 
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> handleException(Exception e) {
+//        log.error("Error handling request", e);
+//        return ResponseEntity.badRequest().body("Error handling request");
+//    }
 
     @GetMapping(value = "/as-pic/by-partner-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalAsPartnerPIC(

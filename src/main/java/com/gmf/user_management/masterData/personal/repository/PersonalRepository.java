@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>, JpaSpecificationExecutor<PersonalEntity> {
+public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>, JpaSpecificationExecutor<PersonalEntity>{
     List<PersonalEntity> findByIdPersonalIsIn(Collection<Long> id);
 
     Optional<Object> findByPersonalNumber(String personalNumber);
@@ -24,9 +24,6 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
 
     @Query("SELECT p.dinas AS dinas, COUNT(DISTINCT p.uid) AS uidCount FROM PersonalEntity p GROUP BY p.dinas")
     List<Map<String, Object>> countUIDByDinas();
-
-    @Query("SELECT p FROM PersonalEntity p WHERE p.partnerExternal = :partnerExternal")
-    Page<PersonalEntity> findAllByPartnerId(@Param("partnerExternal") Long partnerExternal, Pageable pageable);
 
     @Query("SELECT p FROM PersonalEntity p WHERE p.partnerExternal = :partnerExternal AND p.isPic = true")
     Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerExternal") Long partnerExternal, Pageable pageable);

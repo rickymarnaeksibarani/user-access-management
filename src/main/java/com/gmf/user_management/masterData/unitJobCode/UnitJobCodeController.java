@@ -4,7 +4,6 @@ import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeDTO;
-import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeRequestDTO;
 import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeResponDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,14 +52,12 @@ public class UnitJobCodeController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>>getAllJobCode(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
-            UnitJobCodeRequestDTO requestDto
+            @RequestParam(defaultValue = "10") Integer size
     ){
-        Object allDataUnitJobCode = unitJobCodeService.getAllJobCode(page, size, requestDto);
+        Object allDataUnitJobCode = unitJobCodeService.getAllJobCode(page, size);
         return new HttpResponseDTO<>(allDataUnitJobCode, HttpStatus.OK)
                 .setResponseHeaders("page", page)
                 .setResponseHeaders("size", size)
-                .setResponseHeaders("requestDto", requestDto)
                 .toResponse();
     }
 

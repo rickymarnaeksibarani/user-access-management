@@ -2,6 +2,9 @@ package com.gmf.user_management.config.MultipleDataSourceConfiguration.repositor
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,14 +24,20 @@ public class ExternalRepository {
     public ExternalRepository(@Qualifier("mysqlDataSource") DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    public List<Map<String, Object>> findContractsWithPartners(int limit, int offset,String searchTerm,String filterByStatus,LocalDate filterByStart, LocalDate filterByEnd) {
+    public Page<Map<String, Object>> findContractsWithPartners(
+            String searchTerm,
+            String filterByStatus,
+            LocalDate filterByStart,
+            LocalDate filterByEnd,
+            Pageable pageable) {
+
         StringBuilder sql = new StringBuilder("""
-           SELECT p.id, partner_id, contract_id, n.name, c.subject, c.number, c.start, c.end, c.status
-           FROM partner_contracts p
-           LEFT JOIN contracts c ON c.id = p.contract_id
-           LEFT JOIN partners n ON n.id = p.partner_id
-           WHERE 1=1
-        """);
+       SELECT p.id, partner_id, contract_id, n.name, c.subject, c.number, c.start, c.end, c.status
+       FROM partner_contracts p
+       LEFT JOIN contracts c ON c.id = p.contract_id
+       LEFT JOIN partners n ON n.id = p.partner_id
+       WHERE 1=1
+    """);
 
         List<Object> params = new ArrayList<>();
 
@@ -37,11 +46,11 @@ public class ExternalRepository {
             params.add(filterByStatus);
         }
         if (filterByStart != null) {
-            sql.append(" AND c.start = ?");
+            sql.append(" AND c.start >= ?");
             params.add(java.sql.Date.valueOf(filterByStart));
         }
         if (filterByEnd != null) {
-            sql.append(" AND c.end = ?");
+            sql.append(" AND c.end <= ?");
             params.add(java.sql.Date.valueOf(filterByEnd));
         }
         if (searchTerm != null && !searchTerm.isEmpty()) {
@@ -49,11 +58,41 @@ public class ExternalRepository {
             params.add("%" + searchTerm + "%");
         }
 
+        // Add pagination
         sql.append(" LIMIT ? OFFSET ?");
-        params.add(limit);
-        params.add(offset);
+        params.add(pageable.getPageSize());
+        params.add(pageable.getOffset());
 
-        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
+        List<Map<String, Object>> content = jdbcTemplate.queryForList(sql.toString(), params.toArray());
+
+        // Count total elements
+        String countSql = "SELECT COUNT(*) FROM partner_contracts p " +
+                "LEFT JOIN contracts c ON c.id = p.contract_id " +
+                "LEFT JOIN partners n ON n.id = p.partner_id " +
+                "WHERE 1=1";
+
+        // Add the same filters to the count query
+        List<Object> countParams = new ArrayList<>();
+        if (filterByStatus != null && !filterByStatus.isEmpty()) {
+            countSql += " AND c.status = ?";
+            countParams.add(filterByStatus);
+        }
+        if (filterByStart != null) {
+            countSql += " AND c.start >= ?";
+            countParams.add(java.sql.Date.valueOf(filterByStart));
+        }
+        if (filterByEnd != null) {
+            countSql += " AND c.end <= ?";
+            countParams.add(java.sql.Date.valueOf(filterByEnd));
+        }
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            countSql += " AND n.name LIKE ?";
+            countParams.add("%" + searchTerm + "%");
+        }
+
+        long totalElements = jdbcTemplate.queryForObject(countSql, Long.class, countParams.toArray());
+
+        return new PageImpl<>(content, pageable, totalElements);
     }
 
     public Map<String, Object> findContractById(Long contractId) {
@@ -69,29 +108,5 @@ public class ExternalRepository {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id Not found");
         }
-    }
-
-    public long countContracts(String searchTerm, String filterByStatus, LocalDate filterByStart, LocalDate filterByEnd) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM partner_contracts p LEFT JOIN contracts c ON c.id = p.contract_id LEFT JOIN partners n ON n.id = p.partner_id WHERE 1=1");
-        List<Object> params = new ArrayList<>();
-
-        if (filterByStatus != null && !filterByStatus.isEmpty()) {
-            sql.append(" AND c.status = ?");
-            params.add(filterByStatus);
-        }
-        if (filterByStart != null) {
-            sql.append(" AND c.start = ?");
-            params.add(java.sql.Date.valueOf(filterByStart));
-        }
-        if (filterByEnd != null) {
-            sql.append(" AND c.end = ?");
-            params.add(java.sql.Date.valueOf(filterByEnd));
-        }
-        if (searchTerm != null && !searchTerm.isEmpty()) {
-            sql.append(" AND n.name LIKE ?");
-            params.add("%" + searchTerm + "%");
-        }
-
-        return jdbcTemplate.queryForObject(sql.toString(), params.toArray(), Long.class);
     }
 }

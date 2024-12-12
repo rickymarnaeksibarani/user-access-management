@@ -8,8 +8,6 @@ import com.gmf.user_management.masterData.jobCode.repositories.JobCodeRepository
 import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import com.gmf.user_management.masterData.unit.repository.UnitRepository;
 import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeDTO;
-import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodePredicate;
-import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeRequestDTO;
 import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeResponDTO;
 import com.gmf.user_management.masterData.unitJobCode.entities.UnitJobCodeEntity;
 import com.gmf.user_management.masterData.unitJobCode.repository.UnitJobCodeRepository;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -90,10 +87,9 @@ public class UnitJobCodeService {
         return true;
     }
 
-    public PaginationUtil<UnitJobCodeEntity, UnitJobCodeResponDTO> getAllJobCode(Integer page, Integer size, UnitJobCodeRequestDTO requestDto) {
+    public PaginationUtil<UnitJobCodeEntity, UnitJobCodeResponDTO> getAllJobCode(Integer page, Integer size) {
         Pageable paging = PageRequest.of(page -1 ,size);
-        Specification<UnitJobCodeEntity> specs = Specification.where(UnitJobCodePredicate.searchTerm(requestDto.getSearchTerm()));
-        Page<UnitJobCodeEntity> pages = unitJobCodeRepository.findAll(specs, paging);
+        Page<UnitJobCodeEntity> pages = unitJobCodeRepository.findAll(paging);
         return new PaginationUtil<>(pages, UnitJobCodeResponDTO.class);
     }
 

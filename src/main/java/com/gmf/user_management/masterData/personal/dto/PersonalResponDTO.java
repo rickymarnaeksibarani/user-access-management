@@ -35,6 +35,7 @@ public class PersonalResponDTO {
     private Boolean isPic;
     private String passCardNumber;
     private Status activeStatus;
+    private Date startDate;
     private Date expiredDate;
     private LocalDateTime createdAt;
     private String createdBy;

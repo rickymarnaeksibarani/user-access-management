@@ -7,16 +7,13 @@ import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSource
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.storage.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodePredicate;
-import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
-import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
-import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.masterData.licenseType.repository.LicenseTypeRespository;
 import com.gmf.user_management.masterData.personal.dto.*;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
 import com.gmf.user_management.masterData.personal.repository.PersonalRepository;
 import io.minio.ObjectWriteResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,9 +30,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PersonalServiceImpl implements PersonalService{
     @Autowired
     private PersonalRepository personalRepository;
@@ -80,6 +77,7 @@ public class PersonalServiceImpl implements PersonalService{
                 .isPic(personalEntity.getIsPic())
                 .passCardNumber(personalEntity.getPassCardNumber())
                 .activeStatus(personalEntity.getActiveStatus())
+                .startDate(personalEntity.getStartDate())
                 .expiredDate(personalEntity.getExpiredDate())
                 .createdAt(personalEntity.getCreatedAt())
                 .createdBy(personalEntity.getCreatedBy())
@@ -129,18 +127,6 @@ public class PersonalServiceImpl implements PersonalService{
         return personalResponse(payload);
     }
 
-//    @Transactional(readOnly = true)
-//    public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO)
-//    {
-//        Pageable paging = PageRequest.of(page - 1, size);
-//        Specification<PersonalEntity> specs = Specification
-//                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
-//                .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
-//                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
-//
-//        Page<PersonalEntity> pages = personalRepository.findAll(specs, paging);
-//        return new PaginationUtil<>(pages, PersonalEntity.class);
-//    }
     @Override
     public Page<PersonalResponDTO> getAllPersonal(Pageable pageable, PersonalRequestDTO requestDTO) {
         try {
@@ -161,6 +147,7 @@ public class PersonalServiceImpl implements PersonalService{
             throw new RuntimeException("Error while retrieving all Personals", e);
         }
     }
+
     @Override
     public PersonalResponDTO getPersonalById(Long id_personal) throws JsonProcessingException {
         PersonalEntity personal = personalRepository.findById(id_personal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
@@ -175,13 +162,20 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Override
-    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size) {
-        Pageable paging = PageRequest.of(page - 1, size);
-        Page<PersonalEntity> personalEntitiesPage = personalRepository.findAllByPartnerId(partnerExternal, paging);
-
-        if (personalEntitiesPage.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No personal records found for partnerId: " + partnerExternal);
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size, PersonalRequestDTO requestDTO) {
+        if (partnerExternal == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "partnerExternal cannot be null.");
         }
+        Pageable paging = PageRequest.of(page - 1, size);
+        Specification<PersonalEntity> specification = Specification
+                .where(PersonalPredicate.dinas(requestDTO.getDinas()))
+                .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                .and(PersonalPredicate.isPic(requestDTO.getIsPic()))
+                .and(PersonalPredicate.startDate(requestDTO.getStartDate()))
+                .and(PersonalPredicate.expiredDate(requestDTO.getExpiredDate()))
+                .and(PersonalPredicate.filterByPartnerId(partnerExternal));
+        Page<PersonalEntity> personalEntitiesPage = personalRepository.findAll(specification, paging);
+
         personalEntitiesPage.stream()
                 .map(personalEntity -> {
                     try {
@@ -264,6 +258,7 @@ public class PersonalServiceImpl implements PersonalService{
         personalEntity.setIsPic(personalDTO.getIsPic());
         personalEntity.setPassCardNumber(personalDTO.getPassCardNumber());
         personalEntity.setActiveStatus(personalDTO.getActiveStatus());
+        personalEntity.setStartDate(personalDTO.getStartDate());
         personalEntity.setExpiredDate(personalDTO.getExpiredDate());
         personalEntity.setCreatedBy(personalDTO.getCreatedBy());
         personalEntity.setUpdatedBy(personalDTO.getUpdatedBy());

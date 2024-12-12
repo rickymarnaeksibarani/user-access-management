@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 public interface PersonalService {
     PersonalResponDTO createPersonal(PersonalDTO request) throws JsonProcessingException;
@@ -21,7 +20,7 @@ public interface PersonalService {
     Page<PersonalResponDTO> getAllPersonal(Pageable pageable, PersonalRequestDTO requestDTO);
     PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException;
-    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
+    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size, PersonalRequestDTO requestDTO)throws NotFoundException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size) throws NotFoundException, JsonProcessingException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
     String countUIDByDinas();

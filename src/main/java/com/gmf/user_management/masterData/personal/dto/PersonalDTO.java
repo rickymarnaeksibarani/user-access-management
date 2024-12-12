@@ -75,6 +75,10 @@ public class PersonalDTO {
     @Enumerated(EnumType.STRING)
     private Status activeStatus;
 
+    @JsonProperty("startDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date startDate;
+
     @JsonProperty("expiredDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date expiredDate;

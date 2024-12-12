@@ -3,7 +3,12 @@ package com.gmf.user_management.config.MultipleDataSourceConfiguration;
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,20 +31,22 @@ public class DataSourceService {
             String filterByStatus,
             LocalDate filterByStart,
             LocalDate filterByEnd
-            ) {
-        int offset = (page - 1) * size;
-        List<Map<String, Object>> data = externalRepository.findContractsWithPartners(size, offset,searchTerm, filterByStatus, filterByStart, filterByEnd);
-        long totalItems = externalRepository.countContracts(searchTerm,filterByStatus,filterByStart, filterByEnd);
-        int lastPage = (int) Math.ceil((double) totalItems / size);
+    ) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<Map<String, Object>> externalDataPage = externalRepository.findContractsWithPartners(searchTerm, filterByStatus, filterByStart, filterByEnd, paging);
+
+        if (externalDataPage.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No external data found for the given criteria.");
+        }
 
         return new PaginationUtil<>(
-                data,
+                externalDataPage.getContent(),
                 page,
-                totalItems,
-                lastPage,
+                externalDataPage.getTotalElements(),
+                externalDataPage.getTotalPages(),
                 size,
-                page > 1,
-                page < lastPage
+                externalDataPage.hasPrevious(),
+                externalDataPage.hasNext()
         );
     }
 

@@ -81,6 +81,9 @@ public class PersonalEntity {
     @Enumerated(EnumType.STRING)
     private Status activeStatus;
 
+    @Column(name = "start_date")
+    private Date startDate;
+
     @Column(name = "expired_date")
     private Date expiredDate;
 

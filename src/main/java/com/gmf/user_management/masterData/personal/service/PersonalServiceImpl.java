@@ -173,6 +173,7 @@ public class PersonalServiceImpl implements PersonalService{
                 .and(PersonalPredicate.isPic(requestDTO.getIsPic()))
                 .and(PersonalPredicate.startDate(requestDTO.getStartDate()))
                 .and(PersonalPredicate.expiredDate(requestDTO.getExpiredDate()))
+                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()))
                 .and(PersonalPredicate.filterByPartnerId(partnerExternal));
         Page<PersonalEntity> personalEntitiesPage = personalRepository.findAll(specification, paging);
 

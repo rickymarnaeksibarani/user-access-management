@@ -61,7 +61,7 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
     }
 
     @Override
-    public Boolean deleteSapLoginType(Long idSapLoginType) throws NotFoundException {
+    public Boolean deleteSapLoginType(Long idSapLoginType){
         sapLoginTypeRepository.deleteById(idSapLoginType);
         return true;
     }
@@ -69,7 +69,7 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
     @Override
     public PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO> getAllSapLoginType(Integer page, Integer size, SapLoginTypeRequest requestDTO) {
         Pageable paging = PageRequest.of(page -1, size);
-        Specification<SapLoginTypeEntity> specs = Specification.where(SapLoginTypePredicate.searchTerm(requestDTO.getSearchTerm()));
+        Specification<SapLoginTypeEntity> specs = Specification.where(SapLoginTypePredicate.filterSapLoginType(requestDTO.getFilterSapLoginType()));
         Page<SapLoginTypeEntity> pages = sapLoginTypeRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, SapLoginTypeResponDTO.class);
     }

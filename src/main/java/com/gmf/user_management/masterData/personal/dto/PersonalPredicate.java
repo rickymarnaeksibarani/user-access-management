@@ -69,7 +69,7 @@ public class PersonalPredicate {
     public static Specification<PersonalEntity> isPic(Boolean isPic) {
         return (root, query, criteriaBuilder) -> {
             if (isPic == null) {
-                return criteriaBuilder.conjunction(); // No filter applied for isPic
+                return criteriaBuilder.conjunction();
             }
             return isPic ? criteriaBuilder.isTrue(root.get("isPic")) : criteriaBuilder.isFalse(root.get("isPic"));
         };

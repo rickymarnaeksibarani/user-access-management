@@ -56,7 +56,7 @@ public class LicenseTypeController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>> getAllLicenseType(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             LicenseTypeRequestDto requestDto
     ){
         Object allLicenseType = licenseTypeService.getAllLicenseType(page, size, requestDto);

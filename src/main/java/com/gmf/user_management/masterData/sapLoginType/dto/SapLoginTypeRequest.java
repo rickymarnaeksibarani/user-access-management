@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class SapLoginTypeRequest {
     @Sanitizer
-    private String searchTerm;
+    private String filterSapLoginType;
 }

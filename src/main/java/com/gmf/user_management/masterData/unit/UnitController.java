@@ -56,7 +56,7 @@ public class UnitController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>>getAllUnit(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             UnitRequestDto requestDto
     ){
         Object allDataUnit = unitService.getAllUnit(page, size, requestDto);

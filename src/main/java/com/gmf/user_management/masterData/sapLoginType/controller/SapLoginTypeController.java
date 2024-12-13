@@ -47,7 +47,7 @@ public class SapLoginTypeController {
     @DeleteMapping(value ="/by-id/{idSapLoginType}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Boolean>> deleteSapLoginType(
             @PathVariable Long idSapLoginType
-    ) throws NotFoundException {
+    ){
         return new HttpResponseDTO<>(sapLoginTypeService.deleteSapLoginType(idSapLoginType))
                 .setResponseHeaders("idSapLoginType", idSapLoginType)
                 .toResponse();
@@ -56,7 +56,7 @@ public class SapLoginTypeController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>>getAllSapLoginType(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             SapLoginTypeRequest requestDto
     ){
         Object allData = sapLoginTypeService.getAllSapLoginType(page, size, requestDto);

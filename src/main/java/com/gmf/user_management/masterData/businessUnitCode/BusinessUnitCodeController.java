@@ -41,7 +41,7 @@ public class BusinessUnitCodeController {
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> updateBusinessUnitCode(
             @PathVariable Long id_business_unit_code,
             @RequestBody @Valid BusinessUnitCodeDTO request
-    ) throws Exception {
+    ){
         BusinessUnitCodeResponDTO response = businessUnitCodeService.updateBusinessUnitCode(id_business_unit_code, request);
 
         return new HttpResponseDTO<>(response,HttpStatus.OK)
@@ -60,12 +60,11 @@ public class BusinessUnitCodeController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<Page<BusinessUnitCodeResponDTO>>> getAllBusinessUnitCode(
+    public ResponseEntity<HttpResponseDTO<Object>> getAllBusinessUnitCode(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             BusinessUnitCodeRequestDto requestDto) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<BusinessUnitCodeResponDTO> response = businessUnitCodeService.getAllBusinessUnitCode(pageable, requestDto);
+        Object response = businessUnitCodeService.getAllBusinessUnitCode(page, size, requestDto);
 
         return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .setResponseHeaders("request", "getAllBusinessUnitCode")
@@ -75,7 +74,7 @@ public class BusinessUnitCodeController {
     @GetMapping("/by-id/{id_business_unit_code}")
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> getBusinessUnitCodeById(
             @PathVariable @IsNumeric @IsRequired Long id_business_unit_code
-    )throws NotFoundException {
+    ){
         return new HttpResponseDTO<>(businessUnitCodeService.getBusinessUnitCodeById(id_business_unit_code), HttpStatus.OK)
                 .setResponseHeaders("id_business_unit_code", id_business_unit_code)
                 .toResponse();

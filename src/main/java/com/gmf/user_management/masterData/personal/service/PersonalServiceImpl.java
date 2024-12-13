@@ -128,25 +128,17 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Override
-    public Page<PersonalResponDTO> getAllPersonal(Pageable pageable, PersonalRequestDTO requestDTO) {
-        try {
-            Specification<PersonalEntity> specification = Specification
-                    .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
-                    .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
-                    .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
-            Page<PersonalEntity> personals = personalRepository.findAll(specification, pageable);
+    public PaginationUtil<PersonalEntity, PersonalResponDTO> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Specification<PersonalEntity> specification = Specification
+                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
+                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
 
-            return personals.map(personalEntity -> {
-                try {
-                    return personalResponse(personalEntity);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException("Error processing personal response", e);
-                }
-            });
-        } catch (Exception e) {
-            throw new RuntimeException("Error while retrieving all Personals", e);
-        }
+        Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
+        return new PaginationUtil<>(personalsPage, PersonalResponDTO.class);
     }
+
 
     @Override
     public PersonalResponDTO getPersonalById(Long id_personal) throws JsonProcessingException {

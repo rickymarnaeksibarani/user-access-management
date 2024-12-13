@@ -56,7 +56,7 @@ public class CompositeRoleController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>>getAllCompositeRole(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             CompositeRoleRequestDTO requestDto
     ){
         Object allComposite = compositeRoleService.getAllCompositeRole(page, size, requestDto);

@@ -5,12 +5,12 @@ import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 public class SapLoginTypePredicate {
-    public static Specification<SapLoginTypeEntity> searchTerm(String searchTerm) {
+    public static Specification<SapLoginTypeEntity> filterSapLoginType(String filterSapLoginType) {
         return (root, query, criteriaBuilder) -> {
-            if (searchTerm != null && !searchTerm.isEmpty()) {
+            if (filterSapLoginType != null && !filterSapLoginType.isEmpty()) {
                 return criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("loginType")),
-                        "%" + searchTerm.toLowerCase() + "%"
+                        "%" + filterSapLoginType.toLowerCase() + "%"
                 );
             }
             return null;

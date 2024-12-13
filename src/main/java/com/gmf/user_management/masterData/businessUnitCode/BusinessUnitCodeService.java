@@ -2,15 +2,18 @@ package com.gmf.user_management.masterData.businessUnitCode;
 
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodePredicate;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeRequestDto;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.masterData.businessUnitCode.repositories.BusinessUnitCodeRepository;
+import com.gmf.user_management.masterData.personal.dto.PersonalResponDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -90,14 +93,15 @@ public class BusinessUnitCodeService {
         return businessUnitCodeEntity;
     }
 
-    public Page<BusinessUnitCodeResponDTO> getAllBusinessUnitCode(Pageable pageable, BusinessUnitCodeRequestDto requestDto) {
+    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeResponDTO> getAllBusinessUnitCode(Integer page, Integer size, BusinessUnitCodeRequestDto requestDto) {
         try {
+            Pageable paging = PageRequest.of(page -1, size);
             Specification<BusinessUnitCodeEntity> specification = Specification
                     .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()))
                     .and(BusinessUnitCodePredicate.dinas(requestDto.getDinas()))
                     .and(BusinessUnitCodePredicate.searchNamePartner(requestDto.getPartnerName()));
-            Page<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll(specification, pageable);
-            return businessUnitCodes.map(this::businessRespone);
+            Page<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll(specification, paging);
+            return new PaginationUtil<>(businessUnitCodes, BusinessUnitCodeResponDTO.class);
         } catch (Exception e) {
             throw new RuntimeException("Error while retrieving all Business Unit Codes", e);
         }

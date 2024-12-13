@@ -64,15 +64,13 @@ public class PersonalControllerImpl {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<Page<PersonalResponDTO>>> getAllPersonal(
+    public ResponseEntity<HttpResponseDTO<Object>> getAllPersonal(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             PersonalRequestDTO requestDto) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<PersonalResponDTO> response = personalService.getAllPersonal(pageable, requestDto);
-
+        Object response = personalService.getAllPersonal(page, size, requestDto);
         return new HttpResponseDTO<>(response, HttpStatus.OK)
-                .setResponseHeaders("request", "getAllBusinessUnitCode")
+                .setResponseHeaders("request", "getAllPersonal")
                 .toResponse();
     }
 
@@ -134,12 +132,6 @@ public class PersonalControllerImpl {
                     "An unexpected error occurred.", e);
         }
     }
-
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<String> handleException(Exception e) {
-//        log.error("Error handling request", e);
-//        return ResponseEntity.badRequest().body("Error handling request");
-//    }
 
     @GetMapping(value = "/as-pic/by-partner-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalAsPartnerPIC(

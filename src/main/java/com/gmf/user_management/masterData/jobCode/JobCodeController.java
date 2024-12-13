@@ -24,7 +24,7 @@ public class JobCodeController {
     private JobCodeService jobCodeService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<JobCodeResponeDTO>>createJobCode(
             @RequestBody @Valid JobCodeDTO request
     ) throws Exception {
@@ -41,7 +41,6 @@ public class JobCodeController {
             @RequestBody @Valid JobCodeDTO request
     ) throws Exception {
         JobCodeResponeDTO response = jobCodeService.updateJobCode(id_job_code, request);
-
         return new HttpResponseDTO<>(response,HttpStatus.OK)
                 .setResponseHeaders("request", response)
                 .toResponse();
@@ -60,7 +59,7 @@ public class JobCodeController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>> getAllJobCode(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             JobCodeRequestDto jobCodeRequestDto
     ){
         Object allJobCode = jobCodeService.getAllJobCode(page, size, jobCodeRequestDto);

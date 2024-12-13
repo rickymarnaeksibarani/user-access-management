@@ -55,7 +55,7 @@ public class ApplicationLicenseControllerImpl {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>>getAllLicense(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             ApplicationLicenseRequest requestDto
     ){
         Object allComposite = applicationLicenseService.getAllLicense(page, size, requestDto);

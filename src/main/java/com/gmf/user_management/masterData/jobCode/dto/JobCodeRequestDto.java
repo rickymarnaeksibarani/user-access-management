@@ -8,5 +8,5 @@ import lombok.Data;
 @Builder
 public class JobCodeRequestDto {
     @Sanitizer
-    private String searchTerm;
+    private String searchJobCode;
 }

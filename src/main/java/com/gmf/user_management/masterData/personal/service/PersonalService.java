@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 public interface PersonalService {
     PersonalResponDTO createPersonal(PersonalDTO request) throws JsonProcessingException;
     PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws NotFoundException, IOException, NoSuchAlgorithmException, InvalidKeyException;
-    Page<PersonalResponDTO> getAllPersonal(Pageable pageable, PersonalRequestDTO requestDTO);
+    PaginationUtil<PersonalEntity, PersonalResponDTO> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO);
     PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size, PersonalRequestDTO requestDTO)throws NotFoundException;

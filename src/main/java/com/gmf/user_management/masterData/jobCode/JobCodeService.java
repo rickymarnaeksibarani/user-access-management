@@ -1,6 +1,5 @@
 package com.gmf.user_management.masterData.jobCode;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
@@ -26,7 +25,7 @@ public class JobCodeService {
     private JobCodeRepository jobCodeRepository;
 
 
-    private JobCodeResponeDTO jobRespone(JobCodeEntity jobCodeEntity)throws JsonProcessingException{
+    private JobCodeResponeDTO jobRespone(JobCodeEntity jobCodeEntity){
         return JobCodeResponeDTO.builder()
                 .idJobCode(jobCodeEntity.getIdJobCode())
                 .jobPosition(jobCodeEntity.getJobPosition())
@@ -37,14 +36,14 @@ public class JobCodeService {
                 .updatedBy(jobCodeEntity.getUpdatedBy())
                 .build();
     }
-    public JobCodeResponeDTO createJobCode(JobCodeDTO request)throws Exception{
+    public JobCodeResponeDTO createJobCode(JobCodeDTO request){
         JobCodeEntity jobCode = new JobCodeEntity();
         JobCodeEntity payload = jobCodePayload(request, jobCode);
         jobCodeRepository.save(payload);
         return jobRespone(payload);
     }
 
-    public JobCodeResponeDTO updateJobCode(Long id_job_code, JobCodeDTO request) throws Exception {
+    public JobCodeResponeDTO updateJobCode(Long id_job_code, JobCodeDTO request){
         JobCodeEntity jobCode = jobCodeRepository.findById(id_job_code)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "data not found"));
         JobCodeEntity payload = jobCodePayload(request, jobCode);
@@ -72,7 +71,7 @@ public class JobCodeService {
     ){
         Pageable paging = PageRequest.of(page -1, size);
         Specification<JobCodeEntity> specs = Specification
-                .where(JobCodePredicate.searchTerm(requestDto.getSearchTerm()));
+                .where(JobCodePredicate.searchJobCode(requestDto.getSearchJobCode()));
         Page<JobCodeEntity> pages = jobCodeRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, JobCodeResponeDTO.class);
     }

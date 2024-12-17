@@ -58,20 +58,17 @@ public class ExternalRepository {
             params.add("%" + searchTerm + "%");
         }
 
-        // Add pagination
         sql.append(" LIMIT ? OFFSET ?");
         params.add(pageable.getPageSize());
         params.add(pageable.getOffset());
 
         List<Map<String, Object>> content = jdbcTemplate.queryForList(sql.toString(), params.toArray());
 
-        // Count total elements
         String countSql = "SELECT COUNT(*) FROM partner_contracts p " +
                 "LEFT JOIN contracts c ON c.id = p.contract_id " +
                 "LEFT JOIN partners n ON n.id = p.partner_id " +
                 "WHERE 1=1";
 
-        // Add the same filters to the count query
         List<Object> countParams = new ArrayList<>();
         if (filterByStatus != null && !filterByStatus.isEmpty()) {
             countSql += " AND c.status = ?";

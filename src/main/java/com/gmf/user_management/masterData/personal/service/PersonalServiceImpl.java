@@ -128,7 +128,7 @@ public class PersonalServiceImpl implements PersonalService{
     }
 
     @Override
-    public PaginationUtil<PersonalEntity, PersonalResponDTO> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
+    public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
         Pageable paging = PageRequest.of(page - 1, size);
         Specification<PersonalEntity> specification = Specification
                 .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
@@ -136,7 +136,7 @@ public class PersonalServiceImpl implements PersonalService{
                 .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
 
         Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
-        return new PaginationUtil<>(personalsPage, PersonalResponDTO.class);
+        return new PaginationUtil<>(personalsPage, PersonalEntity.class);
     }
 
 

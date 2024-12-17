@@ -4,10 +4,7 @@ import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.masterData.licenseType.dto.LicenseTypeDTO;
-import com.gmf.user_management.masterData.licenseType.dto.LicenseTypePredicate;
-import com.gmf.user_management.masterData.licenseType.dto.LicenseTypeRequestDto;
-import com.gmf.user_management.masterData.licenseType.dto.LicenseTypeResponDTO;
+import com.gmf.user_management.masterData.licenseType.dto.*;
 import com.gmf.user_management.masterData.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.masterData.licenseType.repository.LicenseTypeRespository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class LicenseTypeService {
@@ -76,4 +77,15 @@ public class LicenseTypeService {
         }
         return ObjectMapperUtil.map(licenseType, LicenseTypeResponDTO.class);
     }
+
+    //Diagram LicenseName
+    public Map<String, Long> statsDiagramLicenseName() {
+        List<Object[]> results = licenseTypeRespository.countByLicenseName();
+        return results.stream()
+                .collect(Collectors.toMap(
+                        obj -> (String) obj[0],
+                        obj -> (Long) obj[1]
+                ));
+    }
+
 }

@@ -69,6 +69,8 @@ public class UserLicenseServiceImpl implements UserLicenseService{
 
     @Override
     public UserLicenseResponeDTO[] getPersonalIdByApplicationLicenseId(Long applicationLicenseId) {
+        // TODO: 17/12/2024 : filter application name, licenseType, searchByName 
+        // TODO: 17/12/2024 : pagination 
         List<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByApplicationLicenseList_IdApplicationLicense(applicationLicenseId);
         if (userLicenseEntities.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user licenses found for the given application license ID");

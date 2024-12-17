@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/license_type")
@@ -75,6 +76,19 @@ public class LicenseTypeController {
     )throws NotFoundException {
         return new HttpResponseDTO<>(licenseTypeService.getLicenseTypeById(id_license_type), HttpStatus.OK)
                 .setResponseHeaders("id_license_type", id_license_type)
+                .toResponse();
+    }
+
+//    @GetMapping("/stats-diagram-license-name")
+//    public ResponseEntity<HttpResponseDTO<LicenseTypeResponDTO>>statsDiagramLicenseName(){
+//        return new HttpResponseDTO<>(licenseTypeService.statsDiagramLicenseName(), HttpStatus.OK).toResponse();
+//    }
+
+    @GetMapping(value = "/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Map<String, Long>>> getLicenseNameStatistics() {
+        Map<String, Long> statistics = licenseTypeService.statsDiagramLicenseName();
+        return new HttpResponseDTO<>(statistics, HttpStatus.OK)
+                .setResponseHeaders("statistics", statistics)
                 .toResponse();
     }
 

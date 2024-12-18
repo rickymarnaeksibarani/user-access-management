@@ -2,11 +2,13 @@ package com.gmf.user_management.masterData.composite;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleDTO;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleRequestDTO;
 import com.gmf.user_management.masterData.composite.compositeDto.CompositeRoleResponDTO;
+import com.gmf.user_management.masterData.composite.compositeEntities.CompositeRoleEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -25,7 +29,7 @@ public class CompositeRoleController {
     @Autowired
     private CompositeRoleService compositeRoleService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>> createCompositeRole(
             @RequestBody @Valid CompositeRoleDTO request
     ) {
@@ -35,7 +39,7 @@ public class CompositeRoleController {
                 .toResponse();
     }
 
-    @PutMapping(value = "/by-id/{idCompositeRole}")
+    @PutMapping(value = "/by-id/{idCompositeRole}", produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>> updateCompositeRole(
             @RequestBody @Valid CompositeRoleDTO request,
             @PathVariable Long idCompositeRole
@@ -67,7 +71,7 @@ public class CompositeRoleController {
                 .toResponse();
     }
 
-    @GetMapping("/by-id/{id_composite_role}")
+    @GetMapping(value = "/by-id/{id_composite_role}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>>getCompositeRoleById(
             @PathVariable @IsNumeric @IsRequired Long id_composite_role
     ) throws NotFoundException {
@@ -76,25 +80,36 @@ public class CompositeRoleController {
                 .toResponse();
     }
 
-    @GetMapping("/count-by-job-code/{jobCodeId}")
-    public ResponseEntity<HttpResponseDTO<Integer>> countCompositeRoleByJobCodeId(
-            @PathVariable Long jobCodeId
+    @GetMapping(value = "/by-job-code/{jobCodeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<CompositeRoleEntity, CompositeRoleEntity>>> getCompositeRoleByJobCodeId(
+            @PathVariable Long jobCodeId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
-        int count = compositeRoleService.countCompositeRoleByJobCodeId(jobCodeId);
-        return new HttpResponseDTO<>(count, HttpStatus.OK)
-                .setResponseHeaders("jobCodeId", jobCodeId)
-                .toResponse();
-    }
-
-
-    @GetMapping("/by-job-code/{jobCodeId}")
-    public ResponseEntity<HttpResponseDTO<List<CompositeRoleResponDTO>>> getCompositeRoleByJobCodeId(
-            @PathVariable Long jobCodeId
-    ) {
-        List<CompositeRoleResponDTO> response = compositeRoleService.getCompositeRoleByJobCodeId(jobCodeId);
+        PaginationUtil<CompositeRoleEntity, CompositeRoleEntity> response = compositeRoleService.getCompositeRoleByJobCodeId(jobCodeId, page, size);
         return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .setResponseHeaders("jobCodeId", jobCodeId)
                 .toResponse();
     }
 
+    @GetMapping(value = "/count-by-job-code/{jobCodeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> countCompositeRoleByJobCodeId(
+            @PathVariable @IsNumeric @IsRequired Long jobCodeId
+    ) {
+        Long count = compositeRoleService.countCompositeRoleByJobCodeId(jobCodeId);
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("response", count);
+        response.put("headers", Map.of(
+                "status", HttpStatus.OK.name(),
+                "jobCodeId", jobCodeId,
+                "totalCompositeRoleByJobCode", count
+        ));
+        response.put("message", null);
+        response.put("time", LocalDateTime.now());
+
+        return ResponseEntity.ok(response);
+    }
+
 }
+

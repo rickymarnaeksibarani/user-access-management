@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -79,7 +78,7 @@ public class CompositeRoleService {
         return compositeRole;
     }
 //todo: jobCodeList
-    public PaginationUtil<CompositeRoleEntity, CompositeRoleResponDTO> getAllCompositeRole(Integer page, Integer size, CompositeRoleRequestDTO requestDto) {
+    public PaginationUtil<CompositeRoleEntity, CompositeRoleEntity> getAllCompositeRole(Integer page, Integer size, CompositeRoleRequestDTO requestDto) {
         Pageable paging = PageRequest.of(page - 1, size);
         Specification<CompositeRoleEntity> specs = Specification.where(CompositeRolePredicate.searchTerm(requestDto.getSearchTerm()));
         Page<CompositeRoleEntity> pages = compositeRoleRepository.findAll(specs, paging);
@@ -91,7 +90,7 @@ public class CompositeRoleService {
                 })
                 .toList();
 
-        return new PaginationUtil<>(pages, CompositeRoleResponDTO.class);
+        return new PaginationUtil<>(pages, CompositeRoleEntity.class);
     }
 
     public CompositeRoleResponDTO getCompositeRoleById(Long id_composite_role) throws NotFoundException {
@@ -104,15 +103,17 @@ public class CompositeRoleService {
         return responseDTO;
     }
 
-    public int countCompositeRoleByJobCodeId(Long jobCodeId) {
+    public PaginationUtil<CompositeRoleEntity, CompositeRoleEntity> getCompositeRoleByJobCodeId(Long jobCodeId, Integer page, Integer size) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<CompositeRoleEntity> compositeRolesPage = compositeRoleRepository.findByJobCodeList_idJobCode(jobCodeId, paging);
+        return new PaginationUtil<>(compositeRolesPage, CompositeRoleEntity.class);
+    }
+
+    public Long countCompositeRoleByJobCodeId(Long jobCodeId) {
+        boolean jobCodeExists = jobCodeRepository.existsById(jobCodeId);
+        if (!jobCodeExists) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "JobCodeId: " + jobCodeId + " not found");
+        }
         return compositeRoleRepository.countByJobCodeList_idJobCode(jobCodeId);
     }
-
-    public List<CompositeRoleResponDTO> getCompositeRoleByJobCodeId(Long jobCodeId) {
-        List<CompositeRoleEntity> compositeRoles = compositeRoleRepository.findByJobCodeList_idJobCode(jobCodeId);
-        return compositeRoles.stream()
-                .map(this::compositeRoleRespon)
-                .collect(Collectors.toList());
-    }
-
 }

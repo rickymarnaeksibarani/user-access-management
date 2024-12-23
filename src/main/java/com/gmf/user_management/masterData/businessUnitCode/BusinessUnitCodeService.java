@@ -119,16 +119,15 @@ public class BusinessUnitCodeService {
         }
     }
 
-    public List<BusinessUnitCodeResponDTO> getBusinessUnitCodeByDinas(String dinas) {
+    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeEntity> getBusinessUnitCodeByDinas(String dinas, Integer page, Integer size) {
         try {
-            List<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findByDinas(dinas);
-            if (businessUnitCodes.isEmpty()) {
+            Pageable paging = PageRequest.of(page-1, size);
+            Page<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findByDinas(dinas, paging);
+            if (businessUnitCodes.isEmpty()){
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No business unit codes found for the given dinas");
             }
 
-            return businessUnitCodes.stream()
-                    .map(this::businessRespone)
-                    .collect(Collectors.toList());
+            return new PaginationUtil<>(businessUnitCodes, BusinessUnitCodeEntity.class);
         }catch (Exception e){
             throw new RuntimeException(e);
         }

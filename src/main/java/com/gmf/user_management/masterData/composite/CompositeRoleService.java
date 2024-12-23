@@ -67,7 +67,6 @@ public class CompositeRoleService {
         compositeRoleRepository.deleteById(idCompositeRole);
         return true;
     }
-
     private CompositeRoleEntity compositePayload(CompositeRoleDTO request, CompositeRoleEntity compositeRole) {
         List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(request.getJobCodeList());
         if (allJobCode.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Job Code not found");
@@ -77,7 +76,6 @@ public class CompositeRoleService {
         compositeRole.setUpdatedBy(request.getUpdatedBy());
         return compositeRole;
     }
-//todo: jobCodeList
     public PaginationUtil<CompositeRoleEntity, CompositeRoleEntity> getAllCompositeRole(Integer page, Integer size, CompositeRoleRequestDTO requestDto) {
         Pageable paging = PageRequest.of(page - 1, size);
         Specification<CompositeRoleEntity> specs = Specification.where(CompositeRolePredicate.searchTerm(requestDto.getSearchTerm()));

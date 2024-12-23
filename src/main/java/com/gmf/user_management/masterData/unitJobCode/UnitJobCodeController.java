@@ -19,7 +19,7 @@ public class UnitJobCodeController {
     @Autowired
     private UnitJobCodeService unitJobCodeService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>> createUnitJobCode(
             @RequestBody @Valid UnitJobCodeDTO request
     ){
@@ -61,7 +61,7 @@ public class UnitJobCodeController {
                 .toResponse();
     }
 
-    @GetMapping("/by-id/{idUnitJobCode}")
+    @GetMapping(value = "/by-id/{idUnitJobCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>>getUnitJobCodeById(
             @PathVariable @IsNumeric @IsRequired Long idUnitJobCode
     ){
@@ -80,7 +80,7 @@ public class UnitJobCodeController {
                 .toResponse();
     }
 
-    @GetMapping("/unit-ids/by-job-code/{jobCodeId}")
+    @GetMapping(value = "/unit-ids/by-job-code/{jobCodeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<int[]>> getUnitIdsByJobCodeId(
             @PathVariable Long jobCodeId) {
         int[] unitIds = unitJobCodeService.getUnitIdByJobCodeId(jobCodeId);

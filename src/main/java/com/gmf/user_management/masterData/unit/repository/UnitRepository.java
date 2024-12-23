@@ -4,11 +4,8 @@ import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnit
 import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -19,5 +16,5 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
 
     List<UnitEntity> findByIdUnitIsIn(Collection<Long> id);
 
-    List<UnitEntity> findByBusinessUnitCodeListContains(BusinessUnitCodeEntity businessUnitCode);
+    Page<UnitEntity> findByBusinessUnitCodeListContains(BusinessUnitCodeEntity businessUnitCode, Pageable pageable);
 }

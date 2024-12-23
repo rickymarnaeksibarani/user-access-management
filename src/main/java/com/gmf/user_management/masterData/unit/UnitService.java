@@ -64,21 +64,12 @@ public class UnitService {
         return true;
     }
 
-    public List<UnitResponDto> getUnitByBusinessUnitCodeId(Long businessUnitCodeId)  {
+    public PaginationUtil<UnitEntity, UnitEntity> getUnitByBusinessUnitCodeId(Long businessUnitCodeId, Integer page, Integer size)  {
+        Pageable paging = PageRequest.of(page -1 , size);
         BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(businessUnitCodeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business Unit Code not found"));
-        List<UnitEntity> units = unitRepository.findByBusinessUnitCodeListContains(businessUnitCode);
-
-        List<UnitResponDto> unitResponses = new ArrayList<>();
-        for (UnitEntity unit : units) {
-            try {
-                unitResponses.add(unitRespon(unit));
-            } catch (JsonProcessingException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing unit data", e);
-            }
-        }
-
-        return unitResponses;
+        Page<UnitEntity> units = unitRepository.findByBusinessUnitCodeListContains(businessUnitCode, paging);
+        return new PaginationUtil<>(units, UnitEntity.class);
     }
 
 

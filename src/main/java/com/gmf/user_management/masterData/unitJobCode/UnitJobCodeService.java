@@ -103,6 +103,7 @@ public class UnitJobCodeService {
     }
 
     public int[] getJobCodeIdByUnitId(Long unitId) {
+        // TODO: 19/12/2024 > make it to pagination!!
         List<UnitJobCodeEntity> unitJobCodes = unitJobCodeRepository.findByUnitList_IdUnit(unitId);
         return unitJobCodes.stream()
                 .flatMap(unitJobCode -> unitJobCode.getJobCodeList().stream()
@@ -114,12 +115,13 @@ public class UnitJobCodeService {
     }
 
     public int[] getUnitIdByJobCodeId(Long jobCodeId) {
+        // TODO: 19/12/2024 > make it to pagination!!
         List<UnitJobCodeEntity> entities = unitJobCodeRepository.findByJobCodeList_IdJobCode(jobCodeId);
         return entities.stream()
                 .flatMap(entity -> entity.getUnitList().stream())
                 .map(UnitEntity::getIdUnit)
-                .mapToInt(Long::intValue) // Convert Long to int
-                .distinct() // Ensure unique unit IDs
+                .mapToInt(Long::intValue)
+                .distinct()
                 .toArray();
     }
 

@@ -4,6 +4,7 @@ import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeP
 import com.gmf.user_management.masterData.businessUnitCode.entities.BusinessUnitCodeEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,5 +17,5 @@ import java.util.List;
 public interface BusinessUnitCodeRepository extends JpaRepository<BusinessUnitCodeEntity, Long>, JpaSpecificationExecutor<BusinessUnitCodeEntity> {
     List<BusinessUnitCodeEntity> findByIdBusinessUnitCodeIsIn(List<Long> id);
 
-    List<BusinessUnitCodeEntity> findByDinas(String dinas);
+    Page<BusinessUnitCodeEntity> findByDinas(String dinas, Pageable pageable);
 }

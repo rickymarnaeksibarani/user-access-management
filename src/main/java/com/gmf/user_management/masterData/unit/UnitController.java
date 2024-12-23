@@ -1,11 +1,13 @@
 package com.gmf.user_management.masterData.unit;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.unit.dto.UnitDTO;
 import com.gmf.user_management.masterData.unit.dto.UnitRequestDto;
 import com.gmf.user_management.masterData.unit.dto.UnitResponDto;
+import com.gmf.user_management.masterData.unit.entities.UnitEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -23,7 +24,7 @@ public class UnitController {
     @Autowired
     private UnitService unitService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitResponDto>> createUnit(
             @RequestBody @Valid UnitDTO request
     ) throws Exception {
@@ -76,11 +77,13 @@ public class UnitController {
                 .toResponse();
     }
 
-    @GetMapping("/by-business-unit-code/{businessUnitCodeId}")
-    public ResponseEntity<HttpResponseDTO<List<UnitResponDto>>> getUnitByBusinessUnitCodeId(
-            @PathVariable Long businessUnitCodeId
+    @GetMapping(value = "/by-business-unit-code/{businessUnitCodeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<UnitEntity, UnitEntity>>> getUnitByBusinessUnitCodeId(
+            @PathVariable Long businessUnitCodeId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
-        List<UnitResponDto> units = unitService.getUnitByBusinessUnitCodeId(businessUnitCodeId);
+        PaginationUtil<UnitEntity, UnitEntity> units = unitService.getUnitByBusinessUnitCodeId(businessUnitCodeId, page, size);
         return new HttpResponseDTO<>(units, HttpStatus.OK)
                 .setResponseHeaders("businessUnitCodeId", businessUnitCodeId)
                 .toResponse();

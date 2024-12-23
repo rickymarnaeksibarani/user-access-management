@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
 @RestController
@@ -27,7 +28,7 @@ public class JobCodeController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<JobCodeResponeDTO>>createJobCode(
             @RequestBody @Valid JobCodeDTO request
-    ) throws Exception {
+    ){
         JobCodeResponeDTO response = jobCodeService.createJobCode(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
                 .setResponseHeaders("request", response)
@@ -39,7 +40,7 @@ public class JobCodeController {
     public ResponseEntity<HttpResponseDTO<JobCodeResponeDTO>> updateJobCode(
             @PathVariable Long id_job_code,
             @RequestBody @Valid JobCodeDTO request
-    ) throws Exception {
+    ){
         JobCodeResponeDTO response = jobCodeService.updateJobCode(id_job_code, request);
         return new HttpResponseDTO<>(response,HttpStatus.OK)
                 .setResponseHeaders("request", response)
@@ -71,7 +72,7 @@ public class JobCodeController {
 
     }
 
-    @GetMapping("/by-id/{id_job_code}")
+    @GetMapping(value = "/by-id/{id_job_code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<JobCodeResponeDTO>>getJobCodeById(
             @PathVariable @IsNumeric @IsRequired Long id_job_code
     )throws NotFoundException {

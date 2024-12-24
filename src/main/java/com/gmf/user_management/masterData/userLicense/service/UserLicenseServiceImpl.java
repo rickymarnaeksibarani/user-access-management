@@ -1,6 +1,7 @@
 package com.gmf.user_management.masterData.userLicense.service;
 
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.masterData.applicationLicense.repository.ApplicationLicenseRepository;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
@@ -10,6 +11,9 @@ import com.gmf.user_management.masterData.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.masterData.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.masterData.userLicense.repository.UserLicenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -68,20 +72,20 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    public UserLicenseResponeDTO[] getPersonalIdByApplicationLicenseId(Long applicationLicenseId) {
+    public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getPersonalIdByApplicationLicenseId(Long applicationLicenseId, Integer page, Integer size) {
         // TODO: 17/12/2024 : filter application name, licenseType, searchByName 
-        // TODO: 17/12/2024 : pagination 
-        List<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByApplicationLicenseList_IdApplicationLicense(applicationLicenseId);
+        // TODO: 17/12/2024 : pagination
+        Pageable paging = PageRequest.of(page-1, size);
+        Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByApplicationLicenseList_IdApplicationLicense(applicationLicenseId, paging);
         if (userLicenseEntities.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user licenses found for the given application license ID");
         }
-        return userLicenseEntities.stream()
-                .map(this::userLicenseResponeDTO)
-                .toArray(UserLicenseResponeDTO[]::new);
+        return new PaginationUtil<>(userLicenseEntities, UserLicenseEntity.class);
     }
 
     @Override
     public UserLicenseResponeDTO[] getApplicationLicenseIdByUserId(Long idUserLicense) {
+        // TODO: 17/12/2024 : PAGINATION
         List<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByPersonalList_IdPersonal(idUserLicense);
         if (userLicenseEntities.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user licenses found for the given user ID");

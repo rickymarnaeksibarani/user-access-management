@@ -1,10 +1,12 @@
 package com.gmf.user_management.masterData.unitJobCode;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeDTO;
 import com.gmf.user_management.masterData.unitJobCode.dto.UnitJobCodeResponDTO;
+import com.gmf.user_management.masterData.unitJobCode.entities.UnitJobCodeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -71,29 +73,34 @@ public class UnitJobCodeController {
     }
 
     @GetMapping(value = "/job-codes/by-unit/{unitId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<int[]>> getJobCodeIdByUnitId(
-            @PathVariable Long unitId
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<UnitJobCodeEntity, UnitJobCodeEntity>>> getJobCodeIdByUnitId(
+            @PathVariable Long unitId,
+            @RequestParam(defaultValue = "1")Integer page,
+            @RequestParam(defaultValue = "10")Integer size
     ) {
-        int[] jobCodeIds = unitJobCodeService.getJobCodeIdByUnitId(unitId);
+        PaginationUtil<UnitJobCodeEntity, UnitJobCodeEntity> jobCodeIds = unitJobCodeService.getJobCodeIdByUnitId(unitId, page, size);
         return new HttpResponseDTO<>(jobCodeIds, HttpStatus.OK)
                 .setResponseHeaders("unitId", unitId)
                 .toResponse();
     }
 
     @GetMapping(value = "/unit-ids/by-job-code/{jobCodeId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<int[]>> getUnitIdsByJobCodeId(
-            @PathVariable Long jobCodeId) {
-        int[] unitIds = unitJobCodeService.getUnitIdByJobCodeId(jobCodeId);
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<UnitJobCodeEntity, UnitJobCodeEntity>>> getUnitIdsByJobCodeId(
+            @PathVariable Long jobCodeId,
+            @RequestParam(defaultValue = "1")Integer page,
+            @RequestParam(defaultValue = "10")Integer size
+    ){
+        PaginationUtil<UnitJobCodeEntity, UnitJobCodeEntity> unitIds = unitJobCodeService.getUnitIdByJobCodeId(jobCodeId, page, size);
         return new HttpResponseDTO<>(unitIds, HttpStatus.OK)
                 .setResponseHeaders("unitIds", unitIds)
                 .toResponse();
     }
 
-    @GetMapping("/count-job-codes-by-unit/{unitId}")
-    public ResponseEntity<Integer> countJobCodesByUnitId(@PathVariable Long unitId) {
-        int count = unitJobCodeService.countJobCodeByUnitId(unitId);
-        return ResponseEntity.ok(count);
-    }
+//    @GetMapping("/count-job-codes-by-unit/{unitId}")
+//    public ResponseEntity<Integer> countJobCodesByUnitId(@PathVariable Long unitId) {
+//        int count = unitJobCodeService.countJobCodeByUnitId(unitId);
+//        return ResponseEntity.ok(count);
+//    }
 
 
 }

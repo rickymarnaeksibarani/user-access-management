@@ -22,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -85,7 +84,7 @@ public class UnitService {
 
     public PaginationUtil<UnitEntity, UnitResponDto> getAllUnit(Integer page, Integer size, UnitRequestDto requestDto) {
         Pageable paging = PageRequest.of(page -1 ,size);
-        Specification<UnitEntity> specs = Specification.where(UnitPredicate.searchTerm(requestDto.getSearchTerm()));
+        Specification<UnitEntity> specs = Specification.where(UnitPredicate.unit(requestDto.getUnit()));
         Page<UnitEntity> pages = unitRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, UnitResponDto.class);
     }

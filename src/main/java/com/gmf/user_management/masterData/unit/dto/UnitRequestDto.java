@@ -8,5 +8,5 @@ import lombok.Data;
 @Builder
 public class UnitRequestDto {
     @Sanitizer
-    private String searchTerm;
+    private String unit;
 }

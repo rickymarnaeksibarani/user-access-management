@@ -49,15 +49,15 @@ public class UserLicenseController {
                 .toResponse();
     }
 
-    @GetMapping(value = "/personal/{applicationLicenseId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO[]>> getPersonalIdByApplicationLicenseId(
-            @PathVariable Long applicationLicenseId
-    ) {
-        UserLicenseResponeDTO[] response = userLicenseService.getPersonalIdByApplicationLicenseId(applicationLicenseId);
-        return new HttpResponseDTO<>(response, HttpStatus.OK)
-                .setResponseHeaders("applicationLicenseId", applicationLicenseId)
-                .toResponse();
-    }
+//    @GetMapping(value = "/personal/{applicationLicenseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<HttpResponseDTO<PaginationUtil<UserLicenseEntity, UserLicenseEntity>>> getPersonalIdByApplicationLicenseId(
+//            @PathVariable Long applicationLicenseId,
+//    ) {
+//        UserLicenseResponeDTO[] response = userLicenseService.getPersonalIdByApplicationLicenseId(applicationLicenseId);
+//        return new HttpResponseDTO<>(response, HttpStatus.OK)
+//                .setResponseHeaders("applicationLicenseId", applicationLicenseId)
+//                .toResponse();
+//    }
 
     @GetMapping(value = "/application/{idUserLicense}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO[]>> getApplicationLicenseIdByUserId(

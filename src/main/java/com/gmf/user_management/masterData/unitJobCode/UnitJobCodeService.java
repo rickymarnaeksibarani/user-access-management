@@ -102,35 +102,25 @@ public class UnitJobCodeService {
         return respone;
     }
 
-    public int[] getJobCodeIdByUnitId(Long unitId) {
-        // TODO: 19/12/2024 > make it to pagination!!
-        List<UnitJobCodeEntity> unitJobCodes = unitJobCodeRepository.findByUnitList_IdUnit(unitId);
-        return unitJobCodes.stream()
-                .flatMap(unitJobCode -> unitJobCode.getJobCodeList().stream()
-                        .map(JobCodeEntity::getIdJobCode))
-                .mapToInt(Long::intValue)
-                .distinct()
-                .toArray();
-
+    public PaginationUtil<UnitJobCodeEntity, UnitJobCodeEntity> getJobCodeIdByUnitId(Long unitId, Integer page, Integer size) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<UnitJobCodeEntity> pages = unitJobCodeRepository.findByUnitList_IdUnit(unitId, paging);
+        return new PaginationUtil<>(pages, UnitJobCodeEntity.class);
     }
 
-    public int[] getUnitIdByJobCodeId(Long jobCodeId) {
-        // TODO: 19/12/2024 > make it to pagination!!
-        List<UnitJobCodeEntity> entities = unitJobCodeRepository.findByJobCodeList_IdJobCode(jobCodeId);
-        return entities.stream()
-                .flatMap(entity -> entity.getUnitList().stream())
-                .map(UnitEntity::getIdUnit)
-                .mapToInt(Long::intValue)
-                .distinct()
-                .toArray();
+
+    public PaginationUtil<UnitJobCodeEntity, UnitJobCodeEntity> getUnitIdByJobCodeId(Long jobCodeId, Integer page, Integer size){
+        Pageable paging = PageRequest.of(page -1, size);
+        Page<UnitJobCodeEntity>pages = unitJobCodeRepository.findByJobCodeList_IdJobCode(jobCodeId, paging);
+        return new PaginationUtil<>(pages, UnitJobCodeEntity.class);
     }
 
-    public int countJobCodeByUnitId(Long unitId) {
-        List<UnitJobCodeEntity> unitJobCodes = unitJobCodeRepository.findByUnitList_IdUnit(unitId);
-        return unitJobCodes.stream()
-                .mapToInt(unitJobCode -> unitJobCode.getJobCodeList().size())
-                .sum();
-    }
+//    public int countJobCodeByUnitId(Long unitId) {
+//        List<UnitJobCodeEntity> unitJobCodes = unitJobCodeRepository.findByUnit_IdUnit(unitId);
+//        return unitJobCodes.stream()
+//                .mapToInt(unitJobCode -> unitJobCode.getJobCodeList().size())
+//                .sum();
+//    }
 
 
 }

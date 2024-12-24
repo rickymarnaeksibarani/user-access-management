@@ -93,7 +93,7 @@ public class BusinessUnitCodeService {
         return businessUnitCodeEntity;
     }
 
-    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeResponDTO> getAllBusinessUnitCode(Integer page, Integer size, BusinessUnitCodeRequestDto requestDto) {
+    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeEntity> getAllBusinessUnitCode(Integer page, Integer size, BusinessUnitCodeRequestDto requestDto) {
         try {
             Pageable paging = PageRequest.of(page -1, size);
             Specification<BusinessUnitCodeEntity> specification = Specification
@@ -101,7 +101,7 @@ public class BusinessUnitCodeService {
                     .and(BusinessUnitCodePredicate.dinas(requestDto.getDinas()))
                     .and(BusinessUnitCodePredicate.searchNamePartner(requestDto.getPartnerName()));
             Page<BusinessUnitCodeEntity> businessUnitCodes = businessUnitCodeRepository.findAll(specification, paging);
-            return new PaginationUtil<>(businessUnitCodes, BusinessUnitCodeResponDTO.class);
+            return new PaginationUtil<>(businessUnitCodes, BusinessUnitCodeEntity.class);
         } catch (Exception e) {
             throw new RuntimeException("Error while retrieving all Business Unit Codes", e);
         }

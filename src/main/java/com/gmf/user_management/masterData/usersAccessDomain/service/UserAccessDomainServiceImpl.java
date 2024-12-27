@@ -1,6 +1,5 @@
 package com.gmf.user_management.masterData.usersAccessDomain.service;
 
-import com.gmf.user_management.core.enums.HashEnum;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PasswordUtil;
 import com.gmf.user_management.masterData.personal.entities.PersonalEntity;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.*;
 import java.util.List;
 
 @Service
@@ -66,7 +64,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     }
 
     @Override
-    public UserAccessDomainResponDTO getUserAccessDomainByPersonalId(Long personalId, UserAccessDomainDTO request) throws NotFoundException {
+    public UserAccessDomainResponDTO getUserAccessDomainByPersonalId(Long personalId, UserAccessDomainDTO request){
             PersonalEntity personal = personalRepository.findById(personalId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal ID not found"));
             UserAccessDomainEntity userAccessDomainEntity = uadRepository.findByPersonalListContaining(personal)

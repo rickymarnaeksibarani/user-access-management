@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class CompositeRoleService {
-
+    
     @Autowired
     private CompositeRoleRepository compositeRoleRepository;
     @Autowired

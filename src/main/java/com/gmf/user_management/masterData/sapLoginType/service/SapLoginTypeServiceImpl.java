@@ -66,6 +66,8 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
         return true;
     }
 
+
+
     @Override
     public PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO> getAllSapLoginType(Integer page, Integer size, SapLoginTypeRequest requestDTO) {
         Pageable paging = PageRequest.of(page -1, size);
@@ -76,9 +78,8 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
     
     @Override
     public SapLoginTypeResponDTO getSapLoginTypeById(Long idSapLoginType) throws NotFoundException {
-        SapLoginTypeEntity sapLoginTypeEntity = JpaResultHelperUtil.getSingleResultFromOptional(sapLoginTypeRepository.findById(idSapLoginType));
-        if (sapLoginTypeEntity == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
-        return ObjectMapperUtil.map(sapLoginTypeEntity, SapLoginTypeResponDTO.class);
+        SapLoginTypeEntity sapLoginTypeEntity = sapLoginTypeRepository.findById(idSapLoginType).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+        return sapLoginTypeResponDTO(sapLoginTypeEntity);
     }
 
     private SapLoginTypeEntity sapLoginTypePayload(SapLoginTypeDTO sapLoginTypeDTO, SapLoginTypeEntity sapLoginTypeEntity){

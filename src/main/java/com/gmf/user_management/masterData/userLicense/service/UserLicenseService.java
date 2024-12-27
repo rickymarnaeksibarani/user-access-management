@@ -11,6 +11,6 @@ public interface UserLicenseService {
     UserLicenseResponeDTO updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto) throws NotFoundException;
     Boolean deleteUserLicense(Long idUserLicense)throws NotFoundException;
     PaginationUtil<UserLicenseEntity, UserLicenseEntity> getPersonalIdByApplicationLicenseId(Long applicationLicenseId, Integer page, Integer size);
-    UserLicenseResponeDTO[] getApplicationLicenseIdByUserId(Long idUserLicense);
+    PaginationUtil<UserLicenseEntity, UserLicenseEntity> getApplicationLicenseIdByUserId(Long idUserLicense,  Integer page, Integer size);
 
 }

@@ -13,5 +13,5 @@ import java.util.List;
 public interface UserLicenseRepository extends JpaRepository<UserLicenseEntity, Long>, JpaSpecificationExecutor<UserLicenseEntity> {
     Page<UserLicenseEntity> findByApplicationLicenseList_IdApplicationLicense(Long applicationLicenseId, Pageable pageable);
 
-    List<UserLicenseEntity> findByPersonalList_IdPersonal(Long idUserLicense);
+    Page<UserLicenseEntity> findByPersonalList_IdPersonal(Long idUserLicense, Pageable pageable);
 }

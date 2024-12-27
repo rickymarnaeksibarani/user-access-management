@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -74,7 +73,6 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     @Override
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getPersonalIdByApplicationLicenseId(Long applicationLicenseId, Integer page, Integer size) {
         // TODO: 17/12/2024 : filter application name, licenseType, searchByName 
-        // TODO: 17/12/2024 : pagination
         Pageable paging = PageRequest.of(page-1, size);
         Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByApplicationLicenseList_IdApplicationLicense(applicationLicenseId, paging);
         if (userLicenseEntities.isEmpty()) {
@@ -84,15 +82,13 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    public UserLicenseResponeDTO[] getApplicationLicenseIdByUserId(Long idUserLicense) {
-        // TODO: 17/12/2024 : PAGINATION
-        List<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByPersonalList_IdPersonal(idUserLicense);
+    public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getApplicationLicenseIdByUserId(Long idUserLicense, Integer page, Integer size) {
+        Pageable pages = PageRequest.of(page-1, size);
+        Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByPersonalList_IdPersonal(idUserLicense, pages);
         if (userLicenseEntities.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user licenses found for the given user ID");
         }
-        return userLicenseEntities.stream()
-                .map(this::userLicenseResponeDTO)
-                .toArray(UserLicenseResponeDTO[]::new);
+        return new PaginationUtil<>(userLicenseEntities, UserLicenseEntity.class);
     }
 
 

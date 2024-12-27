@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
 @RestController
@@ -68,7 +69,7 @@ public class SapLoginTypeController {
     }
 
 
-    @GetMapping("/by-id/{idSapLoginType}")
+    @GetMapping(value = "/by-id/{idSapLoginType}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<SapLoginTypeResponDTO>> getSapLoginTypeById(
             @PathVariable @IsNumeric @IsRequired Long idSapLoginType
     )throws NotFoundException {

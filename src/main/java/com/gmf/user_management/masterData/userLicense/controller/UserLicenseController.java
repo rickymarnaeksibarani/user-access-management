@@ -2,8 +2,10 @@ package com.gmf.user_management.masterData.userLicense.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.userLicense.dto.UserLicenseDTO;
 import com.gmf.user_management.masterData.userLicense.dto.UserLicenseResponeDTO;
+import com.gmf.user_management.masterData.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.masterData.userLicense.service.UserLicenseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,10 +62,12 @@ public class UserLicenseController {
 //    }
 
     @GetMapping(value = "/application/{idUserLicense}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO[]>> getApplicationLicenseIdByUserId(
-            @PathVariable Long idUserLicense
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<UserLicenseEntity, UserLicenseEntity>>> getApplicationLicenseIdByUserId(
+            @PathVariable Long idUserLicense,
+            @RequestParam(defaultValue = "1")Integer page,
+            @RequestParam(defaultValue = "10")Integer size
     ) {
-        UserLicenseResponeDTO[] response = userLicenseService.getApplicationLicenseIdByUserId(idUserLicense);
+        PaginationUtil<UserLicenseEntity, UserLicenseEntity> response = userLicenseService.getApplicationLicenseIdByUserId(idUserLicense, page, size);
         return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .setResponseHeaders("idUserLicense", idUserLicense)
                 .toResponse();

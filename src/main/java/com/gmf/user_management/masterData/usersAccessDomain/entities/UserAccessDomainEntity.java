@@ -13,12 +13,12 @@ import java.util.List;
 
 @Data
 @Entity
+@EntityListeners({AuditingEntityListener.class})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@EntityListeners({AuditingEntityListener.class})
 @Table(name = "tb_user_access_domain")
 public class UserAccessDomainEntity {
     @Id
@@ -54,4 +54,5 @@ public class UserAccessDomainEntity {
 
     @Column(name = "updated_by")
     private String updatedBy;
+
 }

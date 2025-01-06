@@ -55,12 +55,12 @@ public class LicenseTypeService {
         return true;
     }
 
-    public PaginationUtil<LicenseTypeEntity, LicenseTypeDTO> getAllLicenseType(Integer page, Integer size, LicenseTypeRequestDto requestDto) {
+    public PaginationUtil<LicenseTypeEntity, LicenseTypeEntity> getAllLicenseType(Integer page, Integer size, LicenseTypeRequestDto requestDto) {
         Pageable paging = PageRequest.of(page -1, size);
         Specification<LicenseTypeEntity> specs = Specification
                 .where(LicenseTypePredicate.searchTerm(requestDto.getSearchTerm()));
         Page<LicenseTypeEntity> pages = licenseTypeRespository.findAll(specs, paging);
-        return new PaginationUtil<>(pages, LicenseTypeDTO.class);
+        return new PaginationUtil<>(pages, LicenseTypeEntity.class);
     }
 
     private LicenseTypeEntity licenseTypePayload(LicenseTypeDTO request, LicenseTypeEntity licenseTypeEntity) {

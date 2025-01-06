@@ -21,7 +21,7 @@ public class UserLicenseController {
     @Autowired
     private UserLicenseServiceImpl userLicenseService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO>>createUserLicense(
             @RequestBody @Valid UserLicenseDTO request
             ){

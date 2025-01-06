@@ -235,7 +235,7 @@ public class PersonalServiceImpl implements PersonalService{
     private PersonalEntity personalPayload(PersonalDTO personalDTO, PersonalEntity personalEntity, List<ApplicationFileDTO> personalPicture) throws JsonProcessingException {
 
         List<LicenseTypeEntity> allLicenseType = licenseTypeRespository.findByIdLicenseTypeIsIn(personalDTO.getLicenseTypeList());
-        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
+//        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
         personalEntity.setLicenseTypeList(allLicenseType);
         personalEntity.setPersonalName(personalDTO.getPersonalName());
         personalEntity.setPersonalNumber(personalDTO.getPersonalNumber());

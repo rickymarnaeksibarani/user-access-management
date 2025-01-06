@@ -21,7 +21,7 @@ public class UserAccessDomainControllerImpl {
     @Autowired
     private UserAccessDomainService userAccessDomainService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>createUserAccessDomain(
             @RequestBody @Valid UserAccessDomainDTO request
     ){
@@ -52,7 +52,7 @@ public class UserAccessDomainControllerImpl {
                 .toResponse();
     }
 
-    @GetMapping("/by-id/{personal_id}")
+    @GetMapping(value = "/by-id/{personal_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>getUserAccessDomainByPersonalId(
             @PathVariable Long personal_id
     ) throws NotFoundException {

@@ -3,7 +3,7 @@ package com.gmf.user_management.masterData.personal.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
+import com.gmf.user_management.config.MultipleDataSourceConfiguration.service.DataSourceService;
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.storage.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;

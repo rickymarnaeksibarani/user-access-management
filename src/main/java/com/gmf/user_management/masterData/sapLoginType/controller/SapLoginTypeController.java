@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
 @RestController
@@ -44,7 +43,6 @@ public class SapLoginTypeController {
                 .toResponse();
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value ="/by-id/{idSapLoginType}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Boolean>> deleteSapLoginType(
             @PathVariable Long idSapLoginType

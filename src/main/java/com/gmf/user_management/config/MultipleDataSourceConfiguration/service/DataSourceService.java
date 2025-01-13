@@ -1,4 +1,4 @@
-package com.gmf.user_management.config.MultipleDataSourceConfiguration;
+package com.gmf.user_management.config.MultipleDataSourceConfiguration.service;
 
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.utils.PaginationUtil;
@@ -52,6 +52,20 @@ public class DataSourceService {
 
     public Map<String, Object> getContractById(Long contractId) {
         return externalRepository.findContractById(contractId);
+    }
+
+    public Map<String, Object> getPartnerByContractId(Long contractId) {
+        return externalRepository.findPartnerByContractId(contractId);
+    }
+
+    public List<Map<String, Object>> getByPartnerId(Long partnerId) {
+        List<Map<String, Object>> contracts = externalRepository.findByPartnerId(partnerId);
+
+        if (contracts.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No contracts found for the given partner ID.");
+        }
+
+        return contracts;
     }
 
 }

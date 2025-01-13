@@ -13,7 +13,7 @@ import java.util.List;
 public interface UnitJobCodeRepository extends JpaRepository<UnitJobCodeEntity, Long>, JpaSpecificationExecutor<UnitJobCodeEntity> {
     Page<UnitJobCodeEntity> findByJobCodeList_IdJobCode(Long jobCodeId, Pageable pageable);
     Page<UnitJobCodeEntity> findByUnitList_IdUnit(Long unitId, Pageable pageable);
-//    List<UnitJobCodeEntity> findByUnit_IdUnit(Long unitId);
+    List<UnitJobCodeEntity> findByUnitList_IdUnit(Long unitId);
 
 
 }

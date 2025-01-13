@@ -115,12 +115,16 @@ public class UnitJobCodeService {
         return new PaginationUtil<>(pages, UnitJobCodeEntity.class);
     }
 
-//    public int countJobCodeByUnitId(Long unitId) {
-//        List<UnitJobCodeEntity> unitJobCodes = unitJobCodeRepository.findByUnit_IdUnit(unitId);
-//        return unitJobCodes.stream()
-//                .mapToInt(unitJobCode -> unitJobCode.getJobCodeList().size())
-//                .sum();
-//    }
+    public Long countJobCodeByUnitId(Long unitId) {
+        try {
+            List<UnitJobCodeEntity> unitJobCodeEntities = unitJobCodeRepository.findByUnitList_IdUnit(unitId);
+            return unitJobCodeEntities.stream()
+                    .mapToLong(entity -> entity.getJobCodeList().size())
+                    .sum();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to count JobCodes for Unit ID: " + unitId, e);
+        }
+    }
 
 
 }

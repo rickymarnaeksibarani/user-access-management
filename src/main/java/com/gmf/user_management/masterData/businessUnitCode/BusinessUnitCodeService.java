@@ -1,6 +1,6 @@
 package com.gmf.user_management.masterData.businessUnitCode;
 
-import com.gmf.user_management.config.MultipleDataSourceConfiguration.DataSourceService;
+import com.gmf.user_management.config.MultipleDataSourceConfiguration.service.DataSourceService;
 import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.businessUnitCode.dto.BusinessUnitCodeDTO;

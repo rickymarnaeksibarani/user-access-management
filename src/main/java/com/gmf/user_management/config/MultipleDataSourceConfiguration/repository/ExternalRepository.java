@@ -106,4 +106,34 @@ public class ExternalRepository {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id Not found");
         }
     }
+
+    public Map<String, Object> findPartnerByContractId(Long contractId) {
+        String sql = """
+       SELECT p.id, partner_id, contract_id, n.name, c.subject, c.number, c.start, c.end, c.status
+       FROM partner_contracts p
+       LEFT JOIN contracts c ON c.id = p.contract_id
+       LEFT JOIN partners n ON n.id = p.partner_id
+       WHERE contract_id = ?
+    """;
+        try {
+            return jdbcTemplate.queryForMap(sql, contractId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id Not found");
+        }
+    }
+
+    public List<Map<String, Object>> findByPartnerId(Long partnerId) {
+        String sql = """
+           SELECT p.id, partner_id, contract_id, n.name, c.subject, c.number, c.start, c.end, c.status
+           FROM partner_contracts p
+           LEFT JOIN contracts c ON c.id = p.contract_id
+           LEFT JOIN partners n ON n.id = p.partner_id
+           WHERE p.partner_id = ?
+        """;
+        try {
+            return jdbcTemplate.queryForList(sql, partnerId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No contracts found for the provided partner_id");
+        }
+    }
 }

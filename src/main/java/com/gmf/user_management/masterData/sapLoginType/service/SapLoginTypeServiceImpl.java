@@ -1,8 +1,6 @@
 package com.gmf.user_management.masterData.sapLoginType.service;
 
 import com.gmf.user_management.core.exceptions.NotFoundException;
-import com.gmf.user_management.core.utils.JpaResultHelperUtil;
-import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.masterData.sapLoginType.dto.SapLoginTypeDTO;
 import com.gmf.user_management.masterData.sapLoginType.dto.SapLoginTypePredicate;

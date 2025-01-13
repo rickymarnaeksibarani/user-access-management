@@ -51,15 +51,17 @@ public class UserLicenseController {
                 .toResponse();
     }
 
-//    @GetMapping(value = "/personal/{applicationLicenseId}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<HttpResponseDTO<PaginationUtil<UserLicenseEntity, UserLicenseEntity>>> getPersonalIdByApplicationLicenseId(
-//            @PathVariable Long applicationLicenseId,
-//    ) {
-//        UserLicenseResponeDTO[] response = userLicenseService.getPersonalIdByApplicationLicenseId(applicationLicenseId);
-//        return new HttpResponseDTO<>(response, HttpStatus.OK)
-//                .setResponseHeaders("applicationLicenseId", applicationLicenseId)
-//                .toResponse();
-//    }
+    @GetMapping(value = "/personal/{applicationLicenseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<UserLicenseEntity, UserLicenseEntity>>> getPersonalIdByApplicationLicenseId(
+            @PathVariable Long applicationLicenseId,
+            @RequestParam(defaultValue = "1")Integer page,
+            @RequestParam(defaultValue = "10")Integer size
+    ) {
+        PaginationUtil<UserLicenseEntity, UserLicenseEntity> response = userLicenseService.getPersonalIdByApplicationLicenseId(applicationLicenseId, page, size);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("applicationLicenseId", applicationLicenseId)
+                .toResponse();
+    }
 
     @GetMapping(value = "/application/{idUserLicense}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<UserLicenseEntity, UserLicenseEntity>>> getApplicationLicenseIdByUserId(

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -95,12 +96,14 @@ public class UnitJobCodeController {
                 .setResponseHeaders("unitIds", unitIds)
                 .toResponse();
     }
-
-//    @GetMapping("/count-job-codes-by-unit/{unitId}")
-//    public ResponseEntity<Integer> countJobCodesByUnitId(@PathVariable Long unitId) {
-//        int count = unitJobCodeService.countJobCodeByUnitId(unitId);
-//        return ResponseEntity.ok(count);
-//    }
-
-
+    //todo: countJobCodesByUnitId
+    @GetMapping("/count-job-code-by-unit/{unitId}")
+    public ResponseEntity<Long> countJobCodeByUnitId(@PathVariable Long unitId) {
+        try {
+            Long jobCodeCount = unitJobCodeService.countJobCodeByUnitId(unitId);
+            return ResponseEntity.ok(jobCodeCount);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to count JobCodes for Unit ID: " + unitId, e);
+        }
+    }
 }

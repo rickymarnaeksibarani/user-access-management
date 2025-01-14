@@ -1,6 +1,6 @@
-package com.gmf.user_management.config.MultipleDataSourceConfiguration.service;
+package com.gmf.user_management.config.multipleDataSourceConfiguration.service;
 
-import com.gmf.user_management.config.MultipleDataSourceConfiguration.repository.ExternalRepository;
+import com.gmf.user_management.config.multipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

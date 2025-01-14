@@ -1,4 +1,4 @@
-package com.gmf.user_management.config.MultipleDataSourceConfiguration.repository;
+package com.gmf.user_management.config.multipleDataSourceConfiguration.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -1,6 +1,6 @@
-package com.gmf.user_management.config.MultipleDataSourceConfiguration.controller;
+package com.gmf.user_management.config.multipleDataSourceConfiguration.controller;
 
-import com.gmf.user_management.config.MultipleDataSourceConfiguration.service.DataSourceService;
+import com.gmf.user_management.config.multipleDataSourceConfiguration.service.DataSourceService;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

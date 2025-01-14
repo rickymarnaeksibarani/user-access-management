@@ -1,4 +1,4 @@
-package com.gmf.user_management.config.MultipleDataSourceConfiguration;
+package com.gmf.user_management.config.multipleDataSourceConfiguration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

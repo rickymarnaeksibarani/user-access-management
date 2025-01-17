@@ -26,6 +26,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ProcessingException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -152,6 +154,22 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
             return new ResponseEntity(appError, appError.getHttpStatus());
         }
 
+        if(exception instanceof BadRequestException) {
+            String errorMessage = "Bad Request: " + exception.getMessage();
+            log.error(errorMessage);
+            AppError appError = new AppError(HttpStatus.CONFLICT, errorMessage);
+            return new ResponseEntity(appError, appError.getHttpStatus());
+        }
+
+        if(exception instanceof ProcessingException) {
+            Throwable cause = exception.getCause();
+            if (cause instanceof BadRequestException) {
+                log.error("ProcessingException => {} {}", exception.getMessage(), exception.getStackTrace());
+                AppError appError = new AppError(HttpStatus.BAD_REQUEST, exception.getMessage());
+                return new ResponseEntity(appError, appError.getHttpStatus());
+            }
+
+        }
         log.error("GENERAL Exception caused here: {}", exception.toString());
         AppError appError = new AppError(HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity(appError, appError.getHttpStatus());

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/UserAccessDomain")
+@RequestMapping("/api/v1/userAccessDomain")
 @Validated
 public class UserAccessDomainControllerImpl {
     @Autowired

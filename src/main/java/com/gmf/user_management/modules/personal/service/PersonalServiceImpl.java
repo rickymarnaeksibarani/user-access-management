@@ -34,20 +34,31 @@ import java.util.*;
 @Service
 @Slf4j
 public class PersonalServiceImpl implements PersonalService{
-    @Autowired
-    private PersonalRepository personalRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private StorageService storageService;
-    @Autowired
-    private LicenseTypeRespository licenseTypeRespository;
-    @Autowired
-    private DataSourceService dataSourceService;
-    @Autowired
-    private ExternalRepository externalRepository;
+
+    //Dengan final, memastikan dependency tidak diubah setelah inisialisasi: https://medium.com/@dulanjayasandaruwan1998/spring-doesnt-recommend-autowired-anymore-05fc05309dad
+    private final PersonalRepository personalRepository;
+    private final ObjectMapper objectMapper;
+    private final StorageService storageService;
+    private final LicenseTypeRespository licenseTypeRespository;
+    private final DataSourceService dataSourceService;
+    private final ExternalRepository externalRepository;
     private final Date date = new Date();
     private final Long time = date.getTime();
+
+    // Constructor-based Dependency Injection
+    public PersonalServiceImpl(PersonalRepository personalRepository,
+                               ObjectMapper objectMapper,
+                               StorageService storageService,
+                               LicenseTypeRespository licenseTypeRespository,
+                               DataSourceService dataSourceService,
+                               ExternalRepository externalRepository){
+        this.personalRepository = personalRepository;
+        this.objectMapper = objectMapper;
+        this.storageService = storageService;
+        this.licenseTypeRespository = licenseTypeRespository;
+        this.dataSourceService = dataSourceService;
+        this.externalRepository = externalRepository;
+    }
 
     private PersonalResponDTO personalResponse(PersonalEntity personalEntity)throws JsonProcessingException {
         List<ApplicationFileDTO> img = objectMapper.readValue(personalEntity.getPersonalPicture(), new TypeReference<>(){});

@@ -18,8 +18,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
-    @Autowired
-    ApplicationLicenseRepository applicationLicenseRepository;
+
+    private final ApplicationLicenseRepository applicationLicenseRepository;
+    public ApplicationLicenseServiceImpl(ApplicationLicenseRepository applicationLicenseRepository){
+        this.applicationLicenseRepository = applicationLicenseRepository;
+    }
 
     private ApplicationLicenseResponDTO applicationLicenseResponDTO(ApplicationLicenseEntity applicationLicenseEntity){
         return ApplicationLicenseResponDTO.builder()

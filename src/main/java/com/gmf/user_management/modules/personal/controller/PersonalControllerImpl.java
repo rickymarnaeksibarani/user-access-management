@@ -28,8 +28,11 @@ import java.util.Objects;
 @Validated
 @Slf4j
 public class PersonalControllerImpl {
-    @Autowired
-    private PersonalService personalService;
+
+    private final PersonalService personalService;
+    public PersonalControllerImpl(PersonalService personalService){
+        this.personalService = personalService;
+    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> createPersonal(

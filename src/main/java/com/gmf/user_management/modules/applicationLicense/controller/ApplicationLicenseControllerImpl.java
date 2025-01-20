@@ -1,9 +1,11 @@
 package com.gmf.user_management.modules.applicationLicense.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
+import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseDTO;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseRequest;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseResponDTO;
+import com.gmf.user_management.modules.applicationLicense.service.ApplicationLicenseService;
 import com.gmf.user_management.modules.applicationLicense.service.ApplicationLicenseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +19,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/applicationLicense")
 //@Validated
 public class ApplicationLicenseControllerImpl {
-    @Autowired
-    private ApplicationLicenseServiceImpl applicationLicenseService;
+
+    private final ApplicationLicenseService applicationLicenseService;
+    public ApplicationLicenseControllerImpl(ApplicationLicenseServiceImpl applicationLicenseService){
+        this.applicationLicenseService = applicationLicenseService;
+    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<ApplicationLicenseResponDTO>> createLicense(
@@ -34,7 +39,7 @@ public class ApplicationLicenseControllerImpl {
     public ResponseEntity<HttpResponseDTO<ApplicationLicenseResponDTO>>updateLicense(
             @RequestBody @Valid ApplicationLicenseDTO request,
             @PathVariable Long idApplicationLicense
-    ) {
+    ) throws NotFoundException {
         ApplicationLicenseResponDTO responDTO = applicationLicenseService.updateLicense(idApplicationLicense, request);
         return new HttpResponseDTO<>(responDTO, HttpStatus.OK)
                 .setResponseHeaders("responDTO", responDTO)

@@ -25,12 +25,18 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class BusinessUnitCodeService {
-    @Autowired
-    private BusinessUnitCodeRepository businessUnitCodeRepository;
-    @Autowired
-    private DataSourceService dataSourceService;
-    @Autowired
-    private ExternalRepository externalRepository;
+
+    private final BusinessUnitCodeRepository businessUnitCodeRepository;
+    private final DataSourceService dataSourceService;
+    private final ExternalRepository externalRepository;
+
+    public BusinessUnitCodeService(BusinessUnitCodeRepository businessUnitCodeRepository,
+                                   DataSourceService dataSourceService,
+                                   ExternalRepository externalRepository){
+        this.businessUnitCodeRepository = businessUnitCodeRepository;
+        this.dataSourceService = dataSourceService;
+        this.externalRepository = externalRepository;
+    }
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         Map<String, Object> partnerExternal = null;

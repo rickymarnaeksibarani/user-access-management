@@ -1,6 +1,5 @@
 package com.gmf.user_management.config.keycloak.service;
 
-import com.gmf.user_management.core.utils.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;

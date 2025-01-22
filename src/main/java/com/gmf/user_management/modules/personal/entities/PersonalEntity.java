@@ -2,10 +2,7 @@ package com.gmf.user_management.modules.personal.entities;
 
 import com.gmf.user_management.core.enums.IdentityType;
 import com.gmf.user_management.core.enums.Status;
-import com.gmf.user_management.modules.businessUnitCode.entities.BusinessUnitCodeEntity;
-import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
-import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -39,15 +36,6 @@ public class PersonalEntity {
 
     @ManyToMany @JoinColumn(name = "license_type_id")
     private List<LicenseTypeEntity> licenseTypeList;
-
-    @ManyToMany @JoinColumn(name = "business_unit_code_id")
-    private List<BusinessUnitCodeEntity> businessUnitCodeList;
-
-    @ManyToMany @JoinColumn(name = "sap_login_type_id")
-    private List<SapLoginTypeEntity> sapLoginTypeList;
-
-    @ManyToMany @JoinColumn(name = "job_code_id")
-    private List<JobCodeEntity> jobCodeList;
 
     @Column(name = "personal_name")
     private String personalName;

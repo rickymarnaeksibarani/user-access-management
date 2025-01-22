@@ -7,7 +7,6 @@ import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.personal.dto.PersonalDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalResponDTO;
-import com.gmf.user_management.modules.personal.dto.SAPDTO;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.service.PersonalService;
 import lombok.RequiredArgsConstructor;
@@ -82,11 +81,6 @@ public class PersonalControllerImpl {
                 .toResponse();
     }
 
-    @GetMapping("/{personalId}/sda")
-    public ResponseEntity<SAPDTO> getSapByPersonalId(@PathVariable Long personalId) {
-        return ResponseEntity.ok(personalService.getSAPbyPersonalId(personalId));
-    }
-
     @GetMapping(value = "/by-number/{personalNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> getPersonalByPersonalNumber(
             @PathVariable String personalNumber
@@ -129,7 +123,7 @@ public class PersonalControllerImpl {
                     .setResponseHeaders("size", size)
                     .toResponse();
         } catch (ResponseStatusException e) {
-            throw e; // ResponseStatusException already provides proper HTTP status codes
+            throw e;
         } catch (Exception e) {
             log.error("Error occurred while fetching personal data", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,

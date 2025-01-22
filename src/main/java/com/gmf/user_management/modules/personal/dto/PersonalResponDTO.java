@@ -2,10 +2,7 @@ package com.gmf.user_management.modules.personal.dto;
 
 import com.gmf.user_management.core.enums.IdentityType;
 import com.gmf.user_management.core.enums.Status;
-import com.gmf.user_management.modules.businessUnitCode.entities.BusinessUnitCodeEntity;
-import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
-import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,9 +21,6 @@ public class PersonalResponDTO {
     private Long idPersonal;
     private Map<String, Object> partnerExternal;
     private List<LicenseTypeEntity> licenseTypeList;
-    private List<BusinessUnitCodeEntity> businessUnitCodeList;
-    private List<JobCodeEntity> jobCodeList;
-    private List<SapLoginTypeEntity> sapLoginTypeList;
     private String personalName;
     private String personalNumber;
     private List<ApplicationFileDTO> personalPicture;

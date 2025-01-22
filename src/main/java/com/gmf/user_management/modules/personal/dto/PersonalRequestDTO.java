@@ -17,6 +17,7 @@ public class PersonalRequestDTO {
     private String dinas;
     private String unit;
     private Boolean isPic;
+    private List<String> partnerName;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date startDate;

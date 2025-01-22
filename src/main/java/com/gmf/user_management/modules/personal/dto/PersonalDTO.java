@@ -31,15 +31,6 @@ public class PersonalDTO {
     @JsonProperty("licenseTypeList")
     private List<Long> licenseTypeList;
 
-    @JsonProperty("businessUnitCodeList")
-    private List<Long> businessUnitCodeList;
-
-    @JsonProperty("jobCodeList")
-    private List<Long> jobCodeList;
-
-    @JsonProperty("sapLoginTypeList")
-    private List<Long> sapLoginTypeList;
-
     @JsonProperty("personalName")
     private String personalName;
 

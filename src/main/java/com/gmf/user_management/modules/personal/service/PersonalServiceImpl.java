@@ -7,17 +7,11 @@ import com.gmf.user_management.config.multipleDataSourceConfiguration.repository
 import com.gmf.user_management.config.multipleDataSourceConfiguration.service.DataSourceService;
 import com.gmf.user_management.core.storage.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.modules.businessUnitCode.entities.BusinessUnitCodeEntity;
-import com.gmf.user_management.modules.businessUnitCode.repositories.BusinessUnitCodeRepository;
-import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
-import com.gmf.user_management.modules.jobCode.repositories.JobCodeRepository;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
 import com.gmf.user_management.modules.personal.dto.*;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.repository.PersonalRepository;
-import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
-import com.gmf.user_management.modules.sapLoginType.repository.SapLoginTypeRepository;
 import io.minio.ObjectWriteResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +30,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,12 +38,9 @@ public class PersonalServiceImpl implements PersonalService{
 
     //Dengan final, memastikan dependency tidak diubah setelah inisialisasi: https://medium.com/@dulanjayasandaruwan1998/spring-doesnt-recommend-autowired-anymore-05fc05309dad
     private final PersonalRepository personalRepository;
-    private final BusinessUnitCodeRepository businessUnitCodeRepository;
-    private final JobCodeRepository jobCodeRepository;
+    private final LicenseTypeRespository licenseTypeRespository;
     private final ObjectMapper objectMapper;
     private final StorageService storageService;
-    private final LicenseTypeRespository licenseTypeRespository;
-    private final SapLoginTypeRepository sapLoginTypeRepository;
     private final DataSourceService dataSourceService;
     private final ExternalRepository externalRepository;
     private final Date date = new Date();
@@ -70,9 +60,6 @@ public class PersonalServiceImpl implements PersonalService{
                 .idPersonal(personalEntity.getIdPersonal())
                 .partnerExternal(partnerExternal)
                 .licenseTypeList(personalEntity.getLicenseTypeList())
-                .businessUnitCodeList(personalEntity.getBusinessUnitCodeList())
-                .jobCodeList(personalEntity.getJobCodeList())
-                .sapLoginTypeList(personalEntity.getSapLoginTypeList())
                 .personalName(personalEntity.getPersonalName())
                 .personalNumber(personalEntity.getPersonalNumber())
                 .personalPicture(img)
@@ -144,6 +131,9 @@ public class PersonalServiceImpl implements PersonalService{
         Specification<PersonalEntity> specification = Specification
                 .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
                 .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
+                .and(PersonalPredicate.dinas(requestDTO.getDinas()))
+                .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
                 .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
 
         Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
@@ -155,54 +145,6 @@ public class PersonalServiceImpl implements PersonalService{
     public PersonalResponDTO getPersonalById(Long id_personal) throws JsonProcessingException {
         PersonalEntity personal = personalRepository.findById(id_personal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
         return personalResponse(personal);
-    }
-
-    //getSAPByPersonalId : sap > uid(personal), businessUnitCode, businessUnitCodeDescription, login type(sapLoginType), licenseType, jobPosition(jobCode
-    public SAPDTO getSAPbyPersonalId(Long personalId) {
-        PersonalEntity personalEntity = personalRepository.findById(personalId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal not found"));
-
-        //Get UID
-        String uid = personalEntity.getUid();
-
-        //Get Business Code
-        List<String> businessUnitCodes = personalEntity.getBusinessUnitCodeList()
-                .stream()
-                .map(BusinessUnitCodeEntity::getBusinessUnitCode)
-                .collect(Collectors.toList());
-
-        //Get Business Description
-        List<String> businessUnitDescriptions = personalEntity.getBusinessUnitCodeList()
-                .stream()
-                .map(BusinessUnitCodeEntity::getDescription)
-                .toList();
-
-        //Get Login Type
-        List<String> loginType = personalEntity.getSapLoginTypeList()
-                .stream()
-                .map(SapLoginTypeEntity::getLoginType)
-                .toList();
-
-        //Get LicenseType
-        List<String> licenseTypes = personalEntity.getLicenseTypeList()
-                .stream()
-                .map(LicenseTypeEntity::getLicenseName)
-                .toList();
-
-        //Get JobCode
-        List<String> jobPositions = personalEntity.getJobCodeList()
-                .stream()
-                .map(JobCodeEntity::getJobCode)
-                .toList();
-
-        return SAPDTO.builder()
-                .uid(uid)
-                .businessUnitCodes(businessUnitCodes)
-                .businessUnitDescriptions(businessUnitDescriptions)
-                .sapLoginTypes(loginType)
-                .licenseTypes(licenseTypes)
-                .jobPositions(jobPositions)
-                .build();
     }
 
     @Override
@@ -295,13 +237,7 @@ public class PersonalServiceImpl implements PersonalService{
 
         List<LicenseTypeEntity> allLicenseType = licenseTypeRespository.findByIdLicenseTypeIsIn(personalDTO.getLicenseTypeList());
 //        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
-        List<BusinessUnitCodeEntity> allBusinessUnitCodes = businessUnitCodeRepository.findByIdBusinessUnitCodeIsIn(personalDTO.getBusinessUnitCodeList());
-        List<JobCodeEntity> allJobCodes = jobCodeRepository.findByIdJobCodeIsIn(personalDTO.getJobCodeList());
-        List<SapLoginTypeEntity> sapLoginTypes = sapLoginTypeRepository.findByIdSapLoginTypeIsIn(personalDTO.getSapLoginTypeList());
         personalEntity.setLicenseTypeList(allLicenseType);
-        personalEntity.setBusinessUnitCodeList(allBusinessUnitCodes);
-        personalEntity.setJobCodeList(allJobCodes);
-        personalEntity.setSapLoginTypeList(sapLoginTypes);
         personalEntity.setPersonalName(personalDTO.getPersonalName());
         personalEntity.setPersonalNumber(personalDTO.getPersonalNumber());
         personalEntity.setPersonalPicture(objectMapper.writeValueAsString(personalPicture));

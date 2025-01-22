@@ -4,6 +4,8 @@ import com.gmf.user_management.core.enums.Status;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +43,6 @@ public class PersonalPredicate {
         };
     }
 
-    //Get Personal by partnerId
     public static Specification<PersonalEntity> dinas(String filterByDinas) {
         return (root, query, criteriaBuilder) -> {
             if (filterByDinas != null && !filterByDinas.isEmpty()) {
@@ -101,5 +102,24 @@ public class PersonalPredicate {
             return criteriaBuilder.equal(root.get("partnerExternal"), partnerExternal);
         };
     }
+
+    public static Specification<PersonalEntity> searchNamePartner(List<String> partnerName) {
+        return (root, query, builder) -> {
+            if (partnerName != null && !partnerName.isEmpty()) {
+                List<Predicate> predicates = new ArrayList<>();
+                for (String name : partnerName) {
+                    predicates.add(
+                            builder.like(
+                                    builder.lower(root.get("partnerName")),
+                                    "%" + name.toLowerCase() + "%"
+                            )
+                    );
+                }
+                return builder.or(predicates.toArray(new Predicate[0]));
+            }
+            return builder.conjunction();
+        };
+    }
+
 
 }

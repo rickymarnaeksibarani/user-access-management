@@ -6,7 +6,6 @@ import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.personal.dto.PersonalDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalResponDTO;
-import com.gmf.user_management.modules.personal.dto.SAPDTO;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 
 import java.io.IOException;
@@ -23,5 +22,4 @@ public interface PersonalService {
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size) throws NotFoundException, JsonProcessingException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
     String countUIDByDinas();
-    SAPDTO getSAPbyPersonalId(Long personalId);
 }

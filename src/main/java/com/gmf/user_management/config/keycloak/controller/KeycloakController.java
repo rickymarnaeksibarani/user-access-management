@@ -1,9 +1,8 @@
 package com.gmf.user_management.config.keycloak.controller;
 
 import com.gmf.user_management.config.keycloak.service.KeycloakService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +11,10 @@ import java.util.Map;
 @RequestMapping("/keycloak")
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class KeycloakController {
 
-    @Autowired
-    private KeycloakService keycloakService;
+    private final KeycloakService keycloakService;
 
     @GetMapping("/users")
     public Map<String, Object> getAllUsers(

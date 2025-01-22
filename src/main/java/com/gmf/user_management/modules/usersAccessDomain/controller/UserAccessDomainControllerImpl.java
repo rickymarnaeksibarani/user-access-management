@@ -18,8 +18,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/userAccessDomain")
 @Validated
 public class UserAccessDomainControllerImpl {
-    @Autowired
-    private UserAccessDomainService userAccessDomainService;
+
+    private final UserAccessDomainService userAccessDomainService;
+    public UserAccessDomainControllerImpl(UserAccessDomainService userAccessDomainService){
+        this.userAccessDomainService = userAccessDomainService;
+    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UserAccessDomainResponDTO>>createUserAccessDomain(

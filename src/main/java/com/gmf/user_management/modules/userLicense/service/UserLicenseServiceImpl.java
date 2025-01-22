@@ -10,6 +10,7 @@ import com.gmf.user_management.modules.userLicense.dto.UserLicenseDTO;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.repository.UserLicenseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,13 +22,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserLicenseServiceImpl implements UserLicenseService{
-    @Autowired
-    private UserLicenseRepository userLicenseRepository;
-    @Autowired
-    private ApplicationLicenseRepository applicationLicenseRepository;
-    @Autowired
-    private PersonalRepository personalRepository;
+
+    private final UserLicenseRepository userLicenseRepository;
+    private final ApplicationLicenseRepository applicationLicenseRepository;
+    private final PersonalRepository personalRepository;
+
 
     private UserLicenseResponeDTO userLicenseResponeDTO(UserLicenseEntity userLicenseEntity){
         return UserLicenseResponeDTO.builder()

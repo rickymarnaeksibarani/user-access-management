@@ -7,6 +7,7 @@ import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.modules.licenseType.dto.LicenseTypeDTO;
 import com.gmf.user_management.modules.licenseType.dto.LicenseTypeRequestDto;
 import com.gmf.user_management.modules.licenseType.dto.LicenseTypeResponDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,9 +19,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/license_type")
+@RequiredArgsConstructor
 public class LicenseTypeController {
-    @Autowired
-    private LicenseTypeService licenseTypeService;
+
+    private final LicenseTypeService licenseTypeService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<LicenseTypeResponDTO>> createLicenseType(

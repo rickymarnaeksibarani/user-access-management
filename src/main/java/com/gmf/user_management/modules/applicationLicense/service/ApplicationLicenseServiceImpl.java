@@ -7,7 +7,7 @@ import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicense
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseResponDTO;
 import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.modules.applicationLicense.repository.ApplicationLicenseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@RequiredArgsConstructor
 public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
 
     private final ApplicationLicenseRepository applicationLicenseRepository;
-    public ApplicationLicenseServiceImpl(ApplicationLicenseRepository applicationLicenseRepository){
-        this.applicationLicenseRepository = applicationLicenseRepository;
-    }
 
     private ApplicationLicenseResponDTO applicationLicenseResponDTO(ApplicationLicenseEntity applicationLicenseEntity){
         return ApplicationLicenseResponDTO.builder()

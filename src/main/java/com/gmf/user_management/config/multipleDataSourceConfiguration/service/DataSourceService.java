@@ -2,7 +2,7 @@ package com.gmf.user_management.config.multipleDataSourceConfiguration.service;
 
 import com.gmf.user_management.config.multipleDataSourceConfiguration.repository.ExternalRepository;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,14 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class DataSourceService {
-    @Autowired
-    private ExternalRepository externalRepository;
 
-    @Autowired
-    public DataSourceService(ExternalRepository externalRepository){
-        this.externalRepository=externalRepository;
-    }
+    private final ExternalRepository externalRepository;
 
     public PaginationUtil<Map<String, Object>, Map<String, Object>> getExternalDataRelation(
             int page,

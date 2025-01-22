@@ -6,8 +6,7 @@ import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicense
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseRequest;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseResponDTO;
 import com.gmf.user_management.modules.applicationLicense.service.ApplicationLicenseService;
-import com.gmf.user_management.modules.applicationLicense.service.ApplicationLicenseServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +16,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/applicationLicense")
-//@Validated
+@RequiredArgsConstructor
 public class ApplicationLicenseControllerImpl {
 
     private final ApplicationLicenseService applicationLicenseService;
-    public ApplicationLicenseControllerImpl(ApplicationLicenseServiceImpl applicationLicenseService){
-        this.applicationLicenseService = applicationLicenseService;
-    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<ApplicationLicenseResponDTO>> createLicense(

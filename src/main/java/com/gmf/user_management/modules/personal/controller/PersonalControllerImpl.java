@@ -7,10 +7,11 @@ import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.personal.dto.PersonalDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalResponDTO;
+import com.gmf.user_management.modules.personal.dto.SAPDTO;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.service.PersonalService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,10 @@ import java.util.Objects;
 @RequestMapping("/api/v1/personal")
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 public class PersonalControllerImpl {
 
     private final PersonalService personalService;
-    public PersonalControllerImpl(PersonalService personalService){
-        this.personalService = personalService;
-    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PersonalResponDTO>> createPersonal(
@@ -81,6 +80,11 @@ public class PersonalControllerImpl {
         return new HttpResponseDTO<>(personalService.getPersonalById(id_personal), HttpStatus.OK)
                 .setResponseHeaders("id_personal", id_personal)
                 .toResponse();
+    }
+
+    @GetMapping("/{personalId}/sda")
+    public ResponseEntity<SAPDTO> getSapByPersonalId(@PathVariable Long personalId) {
+        return ResponseEntity.ok(personalService.getSAPbyPersonalId(personalId));
     }
 
     @GetMapping(value = "/by-number/{personalNumber}", produces = MediaType.APPLICATION_JSON_VALUE)

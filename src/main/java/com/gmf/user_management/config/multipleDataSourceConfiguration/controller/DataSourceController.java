@@ -2,7 +2,7 @@ package com.gmf.user_management.config.multipleDataSourceConfiguration.controlle
 
 import com.gmf.user_management.config.multipleDataSourceConfiguration.service.DataSourceService;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +14,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/get")
+@RequiredArgsConstructor
 public class DataSourceController {
-    @Autowired
-    private DataSourceService dataSourceService;
+
+    private final DataSourceService dataSourceService;
 
     @GetMapping(value = "/relationExternal", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaginationUtil<Map<String, Object>, Map<String, Object>>> getExternalDataRelation(

@@ -8,7 +8,7 @@ import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeRequest;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeResponDTO;
 import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import com.gmf.user_management.modules.sapLoginType.repository.SapLoginTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@RequiredArgsConstructor
 public class SapLoginTypeServiceImpl implements SapLoginTypeService{
 
-    @Autowired
-    private SapLoginTypeRepository sapLoginTypeRepository;
+    private final SapLoginTypeRepository sapLoginTypeRepository;
 
     private SapLoginTypeResponDTO sapLoginTypeResponDTO(SapLoginTypeEntity sapLoginTypeEntity){
         return SapLoginTypeResponDTO.builder()

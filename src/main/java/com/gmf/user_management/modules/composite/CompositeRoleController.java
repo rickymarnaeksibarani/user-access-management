@@ -9,6 +9,7 @@ import com.gmf.user_management.modules.composite.compositeDto.CompositeRoleDTO;
 import com.gmf.user_management.modules.composite.compositeDto.CompositeRoleRequestDTO;
 import com.gmf.user_management.modules.composite.compositeDto.CompositeRoleResponDTO;
 import com.gmf.user_management.modules.composite.compositeEntities.CompositeRoleEntity;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,10 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/api/v1/composite")
+@RequiredArgsConstructor
 public class CompositeRoleController {
 
-    @Autowired
-    private CompositeRoleService compositeRoleService;
+    private final CompositeRoleService compositeRoleService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<CompositeRoleResponDTO>> createCompositeRole(

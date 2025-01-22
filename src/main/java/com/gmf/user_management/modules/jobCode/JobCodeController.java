@@ -7,6 +7,7 @@ import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.modules.jobCode.dto.JobCodeDTO;
 import com.gmf.user_management.modules.jobCode.dto.JobCodeRequestDto;
 import com.gmf.user_management.modules.jobCode.dto.JobCodeResponeDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,10 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @RequestMapping("/api/v1/jobCode")
+@RequiredArgsConstructor
 public class JobCodeController {
-    @Autowired
-    private JobCodeService jobCodeService;
+
+    private final JobCodeService jobCodeService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)

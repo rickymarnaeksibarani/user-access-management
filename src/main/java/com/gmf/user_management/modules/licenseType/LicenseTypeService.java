@@ -7,6 +7,7 @@ import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.licenseType.dto.*;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,9 +22,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LicenseTypeService {
-    @Autowired
-    private LicenseTypeRespository licenseTypeRespository;
+
+    private final LicenseTypeRespository licenseTypeRespository;
 
     private LicenseTypeResponDTO licenseTypeRespon(LicenseTypeEntity licenseTypeEntity) {
         return LicenseTypeResponDTO.builder()

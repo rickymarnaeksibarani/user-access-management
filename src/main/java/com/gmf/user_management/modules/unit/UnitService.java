@@ -12,6 +12,7 @@ import com.gmf.user_management.modules.unit.dto.UnitRequestDto;
 import com.gmf.user_management.modules.unit.dto.UnitResponDto;
 import com.gmf.user_management.modules.unit.entities.UnitEntity;
 import com.gmf.user_management.modules.unit.repository.UnitRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,11 +27,11 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UnitService {
-    @Autowired
-    private UnitRepository unitRepository;
-    @Autowired
-    private BusinessUnitCodeRepository businessUnitCodeRepository;
+
+    private final UnitRepository unitRepository;
+    private final BusinessUnitCodeRepository businessUnitCodeRepository;
 
     private UnitResponDto unitRespon(UnitEntity unitEntity)throws JsonProcessingException {
         return UnitResponDto.builder()

@@ -7,6 +7,7 @@ import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeDTO;
 import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeResponDTO;
 import com.gmf.user_management.modules.unitJobCode.entities.UnitJobCodeEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,9 +19,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/unit-jobCode")
+@RequiredArgsConstructor
 public class UnitJobCodeController {
-    @Autowired
-    private UnitJobCodeService unitJobCodeService;
+
+    private final UnitJobCodeService unitJobCodeService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>> createUnitJobCode(
@@ -96,7 +98,6 @@ public class UnitJobCodeController {
                 .setResponseHeaders("unitIds", unitIds)
                 .toResponse();
     }
-    //todo: countJobCodesByUnitId
     @GetMapping("/count-job-code-by-unit/{unitId}")
     public ResponseEntity<Long> countJobCodeByUnitId(@PathVariable Long unitId) {
         try {

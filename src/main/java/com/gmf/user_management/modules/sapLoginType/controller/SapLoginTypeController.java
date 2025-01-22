@@ -8,7 +8,7 @@ import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeDTO;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeRequest;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeResponDTO;
 import com.gmf.user_management.modules.sapLoginType.service.SapLoginTypeServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +18,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/sapLoginType")
+@RequiredArgsConstructor
 public class SapLoginTypeController {
-    @Autowired
-    private SapLoginTypeServiceImpl sapLoginTypeService;
+
+    private final SapLoginTypeServiceImpl sapLoginTypeService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<SapLoginTypeResponDTO>> createSapLoginType(

@@ -8,8 +8,8 @@ import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodeDTO;
 import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodeRequestDto;
 import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.modules.businessUnitCode.entities.BusinessUnitCodeEntity;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,10 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @RequestMapping("/api/v1/business_unit_code")
+@RequiredArgsConstructor
 public class BusinessUnitCodeController {
-    @Autowired
-    private BusinessUnitCodeService businessUnitCodeService;
+
+    private final BusinessUnitCodeService businessUnitCodeService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> createBusinessUnitCode(

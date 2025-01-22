@@ -7,6 +7,7 @@ import com.gmf.user_management.modules.userLicense.dto.UserLicenseDTO;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.service.UserLicenseServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +18,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/userLicense")
+@RequiredArgsConstructor
 public class UserLicenseController {
-    @Autowired
-    private UserLicenseServiceImpl userLicenseService;
+
+    private final UserLicenseServiceImpl userLicenseService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UserLicenseResponeDTO>>createUserLicense(

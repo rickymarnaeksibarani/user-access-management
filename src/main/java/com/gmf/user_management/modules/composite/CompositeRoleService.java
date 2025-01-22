@@ -12,6 +12,7 @@ import com.gmf.user_management.modules.composite.compositeEntities.CompositeRole
 import com.gmf.user_management.modules.composite.repository.CompositeRoleRepository;
 import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.jobCode.repositories.JobCodeRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,12 +27,11 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CompositeRoleService {
-    
-    @Autowired
-    private CompositeRoleRepository compositeRoleRepository;
-    @Autowired
-    private JobCodeRepository jobCodeRepository;
+
+    private final JobCodeRepository jobCodeRepository;
+    private final CompositeRoleRepository compositeRoleRepository;
 
     private CompositeRoleResponDTO compositeRoleRespon(CompositeRoleEntity compositeRoleEntity){
         return CompositeRoleResponDTO

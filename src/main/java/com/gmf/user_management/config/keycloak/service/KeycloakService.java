@@ -1,11 +1,11 @@
 package com.gmf.user_management.config.keycloak.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +16,13 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KeycloakService {
-    @Autowired
-    private Keycloak keycloak;
+
+    private final Keycloak keycloak;
 
     @Value("${keycloak.realm}")
     private String realm;
-
-//    public List<UserRepresentation> getAllUsers() {
-//        RealmResource realmResource = keycloak.realm(realm);
-//        return realmResource.users().list();
-//    }
 
     public List<String> getUserApplications(String userId) {
         return keycloak.realm(realm)

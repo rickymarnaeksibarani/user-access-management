@@ -1,7 +1,7 @@
 package com.gmf.user_management.modules.businessUnitCode;
 
-import com.gmf.user_management.config.multipleDataSourceConfiguration.service.DataSourceService;
 import com.gmf.user_management.config.multipleDataSourceConfiguration.repository.ExternalRepository;
+import com.gmf.user_management.config.multipleDataSourceConfiguration.service.DataSourceService;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodeDTO;
 import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodePredicate;
@@ -9,8 +9,8 @@ import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodeRequ
 import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodeResponDTO;
 import com.gmf.user_management.modules.businessUnitCode.entities.BusinessUnitCodeEntity;
 import com.gmf.user_management.modules.businessUnitCode.repositories.BusinessUnitCodeRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +24,12 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class BusinessUnitCodeService {
 
     private final BusinessUnitCodeRepository businessUnitCodeRepository;
     private final DataSourceService dataSourceService;
     private final ExternalRepository externalRepository;
-
-    public BusinessUnitCodeService(BusinessUnitCodeRepository businessUnitCodeRepository,
-                                   DataSourceService dataSourceService,
-                                   ExternalRepository externalRepository){
-        this.businessUnitCodeRepository = businessUnitCodeRepository;
-        this.dataSourceService = dataSourceService;
-        this.externalRepository = externalRepository;
-    }
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         Map<String, Object> partnerExternal = null;

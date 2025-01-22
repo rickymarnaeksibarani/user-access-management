@@ -20,12 +20,16 @@ import java.util.List;
 @Service
 @Slf4j
 public class UserAccessDomainServiceImpl implements UserAccessDomainService {
-    @Autowired
-    private UADRepository uadRepository;
-    @Autowired
-    private PersonalRepository personalRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final UADRepository uadRepository;
+    private final PersonalRepository personalRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserAccessDomainServiceImpl(UADRepository uadRepository, PersonalRepository personalRepository, PasswordEncoder passwordEncoder){
+        this.uadRepository = uadRepository;
+        this.personalRepository = personalRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     private UserAccessDomainResponDTO userAccessDomainResponDTO(UserAccessDomainEntity userAccessDomainEntity){
         return UserAccessDomainResponDTO.builder()
@@ -48,7 +52,6 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         uadRepository.save(payload);
         return userAccessDomainResponDTO(payload);
     }
-    //todo: when create, get by-id, update the profile picture is null. please fix that!
 
     @Override
     public UserAccessDomainResponDTO updateUserAccessDomain(Long idUserAccessDomain, UserAccessDomainDTO request) throws NotFoundException {
@@ -85,7 +88,6 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         if (userAccessDomainDTO.getPassword() != null && !userAccessDomainDTO.getPassword().trim().isEmpty()) {
             userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), passwordEncoder));
         }
-//        userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), passwordEncoder));
         userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
         userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());
         return userAccessDomainEntity;

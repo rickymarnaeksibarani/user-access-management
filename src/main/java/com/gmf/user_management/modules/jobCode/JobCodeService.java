@@ -10,6 +10,7 @@ import com.gmf.user_management.modules.jobCode.dto.JobCodeRequestDto;
 import com.gmf.user_management.modules.jobCode.dto.JobCodeResponeDTO;
 import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.jobCode.repositories.JobCodeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,10 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@RequiredArgsConstructor
 public class JobCodeService {
-    @Autowired
-    private JobCodeRepository jobCodeRepository;
 
+    private final JobCodeRepository jobCodeRepository;
 
     private JobCodeResponeDTO jobRespone(JobCodeEntity jobCodeEntity){
         return JobCodeResponeDTO.builder()

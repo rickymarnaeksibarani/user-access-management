@@ -129,6 +129,26 @@ public class BusinessUnitCodeService {
         }
     }
 
+    public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeEntity> getBusinessByPartnerId(Long partnerExternal, Integer page, Integer size) {
+        if (partnerExternal == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "partnerExternal cannot be null.");
+        }
+        Pageable paging = PageRequest.of(page - 1, size);
+
+        Page<BusinessUnitCodeEntity> businessUnitCodeEntityPage = businessUnitCodeRepository.findByPartnerExternal(partnerExternal,paging);
+
+        businessUnitCodeEntityPage.stream()
+                .map(businessUnitCodeEntity -> {
+                    try {
+                        return businessRespone(businessUnitCodeEntity);
+                    } catch (ResponseStatusException e) {
+                        throw new RuntimeException("Error processing personal data", e);
+                    }
+                })
+                .toList();
+
+        return new PaginationUtil<>(businessUnitCodeEntityPage, BusinessUnitCodeEntity.class);
+    }
 }
 
 

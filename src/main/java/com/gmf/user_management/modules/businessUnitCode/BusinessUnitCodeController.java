@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -90,4 +91,25 @@ public class BusinessUnitCodeController {
                 .toResponse();
     }
 
+    @GetMapping(value = "/by-business-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<BusinessUnitCodeEntity,BusinessUnitCodeEntity>>> getBusinessByPartnerId(
+            @PathVariable Long partnerExternal,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        try {
+            PaginationUtil<BusinessUnitCodeEntity,BusinessUnitCodeEntity> response = businessUnitCodeService.getBusinessByPartnerId(partnerExternal, page, size);
+            return new HttpResponseDTO<>(response, HttpStatus.OK)
+                    .setResponseHeaders("partnerExternal", partnerExternal)
+                    .setResponseHeaders("page", page)
+                    .setResponseHeaders("size", size)
+                    .toResponse();
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error occurred while fetching personal data", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "An unexpected error occurred.", e);
+        }
+    }
 }

@@ -2,11 +2,14 @@ package com.gmf.user_management.modules.sapLoginType.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
+import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeDTO;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeRequest;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeResponDTO;
+import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import com.gmf.user_management.modules.sapLoginType.service.SapLoginTypeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -76,4 +79,13 @@ public class SapLoginTypeController {
                 .setResponseHeaders("idSapLoginType", idSapLoginType)
                 .toResponse();
     }
+
+//    @GetMapping("/personal/{personalId}")
+//    public ResponseEntity<PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity>> getSapLoginTypeByPersonalId(
+//            @PathVariable Long personalId,
+//            @RequestParam(defaultValue = "1") Integer page,
+//            @RequestParam(defaultValue = "10") Integer size) {
+//        PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> response = sapLoginTypeService.getSapLoginTypeByPersonalId(personalId, page, size);
+//        return ResponseEntity.ok(response);
+//    }
 }

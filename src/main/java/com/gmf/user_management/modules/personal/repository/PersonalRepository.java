@@ -28,4 +28,10 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     @Query("SELECT p FROM PersonalEntity p WHERE p.partnerExternal = :partnerExternal AND p.isPic = true")
     Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerExternal") Long partnerExternal, Pageable pageable);
 
+    List<PersonalEntity> findBySapLoginTypeList_idSapLoginType(Long sapLoginTypeId, Pageable pageable);
+
+    Page<PersonalEntity> findBySapLoginTypeList_IdSapLoginType(Long sapLoginTypeId, Pageable paging);
+
+//    findByJobCodeList_idJobCode
+
 }

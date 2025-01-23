@@ -12,6 +12,8 @@ import com.gmf.user_management.modules.licenseType.repository.LicenseTypeResposi
 import com.gmf.user_management.modules.personal.dto.*;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.repository.PersonalRepository;
+import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
+import com.gmf.user_management.modules.sapLoginType.repository.SapLoginTypeRepository;
 import io.minio.ObjectWriteResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,7 @@ public class PersonalServiceImpl implements PersonalService{
     //Dengan final, memastikan dependency tidak diubah setelah inisialisasi: https://medium.com/@dulanjayasandaruwan1998/spring-doesnt-recommend-autowired-anymore-05fc05309dad
     private final PersonalRepository personalRepository;
     private final LicenseTypeRespository licenseTypeRespository;
+    private final SapLoginTypeRepository sapLoginTypeRepository;
     private final ObjectMapper objectMapper;
     private final StorageService storageService;
     private final DataSourceService dataSourceService;
@@ -60,6 +63,7 @@ public class PersonalServiceImpl implements PersonalService{
                 .idPersonal(personalEntity.getIdPersonal())
                 .partnerExternal(partnerExternal)
                 .licenseTypeList(personalEntity.getLicenseTypeList())
+                .sapLoginTypeList(personalEntity.getSapLoginTypeList())
                 .personalName(personalEntity.getPersonalName())
                 .personalNumber(personalEntity.getPersonalNumber())
                 .personalPicture(img)
@@ -223,6 +227,20 @@ public class PersonalServiceImpl implements PersonalService{
         return new PaginationUtil<>(personalEntities, PersonalEntity.class);
     }
 
+    @Override
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalBySapLoginTypeId(Long sapLoginTypeId, Integer page, Integer size) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<PersonalEntity> personalsPage = personalRepository.findBySapLoginTypeList_IdSapLoginType(sapLoginTypeId, paging);
+        return new PaginationUtil<>(personalsPage, PersonalEntity.class);
+    }
+
+
+
+    //todo > gw harus nambah fk sapLoginType bentuknya nullable supaya nanti dari FE ngecreate login type dari kolom login type tapi updatenya di personal
+
+    //todo > getPersonalbySapLoginTypeId
+
+
     public String countUIDByDinas() {
         List<Map<String, Object>> results = personalRepository.countUIDByDinas();
         try {
@@ -236,8 +254,10 @@ public class PersonalServiceImpl implements PersonalService{
     private PersonalEntity personalPayload(PersonalDTO personalDTO, PersonalEntity personalEntity, List<ApplicationFileDTO> personalPicture) throws JsonProcessingException {
 
         List<LicenseTypeEntity> allLicenseType = licenseTypeRespository.findByIdLicenseTypeIsIn(personalDTO.getLicenseTypeList());
+        List<SapLoginTypeEntity> allSapLoginType = sapLoginTypeRepository.findByIdSapLoginTypeIsIn(personalDTO.getSapLoginTypeList());
 //        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
         personalEntity.setLicenseTypeList(allLicenseType);
+        personalEntity.setSapLoginTypeList(allSapLoginType);
         personalEntity.setPersonalName(personalDTO.getPersonalName());
         personalEntity.setPersonalNumber(personalDTO.getPersonalNumber());
         personalEntity.setPersonalPicture(objectMapper.writeValueAsString(personalPicture));

@@ -64,7 +64,13 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
         return true;
     }
 
-
+    //todo > get sapLoginTypebyPersonalId
+//    @Override
+//    public PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> getSapLoginTypeByPersonalId(Long personalId, Integer page, Integer size) {
+//        Pageable paging = PageRequest.of(page - 1, size);
+//        Page<SapLoginTypeEntity> personalsPage = sapLoginTypeRepository.findByPersonalList_IdPersonal(personalId, paging);
+//        return new PaginationUtil<>(personalsPage, SapLoginTypeEntity.class);
+//    }
 
     @Override
     public PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO> getAllSapLoginType(Integer page, Integer size, SapLoginTypeRequest requestDTO) {

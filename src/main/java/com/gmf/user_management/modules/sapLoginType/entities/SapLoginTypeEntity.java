@@ -1,5 +1,7 @@
 package com.gmf.user_management.modules.sapLoginType.entities;
 
+import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
+import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -7,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,6 +28,9 @@ public class SapLoginTypeEntity {
 
     @Column(name = "login_type")
     private String loginType;
+
+//    @ManyToMany @JoinColumn(name = "personal_id")
+//    private List<PersonalEntity> personalList;
 
     @CreationTimestamp
     @Column(name = "created_at")

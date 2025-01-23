@@ -31,6 +31,9 @@ public class PersonalDTO {
     @JsonProperty("licenseTypeList")
     private List<Long> licenseTypeList;
 
+    @JsonProperty("sapLoginTypeList")
+    private List<Long> sapLoginTypeList;
+
     @JsonProperty("personalName")
     private String personalName;
 

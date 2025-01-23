@@ -131,6 +131,15 @@ public class PersonalControllerImpl {
         }
     }
 
+    @GetMapping("/sap-login-type/{sapLoginTypeId}")
+    public ResponseEntity<PaginationUtil<PersonalEntity, PersonalEntity>> getPersonalBySapLoginTypeId(
+            @PathVariable Long sapLoginTypeId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalBySapLoginTypeId(sapLoginTypeId, page, size);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping(value = "/as-pic/by-partner-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalAsPartnerPIC(
             @PathVariable Long partnerExternal,

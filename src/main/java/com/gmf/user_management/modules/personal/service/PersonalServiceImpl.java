@@ -18,6 +18,7 @@ import io.minio.ObjectWriteResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -234,12 +235,22 @@ public class PersonalServiceImpl implements PersonalService{
         return new PaginationUtil<>(personalsPage, PersonalEntity.class);
     }
 
+    @Override
+    public PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> getSapLoginTypeByPersonalId(Long personalId, Integer page, Integer size) {
+        if (personalId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Personal ID cannot be null.");
+        }
+        Pageable paging = PageRequest.of(page - 1, size);
+        PersonalEntity personalEntity = personalRepository.findById(personalId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal with ID " + personalId + " not found"));
 
-
-    //todo > gw harus nambah fk sapLoginType bentuknya nullable supaya nanti dari FE ngecreate login type dari kolom login type tapi updatenya di personal
-
-    //todo > getPersonalbySapLoginTypeId
-
+        List<SapLoginTypeEntity> sapLoginTypeList = personalEntity.getSapLoginTypeList();
+        if (sapLoginTypeList == null || sapLoginTypeList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No SapLoginTypes found for Personal ID " + personalId);
+        }
+        Page<SapLoginTypeEntity> pagedSapLoginTypeList = new PageImpl<>(sapLoginTypeList, paging, sapLoginTypeList.size());
+        return new PaginationUtil<>(pagedSapLoginTypeList, SapLoginTypeEntity.class);
+    }
 
     public String countUIDByDinas() {
         List<Map<String, Object>> results = personalRepository.countUIDByDinas();

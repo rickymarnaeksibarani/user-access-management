@@ -9,6 +9,7 @@ import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalResponDTO;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.service.PersonalService;
+import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -139,6 +140,17 @@ public class PersonalControllerImpl {
         PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalBySapLoginTypeId(sapLoginTypeId, page, size);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/personal-sap-login-type/{personalId}")
+    public ResponseEntity<PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity>> getSapLoginTypeByPersonalId(
+            @PathVariable Long personalId,
+            @RequestParam(defaultValue = "1")Integer page,
+            @RequestParam(defaultValue = "10")Integer size
+    ){
+       PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> sapLoginTypePage = personalService.getSapLoginTypeByPersonalId(personalId, page, size);
+       return ResponseEntity.ok(sapLoginTypePage);
+    }
+
 
     @GetMapping(value = "/as-pic/by-partner-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalAsPartnerPIC(

@@ -7,6 +7,7 @@ import com.gmf.user_management.modules.personal.dto.PersonalDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalResponDTO;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
+import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -22,5 +23,6 @@ public interface PersonalService {
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size) throws NotFoundException, JsonProcessingException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalBySapLoginTypeId(Long sapLoginTypeId, Integer page, Integer size);
+    PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> getSapLoginTypeByPersonalId(Long personalId, Integer page, Integer size);
     String countUIDByDinas();
 }

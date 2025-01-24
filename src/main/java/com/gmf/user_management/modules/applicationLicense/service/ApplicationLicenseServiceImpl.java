@@ -1,5 +1,8 @@
 package com.gmf.user_management.modules.applicationLicense.service;
 
+import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.utils.JpaResultHelperUtil;
+import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseDTO;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicensePredicate;
@@ -80,7 +83,14 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
         Page<ApplicationLicenseEntity> pages = applicationLicenseRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, ApplicationLicenseResponDTO.class);
     }
-
+    @Override
+    public ApplicationLicenseResponDTO getApplicationLicenseById(Long applicationLicenseId) throws NotFoundException {
+        ApplicationLicenseEntity applicationLicenses = JpaResultHelperUtil.getSingleResultFromOptional(applicationLicenseRepository.findById(applicationLicenseId));
+        if (applicationLicenses == null){
+            throw new NotFoundException("id not found");
+        }
+        return ObjectMapperUtil.map(applicationLicenses, ApplicationLicenseResponDTO.class);
+    }
     private ApplicationLicenseEntity applicationLicensePayload(ApplicationLicenseDTO applicationLicenseDTO, ApplicationLicenseEntity applicationLicenseEntity){
         applicationLicenseEntity.setApplicationName(applicationLicenseDTO.getApplicationName());
         applicationLicenseEntity.setLicenseType(applicationLicenseDTO.getLicenseType());

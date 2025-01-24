@@ -13,4 +13,5 @@ public interface ApplicationLicenseService {
     Boolean deleteLicense(Long idApplicationLicense);
     PaginationUtil<ApplicationLicenseEntity, ApplicationLicenseResponDTO> getAllLicense(Integer page, Integer size, ApplicationLicenseRequest requestDTO);
 
+    ApplicationLicenseResponDTO getApplicationLicenseById(Long applicationLicenseId) throws NotFoundException;
 }

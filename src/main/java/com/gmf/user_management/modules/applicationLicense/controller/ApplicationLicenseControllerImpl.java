@@ -2,6 +2,8 @@ package com.gmf.user_management.modules.applicationLicense.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.validations.IsNumeric;
+import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseDTO;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseRequest;
 import com.gmf.user_management.modules.applicationLicense.dto.ApplicationLicenseResponDTO;
@@ -65,4 +67,12 @@ public class ApplicationLicenseControllerImpl {
                 .toResponse();
     }
 
+    @GetMapping("/by-id/{applicationLicenseId}")
+    public ResponseEntity<HttpResponseDTO<ApplicationLicenseResponDTO>> getApplicationLicenseById(
+            @PathVariable @IsNumeric @IsRequired Long applicationLicenseId
+    )throws NotFoundException {
+        return new HttpResponseDTO<>(applicationLicenseService.getApplicationLicenseById(applicationLicenseId), HttpStatus.OK)
+                .setResponseHeaders("application_license_id", applicationLicenseId)
+                .toResponse();
+    }
 }

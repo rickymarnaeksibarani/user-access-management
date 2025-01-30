@@ -13,6 +13,4 @@ import java.util.List;
 @Repository
 public interface SapLoginTypeRepository extends JpaRepository<SapLoginTypeEntity, Long>, JpaSpecificationExecutor<SapLoginTypeEntity> {
     List<SapLoginTypeEntity> findByIdSapLoginTypeIsIn(List<Long> id);
-
-//    Page<SapLoginTypeEntity> findByPersonalList_IdPersonal(Long personalId, Pageable paging);
 }

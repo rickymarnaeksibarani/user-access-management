@@ -80,12 +80,4 @@ public class SapLoginTypeController {
                 .toResponse();
     }
 
-//    @GetMapping("/personal/{personalId}")
-//    public ResponseEntity<PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity>> getSapLoginTypeByPersonalId(
-//            @PathVariable Long personalId,
-//            @RequestParam(defaultValue = "1") Integer page,
-//            @RequestParam(defaultValue = "10") Integer size) {
-//        PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> response = sapLoginTypeService.getSapLoginTypeByPersonalId(personalId, page, size);
-//        return ResponseEntity.ok(response);
-//    }
 }

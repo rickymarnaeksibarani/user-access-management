@@ -29,9 +29,6 @@ public class SapLoginTypeEntity {
     @Column(name = "login_type")
     private String loginType;
 
-//    @ManyToMany @JoinColumn(name = "personal_id")
-//    private List<PersonalEntity> personalList;
-
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;

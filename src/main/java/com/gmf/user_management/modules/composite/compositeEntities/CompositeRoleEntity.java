@@ -4,6 +4,7 @@ import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Data
+@EntityListeners({AuditingEntityListener.class})
 @Table(name = "tb_composite_role")
 public class CompositeRoleEntity {
     @Id

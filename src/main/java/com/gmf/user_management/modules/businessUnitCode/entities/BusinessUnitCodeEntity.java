@@ -3,6 +3,7 @@ package com.gmf.user_management.modules.businessUnitCode.entities;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Data
+@EntityListeners({AuditingEntityListener.class})
 @Table(name = "tb_business_unit_code")
 public class BusinessUnitCodeEntity {
     @Id

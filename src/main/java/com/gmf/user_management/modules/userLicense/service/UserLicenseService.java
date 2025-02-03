@@ -14,6 +14,9 @@ public interface UserLicenseService {
     Boolean deleteUserLicense(Long idUserLicense)throws NotFoundException;
     PaginationUtil<UserLicenseEntity, UserLicenseEntity> getPersonalIdByApplicationLicenseId(Long applicationLicenseId, Integer page, Integer size);
     PaginationUtil<UserLicenseEntity, UserLicenseEntity> getApplicationLicenseIdByUserId(Long idUserLicense,  Integer page, Integer size);
-    Map<String, Long> countPersonalApplicationsByDinas();
+//    Map<String, Long> countPersonalApplicationsByDinas();
+
+    Map<String, Long> countPersonalApplicationsByDinas(String dinas);
+
     String countTotalApplicationLicenses();
 }

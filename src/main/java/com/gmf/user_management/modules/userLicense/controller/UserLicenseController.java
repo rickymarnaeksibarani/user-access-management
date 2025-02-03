@@ -79,8 +79,10 @@ public class UserLicenseController {
     }
 
     @GetMapping("/count-personal-applications")
-    public ResponseEntity<Map<String, Long>> countPersonalApplicationsByDinas() {
-        Map<String, Long> result = userLicenseService.countPersonalApplicationsByDinas();
+    public ResponseEntity<Map<String, Long>> countPersonalApplicationsByDinas(
+            @RequestParam(required = false) String dinas
+    ) {
+        Map<String, Long> result = userLicenseService.countPersonalApplicationsByDinas(dinas);
         return ResponseEntity.ok(result);
     }
 

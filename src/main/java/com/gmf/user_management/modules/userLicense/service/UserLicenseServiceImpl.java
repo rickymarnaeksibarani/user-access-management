@@ -139,15 +139,29 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    public Map<String, Long> countPersonalApplicationsByDinas() {
+    public Map<String, Long> countPersonalApplicationsByDinas(String dinas) {
         List<UserLicenseEntity> allLicenses = userLicenseRepository.findAll();
 
         return allLicenses.stream()
                 .flatMap(userLicense -> userLicense.getPersonalList().stream()
+                        .filter(personal -> dinas == null || personal.getDinas().equalsIgnoreCase(dinas))
                         .flatMap(personal -> userLicense.getApplicationLicenseList().stream()
                                 .map(application -> Map.entry(personal.getDinas(), application))))
                 .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.counting()));
     }
+
+//    @Override
+//    public Map<String, Long> countPersonalApplicationsByDinas(String dinas) {
+//        List<UserLicenseEntity> allLicenses = userLicenseRepository.findAll();
+//
+//        return allLicenses.stream()
+//                .flatMap(userLicense -> userLicense.getPersonalList().stream()
+//                        .filter(personal -> dinas == null || personal.getDinas().equalsIgnoreCase(dinas))
+//                        .flatMap(personal -> userLicense.getApplicationLicenseList().stream()
+//                                .map(application -> Map.entry(personal.getDinas(), application))))
+//                .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.counting()));
+//    }
+
 
     @Override
     public String countTotalApplicationLicenses() {

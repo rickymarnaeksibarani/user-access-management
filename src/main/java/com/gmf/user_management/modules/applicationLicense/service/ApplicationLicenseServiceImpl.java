@@ -56,7 +56,7 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     @Override
     public ApplicationLicenseResponDTO updateLicense(Long idApplicationLicense, ApplicationLicenseDTO request){
         try {
-            ApplicationLicenseEntity data = applicationLicenseRepository.findById(idApplicationLicense).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+            ApplicationLicenseEntity data = applicationLicenseRepository.findById(idApplicationLicense).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "ID with: " + idApplicationLicense + " is not found"));
             ApplicationLicenseEntity payload = applicationLicensePayload(request, data);
             applicationLicenseRepository.saveAndFlush(payload);
             return applicationLicenseResponDTO(payload);
@@ -87,7 +87,7 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     public ApplicationLicenseResponDTO getApplicationLicenseById(Long applicationLicenseId) throws NotFoundException {
         ApplicationLicenseEntity applicationLicenses = JpaResultHelperUtil.getSingleResultFromOptional(applicationLicenseRepository.findById(applicationLicenseId));
         if (applicationLicenses == null){
-            throw new NotFoundException("id not found");
+            throw new NotFoundException("id with: " + applicationLicenseId + " is not found");
         }
         return ObjectMapperUtil.map(applicationLicenses, ApplicationLicenseResponDTO.class);
     }

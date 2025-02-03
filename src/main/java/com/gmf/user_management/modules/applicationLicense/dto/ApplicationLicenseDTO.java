@@ -21,7 +21,7 @@ public class ApplicationLicenseDTO {
     @JsonProperty("licenseType")
     private String licenseType;
     @JsonProperty("quantity")
-    private int quantity;
+    private Integer quantity;
     @JsonProperty("licenseCategory")
     private LicenseCategory licenseCategory;
     @JsonProperty("expiredDate")

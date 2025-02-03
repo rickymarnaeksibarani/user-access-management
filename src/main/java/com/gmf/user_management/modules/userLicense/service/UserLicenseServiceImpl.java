@@ -11,7 +11,6 @@ import com.gmf.user_management.modules.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.repository.UserLicenseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -65,6 +66,36 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         }
     }
 
+//    @Override
+//    public UserLicenseResponeDTO updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto) throws NotFoundException {
+//        try {
+//            UserLicenseEntity data = userLicenseRepository.findById(idUserLicense)
+//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data User License not found"));
+//
+//            updateAllowedFields(data, requestDto);
+//
+//            userLicenseRepository.saveAndFlush(data);
+//            return userLicenseResponeDTO(data);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+//    private void updateAllowedFields(UserLicenseEntity data, UserLicenseDTO requestDto) {
+//        if (requestDto.getApplicationLicenseList() != null) {
+//            List<ApplicationLicenseEntity> allApplication = applicationLicenseRepository.findByIdApplicationLicenseIsIn(requestDto.getApplicationLicenseList());
+//            if (allApplication.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Applicaton License not found");
+//            data.setApplicationLicenseList(allApplication);
+//        }
+//        if (requestDto.getPersonalList() != null){
+//            List<PersonalEntity> allPersonal = personalRepository.findByIdPersonalIsIn(requestDto.getPersonalList());
+//            if (allPersonal.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal not found");
+//            data.setPersonalList(allPersonal);
+//        }
+//        if (requestDto.getCreatedBy() != null) data.setCreatedBy(requestDto.getCreatedBy());
+//        if (requestDto.getUpdatedBy() != null) data.setUpdatedBy(requestDto.getUpdatedBy());
+//    }
+
     @Override
     public Boolean deleteUserLicense(Long idUserLicense) throws NotFoundException {
         userLicenseRepository.deleteById(idUserLicense);
@@ -92,6 +123,8 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         return new PaginationUtil<>(userLicenseEntities, UserLicenseEntity.class);
     }
 
+    //todo > create new endpoint to count total application used by dinas
+
 
     private UserLicenseEntity userLicensePayload(UserLicenseDTO userLicenseDTO, UserLicenseEntity userLicenseEntity){
         List<ApplicationLicenseEntity> allApplication = applicationLicenseRepository.findByIdApplicationLicenseIsIn(userLicenseDTO.getApplicationLicenseList());
@@ -104,4 +137,24 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         userLicenseEntity.setUpdatedBy(userLicenseDTO.getUpdatedBy());
         return userLicenseEntity;
     }
+
+    @Override
+    public Map<String, Long> countPersonalApplicationsByDinas() {
+        List<UserLicenseEntity> allLicenses = userLicenseRepository.findAll();
+
+        return allLicenses.stream()
+                .flatMap(userLicense -> userLicense.getPersonalList().stream()
+                        .flatMap(personal -> userLicense.getApplicationLicenseList().stream()
+                                .map(application -> Map.entry(personal.getDinas(), application))))
+                .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.counting()));
+    }
+
+    @Override
+    public String countTotalApplicationLicenses() {
+        long totalApplication =  userLicenseRepository.findAll().stream()
+                .mapToLong(userLicense -> userLicense.getApplicationLicenseList().size())
+                .sum();
+        return "Total Application: " + totalApplication;
+    }
+
 }

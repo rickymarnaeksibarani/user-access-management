@@ -59,8 +59,8 @@ public class ApplicationLicenseControllerImpl {
             @RequestParam(defaultValue = "10") Integer size,
             ApplicationLicenseRequest requestDto
     ){
-        Object allComposite = applicationLicenseService.getAllLicense(page, size, requestDto);
-        return new HttpResponseDTO<>(allComposite, HttpStatus.OK)
+        Object allApplicationLicense = applicationLicenseService.getAllLicense(page, size, requestDto);
+        return new HttpResponseDTO<>(allApplicationLicense, HttpStatus.OK)
                 .setResponseHeaders("page", page)
                 .setResponseHeaders("size", size)
                 .setResponseHeaders("requestDto", requestDto)

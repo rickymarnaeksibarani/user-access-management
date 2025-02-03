@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/userLicense")
@@ -75,5 +76,17 @@ public class UserLicenseController {
         return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .setResponseHeaders("idUserLicense", idUserLicense)
                 .toResponse();
+    }
+
+    @GetMapping("/count-personal-applications")
+    public ResponseEntity<Map<String, Long>> countPersonalApplicationsByDinas() {
+        Map<String, Long> result = userLicenseService.countPersonalApplicationsByDinas();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/count-total-application-licenses")
+    public ResponseEntity<String> countTotalApplicationLicenses() {
+        String result = userLicenseService.countTotalApplicationLicenses();
+        return ResponseEntity.ok(result);
     }
 }

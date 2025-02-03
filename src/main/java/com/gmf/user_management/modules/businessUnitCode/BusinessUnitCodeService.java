@@ -55,7 +55,7 @@ public class BusinessUnitCodeService {
 
     public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
         Map<String, Object> exPartner = externalRepository.findContractById(request.getPartnerExternal());
-        if (exPartner.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found");
+        if (exPartner.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Partner is not found");
 
         BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
@@ -66,7 +66,7 @@ public class BusinessUnitCodeService {
     }
 
     public BusinessUnitCodeResponDTO updateBusinessUnitCode(Long id_business_unit_code, BusinessUnitCodeDTO request){
-        BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+        BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Business Unit Code with: " + id_business_unit_code + " is not found"));
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
         businessUnitCodeRepository.saveAndFlush(payload);
         return businessRespone(payload);
@@ -106,7 +106,7 @@ public class BusinessUnitCodeService {
     public BusinessUnitCodeResponDTO getBusinessUnitCodeById(Long idBusinessUnitCode){
         try {
             BusinessUnitCodeEntity businessUnitCodeEntity = businessUnitCodeRepository.findById(idBusinessUnitCode)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Id Business Unit Code with: " +idBusinessUnitCode + " is not found"));
             return businessRespone(businessUnitCodeEntity);
         } catch (ResponseStatusException e) {
             throw e;

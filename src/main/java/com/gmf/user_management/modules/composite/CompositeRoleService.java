@@ -94,7 +94,7 @@ public class CompositeRoleService {
     public CompositeRoleResponDTO getCompositeRoleById(Long id_composite_role) throws NotFoundException {
         CompositeRoleEntity businessUnitCode = JpaResultHelperUtil.getSingleResultFromOptional(compositeRoleRepository.findById(id_composite_role));
         if (businessUnitCode == null){
-            throw new NotFoundException("id not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Id Composite Role with: " + id_composite_role + " is not found");
         }
         CompositeRoleResponDTO responseDTO = ObjectMapperUtil.map(businessUnitCode, CompositeRoleResponDTO.class);
         responseDTO.setJobCodeCount(businessUnitCode.getJobCodeList() != null ? businessUnitCode.getJobCodeList().size() : 0);

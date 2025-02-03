@@ -8,8 +8,8 @@ import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainDTO
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainResponDTO;
 import com.gmf.user_management.modules.usersAccessDomain.entities.UserAccessDomainEntity;
 import com.gmf.user_management.modules.usersAccessDomain.repository.UADRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,17 +19,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
     private final UADRepository uadRepository;
     private final PersonalRepository personalRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserAccessDomainServiceImpl(UADRepository uadRepository, PersonalRepository personalRepository, PasswordEncoder passwordEncoder){
-        this.uadRepository = uadRepository;
-        this.personalRepository = personalRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     private UserAccessDomainResponDTO userAccessDomainResponDTO(UserAccessDomainEntity userAccessDomainEntity){
         return UserAccessDomainResponDTO.builder()

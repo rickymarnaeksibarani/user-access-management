@@ -1,5 +1,6 @@
 package com.gmf.user_management.modules.userLicense.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
@@ -7,6 +8,8 @@ import com.gmf.user_management.modules.applicationLicense.repository.Application
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.repository.PersonalRepository;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseDTO;
+import com.gmf.user_management.modules.userLicense.dto.UserLicensePredicateDto;
+import com.gmf.user_management.modules.userLicense.dto.UserLicenseRequestDto;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.repository.UserLicenseRepository;
@@ -14,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -123,9 +127,6 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         return new PaginationUtil<>(userLicenseEntities, UserLicenseEntity.class);
     }
 
-    //todo > create new endpoint to count total application used by dinas
-
-
     private UserLicenseEntity userLicensePayload(UserLicenseDTO userLicenseDTO, UserLicenseEntity userLicenseEntity){
         List<ApplicationLicenseEntity> allApplication = applicationLicenseRepository.findByIdApplicationLicenseIsIn(userLicenseDTO.getApplicationLicenseList());
 //        if (allApplication.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Application not found");
@@ -136,6 +137,44 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         userLicenseEntity.setCreatedBy(userLicenseDTO.getCreatedBy());
         userLicenseEntity.setUpdatedBy(userLicenseDTO.getUpdatedBy());
         return userLicenseEntity;
+    }
+
+//    @Override
+//    public PaginationUtil<UserLicenseEntity, UserLicenseEntity>getAllUserLicense(Integer page, Integer size, UserLicenseRequestDto requestDTO){
+//        Pageable paging = PageRequest.of(page-1, size);
+//        Specification<UserLicenseEntity> specification = Specification
+//                .where(UserLicensePredicateDto.filterByApplicationName(requestDTO.getApplicationName()))
+//                .and(UserLicensePredicateDto.filterByPersonalName(requestDTO.getPersonalName()));
+//
+//        Page<UserLicenseEntity> userLicensePage = userLicenseRepository.findAll(specification, paging);
+//        return new PaginationUtil<>(userLicensePage, UserLicenseEntity.class);
+//    }
+
+    //todo > create new endpoint to get all userLicense. filter > dinas, application name, personal name, company name, unit, personal number, passcard number
+    @Override
+    public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getAllUserLicense(Integer page, Integer size, UserLicenseRequestDto requestDTO) {
+        Pageable paging = PageRequest.of(page - 1, size);
+
+        Specification<UserLicenseEntity> spec = Specification.where(null);
+
+        if (requestDTO.getFilterByPersonalName() != null && !requestDTO.getFilterByPersonalName().isEmpty()) {
+            spec = spec.and(UserLicensePredicateDto.filterByPersonalName(requestDTO.getFilterByPersonalName()));
+        }
+
+        if (requestDTO.getFilterByDinas() != null && !requestDTO.getFilterByDinas().isEmpty()) {
+            spec = spec.and(UserLicensePredicateDto.filterByDinas(requestDTO.getFilterByDinas()));
+        }
+
+        if (requestDTO.getFilterByPartner() != null && !requestDTO.getFilterByPartner().isEmpty()) {
+            spec = spec.and(UserLicensePredicateDto.filterByPartner(requestDTO.getFilterByPartner()));
+        }
+//
+//        if (requestDTO.getFilterByApplicationName() != null && !requestDTO.getFilterByApplicationName().isEmpty()) {
+//            spec = spec.and(UserLicensePredicateDto.filterByApplicationName(requestDTO.getFilterByApplicationName()));
+//        }
+
+        Page<UserLicenseEntity> userLicensePage = userLicenseRepository.findAll(spec, paging);
+        return new PaginationUtil<>(userLicensePage, UserLicenseEntity.class);
     }
 
     @Override
@@ -149,19 +188,6 @@ public class UserLicenseServiceImpl implements UserLicenseService{
                                 .map(application -> Map.entry(personal.getDinas(), application))))
                 .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.counting()));
     }
-
-//    @Override
-//    public Map<String, Long> countPersonalApplicationsByDinas(String dinas) {
-//        List<UserLicenseEntity> allLicenses = userLicenseRepository.findAll();
-//
-//        return allLicenses.stream()
-//                .flatMap(userLicense -> userLicense.getPersonalList().stream()
-//                        .filter(personal -> dinas == null || personal.getDinas().equalsIgnoreCase(dinas))
-//                        .flatMap(personal -> userLicense.getApplicationLicenseList().stream()
-//                                .map(application -> Map.entry(personal.getDinas(), application))))
-//                .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.counting()));
-//    }
-
 
     @Override
     public String countTotalApplicationLicenses() {

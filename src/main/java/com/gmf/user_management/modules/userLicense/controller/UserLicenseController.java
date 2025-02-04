@@ -3,7 +3,9 @@ package com.gmf.user_management.modules.userLicense.controller;
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseDTO;
+import com.gmf.user_management.modules.userLicense.dto.UserLicenseRequestDto;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.service.UserLicenseServiceImpl;
@@ -90,5 +92,16 @@ public class UserLicenseController {
     public ResponseEntity<String> countTotalApplicationLicenses() {
         String result = userLicenseService.countTotalApplicationLicenses();
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Object>> getAllUserLicense(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            UserLicenseRequestDto requestDto) {
+        Object response = userLicenseService.getAllUserLicense(page, size, requestDto);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("request", "getAllUserLicense")
+                .toResponse();
     }
 }

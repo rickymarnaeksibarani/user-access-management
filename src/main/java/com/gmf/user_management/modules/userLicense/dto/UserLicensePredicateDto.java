@@ -43,8 +43,48 @@ public class UserLicensePredicateDto {
             if (filterByPartner != null && !filterByPartner.isEmpty()) {
                 Join<UserLicenseEntity, PersonalEntity> personalJoin = root.join("personalList");
                 return criteriaBuilder.like(
-                        criteriaBuilder.lower(personalJoin.get("dinas")),
+                        criteriaBuilder.lower(personalJoin.get("partnerName")),
                         "%" + filterByPartner.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
+
+    //unit, personal number, passcard number
+    public static Specification<UserLicenseEntity> filterByUnit(String filterByUnit) {
+        return (root, query, criteriaBuilder) -> {
+            if (filterByUnit != null && !filterByUnit.isEmpty()) {
+                Join<UserLicenseEntity, PersonalEntity> personalJoin = root.join("personalList");
+                return criteriaBuilder.like(
+                        criteriaBuilder.lower(personalJoin.get("unit")),
+                        "%" + filterByUnit.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
+    //passCardNumber
+    public static Specification<UserLicenseEntity> filterByPassCardNumber(String filterByPassCardNumber) {
+        return (root, query, criteriaBuilder) -> {
+            if (filterByPassCardNumber != null && !filterByPassCardNumber.isEmpty()) {
+                Join<UserLicenseEntity, PersonalEntity> personalJoin = root.join("personalList");
+                return criteriaBuilder.like(
+                        criteriaBuilder.lower(personalJoin.get("passCardNumber")),
+                        "%" + filterByPassCardNumber.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
+
+    public static Specification<UserLicenseEntity> filterByPersonalNumber(String filterByPersonalNumber) {
+        return (root, query, criteriaBuilder) -> {
+            if (filterByPersonalNumber != null && !filterByPersonalNumber.isEmpty()) {
+                Join<UserLicenseEntity, PersonalEntity> personalJoin = root.join("personalList");
+                return criteriaBuilder.like(
+                        criteriaBuilder.lower(personalJoin.get("personalNumber")),
+                        "%" + filterByPersonalNumber.toLowerCase() + "%"
                 );
             }
             return null;

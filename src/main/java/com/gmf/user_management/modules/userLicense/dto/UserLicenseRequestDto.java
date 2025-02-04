@@ -14,4 +14,7 @@ public class UserLicenseRequestDto {
     private String filterByPersonalName;
     private String filterByDinas;
     private String filterByPartner;
+    private String filterByUnit;
+    private String filterByPersonalNumber;
+    private String filterByPassCardNumber;
 }

@@ -165,8 +165,19 @@ public class UserLicenseServiceImpl implements UserLicenseService{
             spec = spec.and(UserLicensePredicateDto.filterByDinas(requestDTO.getFilterByDinas()));
         }
 
+        if (requestDTO.getFilterByUnit() != null && !requestDTO.getFilterByUnit().isEmpty()) {
+            spec = spec.and(UserLicensePredicateDto.filterByUnit(requestDTO.getFilterByUnit()));
+        }
+
         if (requestDTO.getFilterByPartner() != null && !requestDTO.getFilterByPartner().isEmpty()) {
             spec = spec.and(UserLicensePredicateDto.filterByPartner(requestDTO.getFilterByPartner()));
+        }
+
+        if (requestDTO.getFilterByPersonalNumber() != null && !requestDTO.getFilterByPersonalNumber().isEmpty()) {
+            spec = spec.and(UserLicensePredicateDto.filterByPersonalNumber(requestDTO.getFilterByPersonalNumber()));
+        }
+        if (requestDTO.getFilterByPassCardNumber() != null && !requestDTO.getFilterByPassCardNumber().isEmpty()) {
+            spec = spec.and(UserLicensePredicateDto.filterByPassCardNumber(requestDTO.getFilterByPassCardNumber()));
         }
 //
 //        if (requestDTO.getFilterByApplicationName() != null && !requestDTO.getFilterByApplicationName().isEmpty()) {

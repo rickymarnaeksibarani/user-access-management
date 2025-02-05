@@ -179,10 +179,10 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         if (requestDTO.getFilterByPassCardNumber() != null && !requestDTO.getFilterByPassCardNumber().isEmpty()) {
             spec = spec.and(UserLicensePredicateDto.filterByPassCardNumber(requestDTO.getFilterByPassCardNumber()));
         }
-//
-//        if (requestDTO.getFilterByApplicationName() != null && !requestDTO.getFilterByApplicationName().isEmpty()) {
-//            spec = spec.and(UserLicensePredicateDto.filterByApplicationName(requestDTO.getFilterByApplicationName()));
-//        }
+
+        if (requestDTO.getApplicationId() != null) {
+            spec = spec.and(UserLicensePredicateDto.applicationId(requestDTO.getApplicationId()));
+        }
 
         Page<UserLicenseEntity> userLicensePage = userLicenseRepository.findAll(spec, paging);
         return new PaginationUtil<>(userLicensePage, UserLicenseEntity.class);

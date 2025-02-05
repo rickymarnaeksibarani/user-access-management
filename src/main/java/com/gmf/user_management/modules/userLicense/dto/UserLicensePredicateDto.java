@@ -91,14 +91,11 @@ public class UserLicensePredicateDto {
         };
     }
 
-    public static Specification<UserLicenseEntity> filterByApplicationName(String filterByApplicationName) {
+    public static Specification<UserLicenseEntity> applicationId(Long applicationId) {
         return (root, query, criteriaBuilder) -> {
-            if (filterByApplicationName != null && !filterByApplicationName.isEmpty()) {
+            if (applicationId != null) {
                 Join<UserLicenseEntity, ApplicationLicenseEntity> appJoin = root.join("applicationLicenseList");
-                return criteriaBuilder.like(
-                        criteriaBuilder.lower(appJoin.get("applicationName")),
-                        "%" + filterByApplicationName.toLowerCase() + "%"
-                );
+                return criteriaBuilder.equal(appJoin.get("idApplicationLicense"), applicationId);
             }
             return null;
         };

@@ -16,6 +16,8 @@ public class PersonalRequestDTO {
     private String searchByName;
     private String dinas;
     private String unit;
+    private String personalNumber;
+    private String passCardNumber;
     private Boolean isPic;
     private List<String> partnerName;
 

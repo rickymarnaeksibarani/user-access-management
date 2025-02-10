@@ -8,10 +8,12 @@ import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalResponDTO;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 public interface PersonalService {
     PersonalResponDTO createPersonal(PersonalDTO request) throws JsonProcessingException;
@@ -20,9 +22,17 @@ public interface PersonalService {
     PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size, PersonalRequestDTO requestDTO)throws NotFoundException;
-    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size) throws NotFoundException, JsonProcessingException;
+
+    @Transactional(readOnly = true)
+    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size, PersonalRequestDTO requestDTO);
+
+    //    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size) throws NotFoundException, JsonProcessingException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalBySapLoginTypeId(Long sapLoginTypeId, Integer page, Integer size);
     PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> getSapLoginTypeByPersonalId(Long personalId, Integer page, Integer size);
     String countUIDByDinas();
+
+    Map<String, Long> countPersonalByLicense();
+
+//    Map<String, Long> countLicenseNameByPersonal();
 }

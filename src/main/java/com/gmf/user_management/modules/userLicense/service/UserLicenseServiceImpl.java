@@ -1,6 +1,5 @@
 package com.gmf.user_management.modules.userLicense.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
@@ -108,7 +107,6 @@ public class UserLicenseServiceImpl implements UserLicenseService{
 
     @Override
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getPersonalIdByApplicationLicenseId(Long applicationLicenseId, Integer page, Integer size) {
-        // TODO: 17/12/2024 : filter application name, licenseType, searchByName 
         Pageable paging = PageRequest.of(page-1, size);
         Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByApplicationLicenseList_IdApplicationLicense(applicationLicenseId, paging);
         if (userLicenseEntities.isEmpty()) {
@@ -139,50 +137,18 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         return userLicenseEntity;
     }
 
-//    @Override
-//    public PaginationUtil<UserLicenseEntity, UserLicenseEntity>getAllUserLicense(Integer page, Integer size, UserLicenseRequestDto requestDTO){
-//        Pageable paging = PageRequest.of(page-1, size);
-//        Specification<UserLicenseEntity> specification = Specification
-//                .where(UserLicensePredicateDto.filterByApplicationName(requestDTO.getApplicationName()))
-//                .and(UserLicensePredicateDto.filterByPersonalName(requestDTO.getPersonalName()));
-//
-//        Page<UserLicenseEntity> userLicensePage = userLicenseRepository.findAll(specification, paging);
-//        return new PaginationUtil<>(userLicensePage, UserLicenseEntity.class);
-//    }
-
-    //todo > create new endpoint to get all userLicense. filter > dinas, application name, personal name, company name, unit, personal number, passcard number
     @Override
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getAllUserLicense(Integer page, Integer size, UserLicenseRequestDto requestDTO) {
         Pageable paging = PageRequest.of(page - 1, size);
 
-        Specification<UserLicenseEntity> spec = Specification.where(null);
-
-        if (requestDTO.getFilterByPersonalName() != null && !requestDTO.getFilterByPersonalName().isEmpty()) {
-            spec = spec.and(UserLicensePredicateDto.filterByPersonalName(requestDTO.getFilterByPersonalName()));
-        }
-
-        if (requestDTO.getFilterByDinas() != null && !requestDTO.getFilterByDinas().isEmpty()) {
-            spec = spec.and(UserLicensePredicateDto.filterByDinas(requestDTO.getFilterByDinas()));
-        }
-
-        if (requestDTO.getFilterByUnit() != null && !requestDTO.getFilterByUnit().isEmpty()) {
-            spec = spec.and(UserLicensePredicateDto.filterByUnit(requestDTO.getFilterByUnit()));
-        }
-
-        if (requestDTO.getFilterByPartner() != null && !requestDTO.getFilterByPartner().isEmpty()) {
-            spec = spec.and(UserLicensePredicateDto.filterByPartner(requestDTO.getFilterByPartner()));
-        }
-
-        if (requestDTO.getFilterByPersonalNumber() != null && !requestDTO.getFilterByPersonalNumber().isEmpty()) {
-            spec = spec.and(UserLicensePredicateDto.filterByPersonalNumber(requestDTO.getFilterByPersonalNumber()));
-        }
-        if (requestDTO.getFilterByPassCardNumber() != null && !requestDTO.getFilterByPassCardNumber().isEmpty()) {
-            spec = spec.and(UserLicensePredicateDto.filterByPassCardNumber(requestDTO.getFilterByPassCardNumber()));
-        }
-
-        if (requestDTO.getApplicationId() != null) {
-            spec = spec.and(UserLicensePredicateDto.applicationId(requestDTO.getApplicationId()));
-        }
+        Specification<UserLicenseEntity> spec = Specification
+                .where(UserLicensePredicateDto.filterByPersonalName(requestDTO.getFilterByPersonalName()))
+                .and(UserLicensePredicateDto.filterByDinas(requestDTO.getFilterByDinas()))
+                .and(UserLicensePredicateDto.filterByUnit(requestDTO.getFilterByUnit()))
+                .and(UserLicensePredicateDto.filterByPersonalNumber(requestDTO.getFilterByPersonalNumber()))
+                .and(UserLicensePredicateDto.filterByPartner(requestDTO.getFilterByPartner()))
+                .and(UserLicensePredicateDto.filterByPassCardNumber(requestDTO.getFilterByPassCardNumber()))
+                .and(UserLicensePredicateDto.applicationId(requestDTO.getApplicationId()));
 
         Page<UserLicenseEntity> userLicensePage = userLicenseRepository.findAll(spec, paging);
         return new PaginationUtil<>(userLicensePage, UserLicenseEntity.class);

@@ -9,4 +9,8 @@ import lombok.Data;
 public class UnitJobCodeRequestDTO {
     @Sanitizer
     private String searchTerm;
+    private String filterByDinas;
+    private String filterByUnit;
+    private String filterByJobCode;
+
 }

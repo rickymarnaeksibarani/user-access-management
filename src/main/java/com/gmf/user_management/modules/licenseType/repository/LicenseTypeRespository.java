@@ -15,10 +15,8 @@ public interface LicenseTypeRespository extends JpaRepository<LicenseTypeEntity,
     @Query("SELECT l.licenseName, COUNT(l) FROM LicenseTypeEntity l GROUP BY l.licenseName")
     List<Object[]> countByLicenseName();
 
-//    Long countLicenseName(String licenseName);
+    @Query("SELECT l.licenseName, COUNT(DISTINCT p.idPersonal) FROM PersonalEntity p " +
+            "JOIN p.licenseTypeList l GROUP BY l.licenseName")
+    List<Object[]> countPersonalByLicense();
 
-//    List<Object[]> countLicenseName();
-
-//    @Query(value = "SELECT COUNT (*)  license_name FROM tb_license_type")
-//    Long countLicenseTypeEntityBy
 }

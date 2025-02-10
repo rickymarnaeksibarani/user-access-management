@@ -5,10 +5,10 @@ import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.core.validations.IsNumeric;
 import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeDTO;
+import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeRequestDTO;
 import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeResponDTO;
 import com.gmf.user_management.modules.unitJobCode.entities.UnitJobCodeEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,9 +57,10 @@ public class UnitJobCodeController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Object>>getAllJobCode(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "10") Integer size,
+            UnitJobCodeRequestDTO requestDTO
     ){
-        Object allDataUnitJobCode = unitJobCodeService.getAllJobCode(page, size);
+        Object allDataUnitJobCode = unitJobCodeService.getAllJobCode(page, size, requestDTO);
         return new HttpResponseDTO<>(allDataUnitJobCode, HttpStatus.OK)
                 .setResponseHeaders("page", page)
                 .setResponseHeaders("size", size)

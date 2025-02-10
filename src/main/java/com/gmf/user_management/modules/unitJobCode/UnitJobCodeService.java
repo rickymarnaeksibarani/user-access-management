@@ -8,14 +8,16 @@ import com.gmf.user_management.modules.jobCode.repositories.JobCodeRepository;
 import com.gmf.user_management.modules.unit.entities.UnitEntity;
 import com.gmf.user_management.modules.unit.repository.UnitRepository;
 import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeDTO;
+import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodePredicate;
+import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeRequestDTO;
 import com.gmf.user_management.modules.unitJobCode.dto.UnitJobCodeResponDTO;
 import com.gmf.user_management.modules.unitJobCode.entities.UnitJobCodeEntity;
 import com.gmf.user_management.modules.unitJobCode.repository.UnitJobCodeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,6 +67,11 @@ public class UnitJobCodeService {
         }
     }
 
+    //todo> count uid personal by dinas dengan respon yg sama di user license dengan filterByDinas (DONE)
+    //todo> filter by dinas, jobcode dan unit di unitjobcode (DONE)
+    //todo> personal number, passcard number (HANDS ON)
+    //todo > hashUID atau nambah endpoint baru untuk getAllPersonalbyUid (DUPLICATE, WON'T DO)
+    //todo > to edit or add personal if partner from (external) have a new contract date (CAN'T REPRODUCE)
 
     private  UnitJobCodeEntity unitJobCodePayload(UnitJobCodeDTO unitJobCodeDTO, UnitJobCodeEntity unitJobCodeEntity){
         List<UnitEntity> allUnit = unitRepository.findByIdUnitIsIn(unitJobCodeDTO.getUnitList());
@@ -84,9 +91,13 @@ public class UnitJobCodeService {
         return true;
     }
 
-    public PaginationUtil<UnitJobCodeEntity, UnitJobCodeResponDTO> getAllJobCode(Integer page, Integer size) {
+    public PaginationUtil<UnitJobCodeEntity, UnitJobCodeResponDTO> getAllJobCode(Integer page, Integer size, UnitJobCodeRequestDTO requestDTO) {
         Pageable paging = PageRequest.of(page -1 ,size);
-        Page<UnitJobCodeEntity> pages = unitJobCodeRepository.findAll(paging);
+        Specification<UnitJobCodeEntity> spec = Specification
+                .where(UnitJobCodePredicate.filterByUnit(requestDTO.getFilterByUnit()))
+                .and(UnitJobCodePredicate.filterByJobCode(requestDTO.getFilterByJobCode()))
+                .and(UnitJobCodePredicate.filterByDinas(requestDTO.getFilterByDinas()));
+        Page<UnitJobCodeEntity> pages = unitJobCodeRepository.findAll(spec,paging);
         return new PaginationUtil<>(pages, UnitJobCodeResponDTO.class);
     }
 

@@ -3,6 +3,7 @@ package com.gmf.user_management.modules.personal.repository;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
 
     Optional<Object> findByPersonalNumber(String personalNumber);
 
-    Page<PersonalEntity> findAllByDinas(String dinas, Pageable pageable);
+    Page<PersonalEntity> findAllByDinas(Specification<PersonalEntity> specification, String dinas, Pageable pageable);
 
     @Query("SELECT p.dinas AS dinas, COUNT(DISTINCT p.uid) AS uidCount FROM PersonalEntity p GROUP BY p.dinas")
     List<Map<String, Object>> countUIDByDinas();

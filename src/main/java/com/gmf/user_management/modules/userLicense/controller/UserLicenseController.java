@@ -3,14 +3,12 @@ package com.gmf.user_management.modules.userLicense.controller;
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseDTO;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseRequestDto;
 import com.gmf.user_management.modules.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.service.UserLicenseServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/userLicense")
-@RequiredArgsConstructor
+@RequiredArgsConstructor    
 public class UserLicenseController {
 
     private final UserLicenseServiceImpl userLicenseService;

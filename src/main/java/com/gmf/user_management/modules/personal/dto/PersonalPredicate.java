@@ -121,5 +121,29 @@ public class PersonalPredicate {
         };
     }
 
+    public static Specification<PersonalEntity> personalNumber(String filterByPersonalNumber) {
+        return (root, query, criteriaBuilder) -> {
+            if (filterByPersonalNumber != null && !filterByPersonalNumber.isEmpty()) {
+                return criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("personalNumber")),
+                        "%" + filterByPersonalNumber.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
+
+    public static Specification<PersonalEntity> passCardNumber(String filterByPassCardNumber) {
+        return (root, query, criteriaBuilder) -> {
+            if (filterByPassCardNumber != null && !filterByPassCardNumber.isEmpty()) {
+                return criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("passCardNumber")),
+                        "%" + filterByPassCardNumber.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
+
 
 }

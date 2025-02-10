@@ -33,6 +33,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -188,12 +189,19 @@ public class PersonalServiceImpl implements PersonalService{
         return new PaginationUtil<>(personalEntitiesPage, PersonalEntity.class);
     }
 
-
-    @Transactional(readOnly = true)
-    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size){
+//    @Transactional(readOnly = true)
+    @Override
+    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size, PersonalRequestDTO requestDTO){
         Pageable paging = PageRequest.of(page - 1, size);
+        Specification<PersonalEntity> specification = Specification
+                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
+                .and(PersonalPredicate.dinas(requestDTO.getDinas()))
+                .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
+                .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
         if (dinas == null || dinas.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Dinas not found");
-        Page<PersonalEntity> personalEntities = personalRepository.findAllByDinas(dinas, paging);
+        Page<PersonalEntity> personalEntities = personalRepository.findAllByDinas(specification ,dinas, paging);
         personalEntities.stream()
                 .map(personalEntity -> {
                     try {
@@ -260,6 +268,17 @@ public class PersonalServiceImpl implements PersonalService{
             throw new RuntimeException("Error converting countUIDByDinas result to JSON", e);
         }
     }
+
+    @Override
+    public Map<String, Long> countPersonalByLicense() {
+        List<Object[]> results = licenseTypeRespository.countPersonalByLicense();
+        return results.stream()
+                .collect(Collectors.toMap(
+                        obj -> (String) obj[0],
+                        obj -> (Long) obj[1]
+                ));
+    }
+
 
     //payload
     private PersonalEntity personalPayload(PersonalDTO personalDTO, PersonalEntity personalEntity, List<ApplicationFileDTO> personalPicture) throws JsonProcessingException {

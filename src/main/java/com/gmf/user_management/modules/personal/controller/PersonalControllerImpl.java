@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -92,13 +93,15 @@ public class PersonalControllerImpl {
                 .toResponse();
     }
 
-    @GetMapping(value = "/by-dinas/{dinas}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/by-dinas", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalByDinas(
             @PathVariable String dinas,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
-    ) throws NotFoundException, JsonProcessingException {
-        PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalByDinas(dinas,page, size);
+            @RequestParam(defaultValue = "10") Integer size,
+            PersonalRequestDTO requestDTO
+    ){
+        log.info("dinas {}", dinas);
+        PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalByDinas(dinas,page, size, requestDTO);
         return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .setResponseHeaders("dinas", dinas)
                 .toResponse();
@@ -107,6 +110,14 @@ public class PersonalControllerImpl {
     @GetMapping(value = "/count-uid-by-dinas", produces = MediaType.APPLICATION_JSON_VALUE)
     public String countUIDByDinas() {
         return personalService.countUIDByDinas();
+    }
+
+    @GetMapping(value = "/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<HttpResponseDTO<Map<String, Long>>>countPersonalByLicenseName(){
+        Map<String, Long> stats = personalService.countPersonalByLicense();
+        return new HttpResponseDTO<>(stats, HttpStatus.OK)
+                .setResponseHeaders("statistics", stats)
+                .toResponse();
     }
 
     @GetMapping(value = "/by-partner-id/{partnerExternal}", produces = MediaType.APPLICATION_JSON_VALUE)

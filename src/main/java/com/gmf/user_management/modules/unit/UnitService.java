@@ -14,7 +14,6 @@ import com.gmf.user_management.modules.unit.entities.UnitEntity;
 import com.gmf.user_management.modules.unit.repository.UnitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,7 +55,6 @@ public class UnitService {
         UnitEntity payload = unitPaylod(request, data);
         unitRepository.saveAndFlush(payload);
         return unitRespon(payload);
-
     }
 
     public Boolean deleteUnit(Long idUnit) {

@@ -148,7 +148,8 @@ public class UserLicenseServiceImpl implements UserLicenseService{
                 .and(UserLicensePredicateDto.filterByPersonalNumber(requestDTO.getFilterByPersonalNumber()))
                 .and(UserLicensePredicateDto.filterByPartner(requestDTO.getFilterByPartner()))
                 .and(UserLicensePredicateDto.filterByPassCardNumber(requestDTO.getFilterByPassCardNumber()))
-                .and(UserLicensePredicateDto.applicationId(requestDTO.getApplicationId()));
+                .and(UserLicensePredicateDto.applicationId(requestDTO.getApplicationId()))
+                .and(UserLicensePredicateDto.hasApplicationLicense());
 
         Page<UserLicenseEntity> userLicensePage = userLicenseRepository.findAll(spec, paging);
         return new PaginationUtil<>(userLicensePage, UserLicenseEntity.class);

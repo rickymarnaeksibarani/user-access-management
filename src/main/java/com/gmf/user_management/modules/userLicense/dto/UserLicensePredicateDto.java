@@ -64,6 +64,7 @@ public class UserLicensePredicateDto {
             return null;
         };
     }
+
     //passCardNumber
     public static Specification<UserLicenseEntity> filterByPassCardNumber(String filterByPassCardNumber) {
         return (root, query, criteriaBuilder) -> {
@@ -98,6 +99,12 @@ public class UserLicensePredicateDto {
                 return criteriaBuilder.equal(appJoin.get("idApplicationLicense"), applicationId);
             }
             return null;
+        };
+    }
+
+    public static Specification<UserLicenseEntity> hasApplicationLicense() {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.isNotEmpty(root.get("applicationLicenseList")); // Ensure the applicationLicenses collection is not empty
         };
     }
 }

@@ -93,19 +93,32 @@ public class PersonalControllerImpl {
                 .toResponse();
     }
 
-    @GetMapping(value = "/by-dinas", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalEntity, PersonalEntity>>> getPersonalByDinas(
+    @GetMapping("/dinas/{dinas}/with-uid")
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalResponDTO, PersonalResponDTO>>> getAllPersonalByDinasWithUid(
             @PathVariable String dinas,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            PersonalRequestDTO requestDTO
-    ){
-        log.info("dinas {}", dinas);
-        PaginationUtil<PersonalEntity, PersonalEntity> response = personalService.getPersonalByDinas(dinas,page, size, requestDTO);
+            @RequestParam(defaultValue = "5") Integer size,
+            PersonalRequestDTO requestDTO) {
+
+        PaginationUtil<PersonalResponDTO, PersonalResponDTO> response = personalService.getAllPersonalByDinasWithUid(page, size, dinas, requestDTO);
         return new HttpResponseDTO<>(response, HttpStatus.OK)
                 .setResponseHeaders("dinas", dinas)
                 .toResponse();
     }
+
+    @GetMapping("/with-uid")
+    public ResponseEntity<HttpResponseDTO<PaginationUtil<PersonalResponDTO, PersonalResponDTO>>> getAllPersonalWithUid(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            PersonalRequestDTO requestDto) {
+
+        PaginationUtil<PersonalResponDTO, PersonalResponDTO> response = personalService.getAllPersonalWithUid(page, size, requestDto);
+        return new HttpResponseDTO<>(response, HttpStatus.OK)
+                .setResponseHeaders("requestDto", requestDto)
+                .toResponse();
+    }
+
+
 
     @GetMapping(value = "/count-uid-by-dinas", produces = MediaType.APPLICATION_JSON_VALUE)
     public String countUIDByDinas() {

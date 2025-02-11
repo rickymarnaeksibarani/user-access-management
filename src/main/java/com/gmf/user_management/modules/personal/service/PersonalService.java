@@ -8,7 +8,6 @@ import com.gmf.user_management.modules.personal.dto.PersonalRequestDTO;
 import com.gmf.user_management.modules.personal.dto.PersonalResponDTO;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -22,17 +21,12 @@ public interface PersonalService {
     PersonalResponDTO getPersonalById(Long idPersonal) throws NotFoundException, JsonProcessingException;
     PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws NotFoundException, JsonProcessingException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size, PersonalRequestDTO requestDTO)throws NotFoundException;
-
-    @Transactional(readOnly = true)
-    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size, PersonalRequestDTO requestDTO);
-
-    //    PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size) throws NotFoundException, JsonProcessingException;
+    PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalByDinasWithUid(Integer page, Integer size,String dinas, PersonalRequestDTO requestDTO);
+    PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalWithUid(Integer page, Integer size, PersonalRequestDTO requestDto);
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size)throws NotFoundException;
     PaginationUtil<PersonalEntity, PersonalEntity> getPersonalBySapLoginTypeId(Long sapLoginTypeId, Integer page, Integer size);
     PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> getSapLoginTypeByPersonalId(Long personalId, Integer page, Integer size);
     String countUIDByDinas();
-
     Map<String, Long> countPersonalByLicense();
-
 //    Map<String, Long> countLicenseNameByPersonal();
 }

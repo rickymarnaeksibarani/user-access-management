@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -189,9 +188,8 @@ public class PersonalServiceImpl implements PersonalService{
         return new PaginationUtil<>(personalEntitiesPage, PersonalEntity.class);
     }
 
-//    @Transactional(readOnly = true)
     @Override
-    public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByDinas(String dinas, Integer page, Integer size, PersonalRequestDTO requestDTO){
+    public PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalByDinasWithUid(Integer page, Integer size, String dinas, PersonalRequestDTO requestDTO) {
         Pageable paging = PageRequest.of(page - 1, size);
         Specification<PersonalEntity> specification = Specification
                 .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
@@ -200,20 +198,46 @@ public class PersonalServiceImpl implements PersonalService{
                 .and(PersonalPredicate.unit(requestDTO.getUnit()))
                 .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
                 .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
-        if (dinas == null || dinas.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Dinas not found");
-        Page<PersonalEntity> personalEntities = personalRepository.findAllByDinas(specification ,dinas, paging);
-        personalEntities.stream()
-                .map(personalEntity -> {
-                    try {
-                        return personalResponse(personalEntity);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Error processing JSON for personal entity with ID: " + personalEntity.getIdPersonal(), e);
-                    }
-                })
-                .toList();
-        return new PaginationUtil<>(personalEntities, PersonalEntity.class);
 
+        Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
+
+        Page<PersonalResponDTO> responsePage = personalsPage.map(personalEntity -> {
+            try {
+                return personalResponse(personalEntity);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error processing JSON", e);
+            }
+        });
+
+        return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
     }
+
+    @Override
+    public PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalWithUid(Integer page, Integer size, PersonalRequestDTO requestDTO) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Specification<PersonalEntity> specification = Specification
+                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
+                .and(PersonalPredicate.dinas(requestDTO.getDinas()))
+                .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
+                .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
+
+        Page<PersonalEntity> personalsPage = personalRepository.findByUidIsNotNull(specification,paging);
+
+        Page<PersonalResponDTO> responsePage = personalsPage.map(personalEntity -> {
+            try {
+                return personalResponse(personalEntity);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error processing JSON", e);
+            }
+        });
+
+        return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
+    }
+
+
+
 
     //Get All Personal Partner if isPic(default = true)
     @Override

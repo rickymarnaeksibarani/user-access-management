@@ -67,12 +67,6 @@ public class UnitJobCodeService {
         }
     }
 
-    //todo> count uid personal by dinas dengan respon yg sama di user license dengan filterByDinas (DONE)
-    //todo> filter by dinas, jobcode dan unit di unitjobcode (DONE)
-    //todo> personal number, passcard number (HANDS ON)
-    //todo > hashUID atau nambah endpoint baru untuk getAllPersonalbyUid (DUPLICATE, WON'T DO)
-    //todo > to edit or add personal if partner from (external) have a new contract date (CAN'T REPRODUCE)
-
     private  UnitJobCodeEntity unitJobCodePayload(UnitJobCodeDTO unitJobCodeDTO, UnitJobCodeEntity unitJobCodeEntity){
         List<UnitEntity> allUnit = unitRepository.findByIdUnitIsIn(unitJobCodeDTO.getUnitList());
         if (allUnit.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unit not found");

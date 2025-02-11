@@ -215,15 +215,17 @@ public class PersonalServiceImpl implements PersonalService{
     @Override
     public PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalWithUid(Integer page, Integer size, PersonalRequestDTO requestDTO) {
         Pageable paging = PageRequest.of(page - 1, size);
+
         Specification<PersonalEntity> specification = Specification
-                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                .where(PersonalPredicate.uidIsNotNull())
+                .and(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
                 .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
                 .and(PersonalPredicate.dinas(requestDTO.getDinas()))
                 .and(PersonalPredicate.unit(requestDTO.getUnit()))
                 .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
                 .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
 
-        Page<PersonalEntity> personalsPage = personalRepository.findByUidIsNotNull(specification,paging);
+        Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
 
         Page<PersonalResponDTO> responsePage = personalsPage.map(personalEntity -> {
             try {
@@ -235,6 +237,7 @@ public class PersonalServiceImpl implements PersonalService{
 
         return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
     }
+
 
 
 

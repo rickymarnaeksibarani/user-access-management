@@ -22,6 +22,10 @@ public class PersonalPredicate {
         };
     }
 
+    public static Specification<PersonalEntity> uidIsNotNull() {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.isNotNull(root.get("uid"));
+    }
+
     public static Specification<PersonalEntity>searchByName(String searchByName){
         return (root, query, builder) -> {
             if (searchByName != null && !searchByName.isEmpty()){

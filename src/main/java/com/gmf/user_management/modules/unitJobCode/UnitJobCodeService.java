@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,24 +97,25 @@ public class UnitJobCodeService {
         return new PaginationUtil<>(pages, UnitJobCodeResponDTO.class);
     }
 
-    public UnitJobCodeResponDTO getUnitJobCodeById(Long idUnitJobCode, String fiterJobCode) {
+    public UnitJobCodeResponDTO getUnitJobCodeById(Long idUnitJobCode, String filterJobCode) {
         UnitJobCodeEntity unitJobCode = JpaResultHelperUtil.getSingleResultFromOptional(unitJobCodeRepository.findById(idUnitJobCode));
-        if (unitJobCode == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, idUnitJobCode + " not found");
+        if (unitJobCode == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, idUnitJobCode + " not found");
 
         UnitJobCodeResponDTO response = ObjectMapperUtil.map(unitJobCode, UnitJobCodeResponDTO.class);
-
-        // Filter jobCodeList based on jobCodeFilter (if provided)
-        List<JobCodeEntity> filteredJobCodes = (unitJobCode.getJobCodeList() != null)
-                ? unitJobCode.getJobCodeList().stream()
-                .filter(job -> fiterJobCode == null || job.getJobCode().equalsIgnoreCase(fiterJobCode))
-                .toList()
-                : Collections.emptyList();
-
-        response.setJobCodeCount(filteredJobCodes.size());
+        if (filterJobCode != null && !filterJobCode.isEmpty()) {
+            List<JobCodeEntity> filteredJobCodes = unitJobCode.getJobCodeList().stream()
+                    .filter(jobCode -> jobCode.getJobCode().equalsIgnoreCase(filterJobCode))
+                    .toList();
+            response.setJobCodeList(filteredJobCodes);
+            response.setJobCodeCount(filteredJobCodes.size());
+        } else {
+            response.setJobCodeCount(unitJobCode.getJobCodeList() != null ? unitJobCode.getJobCodeList().size() : 0);
+        }
         response.setUnitCount(unitJobCode.getUnitList() != null ? unitJobCode.getUnitList().size() : 0);
-
         return response;
     }
+
 
 
     public PaginationUtil<UnitJobCodeEntity, UnitJobCodeEntity> getJobCodeIdByUnitId(Long unitId, Integer page, Integer size) {

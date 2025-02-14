@@ -22,9 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,6 +101,8 @@ public class UnitJobCodeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, idUnitJobCode + " not found");
 
         UnitJobCodeResponDTO response = ObjectMapperUtil.map(unitJobCode, UnitJobCodeResponDTO.class);
+
+        // Apply filter to jobCodeList if filterJobCode is provided
         if (filterJobCode != null && !filterJobCode.isEmpty()) {
             List<JobCodeEntity> filteredJobCodes = unitJobCode.getJobCodeList().stream()
                     .filter(jobCode -> jobCode.getJobCode().equalsIgnoreCase(filterJobCode))

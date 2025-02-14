@@ -70,9 +70,9 @@ public class UnitJobCodeController {
     @GetMapping(value = "/by-id/{idUnitJobCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>>getUnitJobCodeById(
             @PathVariable @IsNumeric @IsRequired Long idUnitJobCode,
-            @RequestParam(required = false) String fiterJobCode
+            @RequestParam(required = false) String filterJobCode
     ){
-        return new HttpResponseDTO<>(unitJobCodeService.getUnitJobCodeById(idUnitJobCode, fiterJobCode))
+        return new HttpResponseDTO<>(unitJobCodeService.getUnitJobCodeById(idUnitJobCode, filterJobCode))
                 .setResponseHeaders("idUnitJobCode", idUnitJobCode)
                 .toResponse();
     }

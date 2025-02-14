@@ -1,6 +1,5 @@
 package com.gmf.user_management.modules.userLicense.service;
 
-import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.modules.applicationLicense.repository.ApplicationLicenseRepository;
@@ -13,6 +12,8 @@ import com.gmf.user_management.modules.userLicense.dto.UserLicenseResponeDTO;
 import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.repository.UserLicenseRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserLicenseServiceImpl implements UserLicenseService{
 
@@ -58,7 +60,8 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    public UserLicenseResponeDTO updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto) throws NotFoundException {
+    @Cacheable(value = "updateUserLicense")
+    public UserLicenseResponeDTO updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto){
         try {
             UserLicenseEntity data = userLicenseRepository.findById(idUserLicense).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Data User License not found"));
             UserLicenseEntity payload = userLicensePayload(requestDto, data);
@@ -69,43 +72,14 @@ public class UserLicenseServiceImpl implements UserLicenseService{
         }
     }
 
-//    @Override
-//    public UserLicenseResponeDTO updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto) throws NotFoundException {
-//        try {
-//            UserLicenseEntity data = userLicenseRepository.findById(idUserLicense)
-//                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data User License not found"));
-//
-//            updateAllowedFields(data, requestDto);
-//
-//            userLicenseRepository.saveAndFlush(data);
-//            return userLicenseResponeDTO(data);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-//    private void updateAllowedFields(UserLicenseEntity data, UserLicenseDTO requestDto) {
-//        if (requestDto.getApplicationLicenseList() != null) {
-//            List<ApplicationLicenseEntity> allApplication = applicationLicenseRepository.findByIdApplicationLicenseIsIn(requestDto.getApplicationLicenseList());
-//            if (allApplication.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Applicaton License not found");
-//            data.setApplicationLicenseList(allApplication);
-//        }
-//        if (requestDto.getPersonalList() != null){
-//            List<PersonalEntity> allPersonal = personalRepository.findByIdPersonalIsIn(requestDto.getPersonalList());
-//            if (allPersonal.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal not found");
-//            data.setPersonalList(allPersonal);
-//        }
-//        if (requestDto.getCreatedBy() != null) data.setCreatedBy(requestDto.getCreatedBy());
-//        if (requestDto.getUpdatedBy() != null) data.setUpdatedBy(requestDto.getUpdatedBy());
-//    }
-
     @Override
-    public Boolean deleteUserLicense(Long idUserLicense) throws NotFoundException {
+    public Boolean deleteUserLicense(Long idUserLicense){
         userLicenseRepository.deleteById(idUserLicense);
         return true;
     }
 
     @Override
+    @Cacheable("personalIdByApplicationLicenseId")
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getPersonalIdByApplicationLicenseId(Long applicationLicenseId, Integer page, Integer size) {
         Pageable paging = PageRequest.of(page-1, size);
         Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByApplicationLicenseList_IdApplicationLicense(applicationLicenseId, paging);
@@ -116,6 +90,7 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
+    @Cacheable("applicationLicenseIdByUserId")
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getApplicationLicenseIdByUserId(Long idUserLicense, Integer page, Integer size) {
         Pageable pages = PageRequest.of(page-1, size);
         Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByPersonalList_IdPersonal(idUserLicense, pages);
@@ -138,19 +113,20 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
+    @Cacheable(value = "userLicense", sync = true)
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getAllUserLicense(Integer page, Integer size, UserLicenseRequestDto requestDTO) {
-        Pageable paging = PageRequest.of(page - 1, size);
 
         Specification<UserLicenseEntity> spec = Specification
-                .where(UserLicensePredicateDto.filterByPersonalName(requestDTO.getFilterByPersonalName()))
+                .where(UserLicensePredicateDto.hasApplicationLicense())
+                .and(UserLicensePredicateDto.filterByPersonalName(requestDTO.getFilterByPersonalName()))
                 .and(UserLicensePredicateDto.filterByDinas(requestDTO.getFilterByDinas()))
                 .and(UserLicensePredicateDto.filterByUnit(requestDTO.getFilterByUnit()))
                 .and(UserLicensePredicateDto.filterByPersonalNumber(requestDTO.getFilterByPersonalNumber()))
                 .and(UserLicensePredicateDto.filterByPartner(requestDTO.getFilterByPartner()))
                 .and(UserLicensePredicateDto.filterByPassCardNumber(requestDTO.getFilterByPassCardNumber()))
-                .and(UserLicensePredicateDto.applicationId(requestDTO.getApplicationId()))
-                .and(UserLicensePredicateDto.hasApplicationLicense());
+                .and(UserLicensePredicateDto.applicationId(requestDTO.getApplicationId()));
 
+        Pageable paging = PageRequest.of(page - 1, size);
         Page<UserLicenseEntity> userLicensePage = userLicenseRepository.findAll(spec, paging);
         return new PaginationUtil<>(userLicensePage, UserLicenseEntity.class);
     }

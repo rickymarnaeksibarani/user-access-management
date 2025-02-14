@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.TransactionalException;
+
 @Service
 @RequiredArgsConstructor
 public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
@@ -67,8 +69,14 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
 
     @Override
     public Boolean deleteLicense(Long idApplicationLicense) {
-        applicationLicenseRepository.deleteById(idApplicationLicense);
-        return true;
+        try {
+            applicationLicenseRepository.deleteById(idApplicationLicense);
+            return true;
+        } catch (TransactionalException e) {
+            throw new RuntimeException("Transaction failed while deleting the Application License.");
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot delete: Application License is still linked to another record.");
+        }
     }
 
     @Override

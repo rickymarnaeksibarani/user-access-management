@@ -49,6 +49,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+			<version>3.3.4</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-admin-client</artifactId>
@@ -59,12 +66,22 @@
 			<artifactId>resteasy-client</artifactId>
 			<version>4.7.7.Final</version> <!-- Ensure compatibility -->
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>3.15.1.Final</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>3.4.2</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

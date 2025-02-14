@@ -1,5 +1,6 @@
 package com.gmf.user_management.config.multipleDataSourceConfiguration.repository;
 
+import com.gmf.user_management.config.multipleDataSourceConfiguration.dto.DataSourceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +25,7 @@ public class ExternalRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
     public Page<Map<String, Object>> findContractsWithPartners(
-            String searchTerm,
-            String filterByStatus,
-            LocalDate filterByStart,
-            LocalDate filterByEnd,
+            DataSourceDTO dataSourceDTO,
             Pageable pageable) {
 
         StringBuilder sql = new StringBuilder("""
@@ -41,21 +38,21 @@ public class ExternalRepository {
 
         List<Object> params = new ArrayList<>();
 
-        if (filterByStatus != null && !filterByStatus.isEmpty()) {
+        if (dataSourceDTO.getFilterByStatus() != null && !dataSourceDTO.getFilterByStatus().isEmpty()) {
             sql.append(" AND c.status = ?");
-            params.add(filterByStatus);
+            params.add(dataSourceDTO.getFilterByStatus());
         }
-        if (filterByStart != null) {
+        if (dataSourceDTO.getFilterByStart() != null) {
             sql.append(" AND c.start >= ?");
-            params.add(java.sql.Date.valueOf(filterByStart));
+            params.add(java.sql.Date.valueOf(dataSourceDTO.getFilterByStart()));
         }
-        if (filterByEnd != null) {
+        if (dataSourceDTO.getFilterByEnd() != null) {
             sql.append(" AND c.end <= ?");
-            params.add(java.sql.Date.valueOf(filterByEnd));
+            params.add(java.sql.Date.valueOf(dataSourceDTO.getFilterByEnd()));
         }
-        if (searchTerm != null && !searchTerm.isEmpty()) {
+        if (dataSourceDTO.getSearchTerm() != null && !dataSourceDTO.getSearchTerm().isEmpty()) {
             sql.append(" AND n.name LIKE ?");
-            params.add("%" + searchTerm + "%");
+            params.add("%" + dataSourceDTO.getSearchTerm() + "%");
         }
 
         sql.append(" LIMIT ? OFFSET ?");
@@ -70,21 +67,21 @@ public class ExternalRepository {
                 "WHERE 1=1";
 
         List<Object> countParams = new ArrayList<>();
-        if (filterByStatus != null && !filterByStatus.isEmpty()) {
+        if (dataSourceDTO.getFilterByStatus() != null && !dataSourceDTO.getFilterByStatus().isEmpty()) {
             countSql += " AND c.status = ?";
-            countParams.add(filterByStatus);
+            countParams.add(dataSourceDTO.getFilterByStatus());
         }
-        if (filterByStart != null) {
+        if (dataSourceDTO.getFilterByStart() != null) {
             countSql += " AND c.start >= ?";
-            countParams.add(java.sql.Date.valueOf(filterByStart));
+            countParams.add(java.sql.Date.valueOf(dataSourceDTO.getFilterByStart()));
         }
-        if (filterByEnd != null) {
+        if (dataSourceDTO.getFilterByEnd() != null) {
             countSql += " AND c.end <= ?";
-            countParams.add(java.sql.Date.valueOf(filterByEnd));
+            countParams.add(java.sql.Date.valueOf(dataSourceDTO.getFilterByEnd()));
         }
-        if (searchTerm != null && !searchTerm.isEmpty()) {
+        if (dataSourceDTO.getSearchTerm() != null && !dataSourceDTO.getSearchTerm().isEmpty()) {
             countSql += " AND n.name LIKE ?";
-            countParams.add("%" + searchTerm + "%");
+            countParams.add("%" + dataSourceDTO.getSearchTerm() + "%");
         }
 
         long totalElements = jdbcTemplate.queryForObject(countSql, Long.class, countParams.toArray());

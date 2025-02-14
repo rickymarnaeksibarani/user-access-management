@@ -6,9 +6,6 @@ import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserLicensePredicateDto {
 
@@ -104,7 +101,7 @@ public class UserLicensePredicateDto {
 
     public static Specification<UserLicenseEntity> hasApplicationLicense() {
         return (root, query, criteriaBuilder) -> {
-            return criteriaBuilder.isNotEmpty(root.get("applicationLicenseList")); // Ensure the applicationLicenses collection is not empty
+            return criteriaBuilder.isNotEmpty(root.get("applicationLicenseList"));
         };
     }
 }

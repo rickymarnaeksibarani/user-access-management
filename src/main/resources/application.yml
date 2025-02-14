@@ -45,7 +45,7 @@
 #  jpa:
 #    #    open-in-view: false
 #    hibernate:
-#      ddl-auto: create
+#      ddl-auto: update
 #    properties:
 #      hibernate:
 #        format_sql: false
@@ -61,15 +61,19 @@
 #  bucket: "test-sda"
 #baseUrl: http://localhost:8080/
 #keycloak:
-#  auth-server-url: https://dev-auth.gmf-aeroasia.co.id/
+#  auth-server-url: https://dev-auth.gmf-aeroasia.co.id/auth
 #  realm: master
 #  resource: admin-cli
-#  grantType: OAuth2Constants.PASSWORD
-#  username: userman-dev
-#  password: Aeroas1@
-#logging:
-#  level:
-#    org:
-#      keycloak: DEBUG
-#      jboss:
-#        resteasy: DEBUG
+#  username: "782659"
+#  password: "Aeroas1@59"
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  metrics:
+#    tags:
+#      application: userman-service
+#  endpoint:
+#    health:
+#      show-details: always

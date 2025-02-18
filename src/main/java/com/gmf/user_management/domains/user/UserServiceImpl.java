@@ -39,6 +39,9 @@ public class UserServiceImpl implements UserService {
     private UserMainRepository userMainRepository;
 
     @Autowired
+    private PasswordUtil passwordUtil;
+
+    @Autowired
     private UserLoginMainRepository userLoginMainRepository;
     @Override
     public PaginationUtil<UserActiveEntity, UserActiveDTO> getUserPaginated(Integer page, Integer perPage, UserPaginationRequest userPaginationRequest) {
@@ -178,7 +181,7 @@ public class UserServiceImpl implements UserService {
         updateLoginEntity.setPersonalNumber(userLoginDTO.getPersonalNumber());
         updateLoginEntity.setActiveStatus(userLoginDTO.getActiveStatus());
         updateLoginEntity.setPassCardNumber(userLoginDTO.getPassCardNumber());
-        updateLoginEntity.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
+        updateLoginEntity.setPassword(passwordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
 
         UserLoginEntity userLoginEntity = userLoginMainRepository.saveAndFlush(updateLoginEntity);
 
@@ -203,7 +206,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userLoginDTO.setUserDetailId(userId);
-        userLoginDTO.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), HashEnum.SHA1.getDisplayName()));
+        userLoginDTO.setPassword(passwordUtil.generatePassword(userLoginDTO.getPassword()));
         userLoginMainRepository.saveAndFlush(ObjectMapperUtil.map(userLoginDTO, UserLoginEntity.class));
 
         return ObjectMapperUtil.map(JpaResultHelperUtil.getSingleResultFromOptional(userActiveMainRepository.findById(userId)), UserActiveDTO.class);

@@ -1,7 +1,6 @@
 package com.gmf.user_management.domains.user;
 
 import com.gmf.user_management.core.dto.EmployeeDTO;
-import com.gmf.user_management.core.enums.HashEnum;
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
@@ -23,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -40,7 +38,7 @@ public class UserServiceImpl implements UserService {
     private UserMainRepository userMainRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordUtil passwordUtil;
 
     @Autowired
     private UserLoginMainRepository userLoginMainRepository;
@@ -126,6 +124,7 @@ public class UserServiceImpl implements UserService {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setPersonalName((user.getFirstName() + " " + user.getLastName()).trim());
         employeeDTO.setPersonalNumber(user.getUsername());
+        // TODO: Please use a proper Image
         employeeDTO.setPersonalImage("https://raw.githubusercontent.com/antoniosai/gmf-assets/master/blank-avatar.png");
         employeeDTO.setPersonalUnit(user.getWorkstation());
         employeeDTO.setPersonalTitle(user.getTitle());
@@ -181,7 +180,7 @@ public class UserServiceImpl implements UserService {
         updateLoginEntity.setPersonalNumber(userLoginDTO.getPersonalNumber());
         updateLoginEntity.setActiveStatus(userLoginDTO.getActiveStatus());
         updateLoginEntity.setPassCardNumber(userLoginDTO.getPassCardNumber());
-        updateLoginEntity.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(), passwordEncoder));
+        updateLoginEntity.setPassword(passwordUtil.generatePassword(userLoginDTO.getPassword()));
 
         UserLoginEntity userLoginEntity = userLoginMainRepository.saveAndFlush(updateLoginEntity);
 
@@ -206,7 +205,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userLoginDTO.setUserDetailId(userId);
-        userLoginDTO.setPassword(PasswordUtil.generatePassword(userLoginDTO.getPassword(),passwordEncoder));
+        userLoginDTO.setPassword(passwordUtil.generatePassword(userLoginDTO.getPassword()));
         userLoginMainRepository.saveAndFlush(ObjectMapperUtil.map(userLoginDTO, UserLoginEntity.class));
 
         return ObjectMapperUtil.map(JpaResultHelperUtil.getSingleResultFromOptional(userActiveMainRepository.findById(userId)), UserActiveDTO.class);

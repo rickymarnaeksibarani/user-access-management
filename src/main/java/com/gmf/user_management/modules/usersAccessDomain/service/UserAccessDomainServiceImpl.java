@@ -1,6 +1,5 @@
 package com.gmf.user_management.modules.usersAccessDomain.service;
 
-import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PasswordUtil;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.repository.PersonalRepository;
@@ -11,7 +10,6 @@ import com.gmf.user_management.modules.usersAccessDomain.repository.UADRepositor
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,7 +22,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
     private final UADRepository uadRepository;
     private final PersonalRepository personalRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordUtil passwordUtil;
 
     private UserAccessDomainResponDTO userAccessDomainResponDTO(UserAccessDomainEntity userAccessDomainEntity){
         return UserAccessDomainResponDTO.builder()
@@ -49,7 +47,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     }
 
     @Override
-    public UserAccessDomainResponDTO updateUserAccessDomain(Long idUserAccessDomain, UserAccessDomainDTO request) throws NotFoundException {
+    public UserAccessDomainResponDTO updateUserAccessDomain(Long idUserAccessDomain, UserAccessDomainDTO request){
         UserAccessDomainEntity data = uadRepository.findById(idUserAccessDomain).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id not found"));
         UserAccessDomainEntity payload = uadPayload(request, data);
         uadRepository.saveAndFlush(payload);
@@ -81,7 +79,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         userAccessDomainEntity.setUsername(userAccessDomainDTO.getUsername());
 
         if (userAccessDomainDTO.getPassword() != null && !userAccessDomainDTO.getPassword().trim().isEmpty()) {
-            userAccessDomainEntity.setPassword(PasswordUtil.generatePassword(userAccessDomainDTO.getPassword(), passwordEncoder));
+            userAccessDomainEntity.setPassword(passwordUtil.generatePassword(userAccessDomainDTO.getPassword()));
         }
         userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
         userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());

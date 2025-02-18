@@ -16,7 +16,6 @@ import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import com.gmf.user_management.modules.sapLoginType.repository.SapLoginTypeRepository;
 import io.minio.ObjectWriteResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +34,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class PersonalServiceImpl implements PersonalService{
 
@@ -237,9 +235,6 @@ public class PersonalServiceImpl implements PersonalService{
 
         return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
     }
-
-
-
 
 
     //Get All Personal Partner if isPic(default = true)

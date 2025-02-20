@@ -13,7 +13,6 @@ import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.repository.UserLicenseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,7 +59,7 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    @Cacheable(value = "updateUserLicense")
+//    @Cacheable(value = "updateUserLicense")
     public UserLicenseResponeDTO updateUserLicense(Long idUserLicense, UserLicenseDTO requestDto){
         try {
             UserLicenseEntity data = userLicenseRepository.findById(idUserLicense).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Data User License not found"));
@@ -79,7 +78,7 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    @Cacheable("personalIdByApplicationLicenseId")
+//    @Cacheable("personalIdByApplicationLicenseId")
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getPersonalIdByApplicationLicenseId(Long applicationLicenseId, Integer page, Integer size) {
         Pageable paging = PageRequest.of(page-1, size);
         Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByApplicationLicenseList_IdApplicationLicense(applicationLicenseId, paging);
@@ -90,7 +89,7 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    @Cacheable("applicationLicenseIdByUserId")
+//    @Cacheable("applicationLicenseIdByUserId")
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getApplicationLicenseIdByUserId(Long idUserLicense, Integer page, Integer size) {
         Pageable pages = PageRequest.of(page-1, size);
         Page<UserLicenseEntity> userLicenseEntities = userLicenseRepository.findByPersonalList_IdPersonal(idUserLicense, pages);
@@ -113,7 +112,7 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     @Override
-    @Cacheable(value = "userLicense", sync = true)
+//    @Cacheable(value = "userLicense", sync = true)
     public PaginationUtil<UserLicenseEntity, UserLicenseEntity> getAllUserLicense(Integer page, Integer size, UserLicenseRequestDto requestDTO) {
 
         Specification<UserLicenseEntity> spec = Specification

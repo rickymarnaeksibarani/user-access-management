@@ -57,7 +57,7 @@ public class UnitJobCodePredicate {
                         "%" + filterByDinas.toLowerCase()+ "%"
                 );
             }
-            return null;
+            return criteriaBuilder.conjunction();
         };
     }
 

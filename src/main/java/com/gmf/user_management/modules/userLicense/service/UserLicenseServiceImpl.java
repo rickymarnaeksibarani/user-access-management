@@ -13,6 +13,7 @@ import com.gmf.user_management.modules.userLicense.entities.UserLicenseEntity;
 import com.gmf.user_management.modules.userLicense.repository.UserLicenseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

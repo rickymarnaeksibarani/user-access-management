@@ -66,25 +66,41 @@ public class BusinessUnitCodeService {
     }
 
     public BusinessUnitCodeResponDTO updateBusinessUnitCode(Long id_business_unit_code, BusinessUnitCodeDTO request){
-        BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Business Unit Code with: " + id_business_unit_code + " is not found"));
-        BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
-        businessUnitCodeRepository.saveAndFlush(payload);
-        return businessRespone(payload);
+        try {
+            BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Business Unit Code with: " + id_business_unit_code + " is not found"));
+            if (request.getPartnerExternal() != null) {
+                Map<String, Object> exPartner = externalRepository.findContractById(request.getPartnerExternal());
+                if (exPartner.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner External not found");
+                }
+                businessUnitCode.setPartnerName((String) exPartner.get("name"));
+            }
+            BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
+            businessUnitCodeRepository.saveAndFlush(payload);
+            return businessRespone(payload);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public Boolean deleteBusinessUnitCode(Long idBusinessUnitCode) {
-        businessUnitCodeRepository.deleteById(idBusinessUnitCode);
-        return true;
+        try {
+            businessUnitCodeRepository.deleteById(idBusinessUnitCode);
+            return true;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
+
     private BusinessUnitCodeEntity businessUnitCodePayload(BusinessUnitCodeDTO request, BusinessUnitCodeEntity businessUnitCodeEntity) {
         businessUnitCodeEntity.setBusinessUnitCode(request.getBusinessUnitCode());
         businessUnitCodeEntity.setDescription(request.getDescription());
         businessUnitCodeEntity.setDinas(request.getDinas());
         businessUnitCodeEntity.setCreatedBy(request.getCreatedBy());
         businessUnitCodeEntity.setUpdatedBy(request.getUpdatedBy());
-        if (request.getPartnerExternal() !=null){
+        if (request.getPartnerExternal() != null) {
             businessUnitCodeEntity.setPartnerExternal(request.getPartnerExternal());
-            businessUnitCodeEntity.setPartnerName(request.getPartnerName());
+//            businessUnitCodeEntity.setPartnerName(request.getPartnerName());
         }
         return businessUnitCodeEntity;
     }
@@ -130,24 +146,28 @@ public class BusinessUnitCodeService {
     }
 
     public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeEntity> getBusinessByPartnerId(Long partnerExternal, Integer page, Integer size) {
-        if (partnerExternal == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "partnerExternal cannot be null.");
+        try {
+            if (partnerExternal == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "partnerExternal cannot be null.");
+            }
+            Pageable paging = PageRequest.of(page - 1, size);
+
+            Page<BusinessUnitCodeEntity> businessUnitCodeEntityPage = businessUnitCodeRepository.findByPartnerExternal(partnerExternal, paging);
+
+            businessUnitCodeEntityPage.stream()
+                    .map(businessUnitCodeEntity -> {
+                        try {
+                            return businessRespone(businessUnitCodeEntity);
+                        } catch (ResponseStatusException e) {
+                            throw new RuntimeException("Error processing personal data", e);
+                        }
+                    })
+                    .toList();
+
+            return new PaginationUtil<>(businessUnitCodeEntityPage, BusinessUnitCodeEntity.class);
+        }catch(Exception e){
+            throw new RuntimeException(e);
         }
-        Pageable paging = PageRequest.of(page - 1, size);
-
-        Page<BusinessUnitCodeEntity> businessUnitCodeEntityPage = businessUnitCodeRepository.findByPartnerExternal(partnerExternal,paging);
-
-        businessUnitCodeEntityPage.stream()
-                .map(businessUnitCodeEntity -> {
-                    try {
-                        return businessRespone(businessUnitCodeEntity);
-                    } catch (ResponseStatusException e) {
-                        throw new RuntimeException("Error processing personal data", e);
-                    }
-                })
-                .toList();
-
-        return new PaginationUtil<>(businessUnitCodeEntityPage, BusinessUnitCodeEntity.class);
     }
 }
 

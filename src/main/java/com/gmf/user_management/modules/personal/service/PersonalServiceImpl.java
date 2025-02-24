@@ -105,42 +105,57 @@ public class PersonalServiceImpl implements PersonalService{
 
     @Override
     public PersonalResponDTO updatePersonal(Long idPersonal, PersonalDTO request) throws  IOException, NoSuchAlgorithmException, InvalidKeyException {
-        PersonalEntity personal = personalRepository.findById(idPersonal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Id " + idPersonal + " not found"));
+        try {
+            PersonalEntity personal = personalRepository.findById(idPersonal).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id " + idPersonal + " not found"));
 
-        List<ApplicationFileDTO> img = objectMapper.readValue(personal.getPersonalPicture(), new TypeReference<ArrayList<ApplicationFileDTO>>() {});
-        List<String> imgPathList = img.stream().map(ApplicationFileDTO::getPath).toList();
-        List<String> imgFileName = img.stream().map(ApplicationFileDTO::getFilename).toList();
+            List<ApplicationFileDTO> img = objectMapper.readValue(personal.getPersonalPicture(), new TypeReference<ArrayList<ApplicationFileDTO>>() {
+            });
+            List<String> imgPathList = img.stream().map(ApplicationFileDTO::getPath).toList();
+            List<String> imgFileName = img.stream().map(ApplicationFileDTO::getFilename).toList();
 
-        boolean isNewImgNameAndOldImgNameEqual = request.getPersonalPicture()!= null
-                && Objects.equals(request.getPersonalPicture().stream().map(MultipartFile::getOriginalFilename).toList(), imgFileName);
+            boolean isNewImgNameAndOldImgNameEqual = request.getPersonalPicture() != null
+                    && Objects.equals(request.getPersonalPicture().stream().map(MultipartFile::getOriginalFilename).toList(), imgFileName);
 
-        if (!imgPathList.isEmpty()&& !isNewImgNameAndOldImgNameEqual){
-            storageService.deleteAllFileS3(imgPathList);
+            if (!imgPathList.isEmpty() && !isNewImgNameAndOldImgNameEqual) {
+                storageService.deleteAllFileS3(imgPathList);
+            }
+
+            List<ApplicationFileDTO> imagePaths = isNewImgNameAndOldImgNameEqual ? img : new ArrayList<>();
+            if (!isNewImgNameAndOldImgNameEqual) {
+                imagePaths = uploadImage(request.getPersonalPicture());
+            }
+            if (request.getPartnerExternal() != null) {
+                Map<String, Object> exPartner = externalRepository.findContractById(request.getPartnerExternal());
+                if (exPartner.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner External not found");
+                }
+                personal.setPartnerName((String) exPartner.get("name")); // Update partnerName
+            }
+            PersonalEntity payload = personalPayload(request, personal, imagePaths);
+            personalRepository.saveAndFlush(payload);
+            return personalResponse(payload);
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-
-        List<ApplicationFileDTO> imagePaths = isNewImgNameAndOldImgNameEqual ? img : new ArrayList<>();
-        if (!isNewImgNameAndOldImgNameEqual){
-            imagePaths = uploadImage(request.getPersonalPicture());
-        }
-
-        PersonalEntity payload = personalPayload(request, personal, imagePaths);
-        personalRepository.saveAndFlush(payload);
-        return personalResponse(payload);
     }
 
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
-        Pageable paging = PageRequest.of(page - 1, size);
-        Specification<PersonalEntity> specification = Specification
-                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
-                .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
-                .and(PersonalPredicate.dinas(requestDTO.getDinas()))
-                .and(PersonalPredicate.unit(requestDTO.getUnit()))
-                .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
-                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
+        try {
+            Pageable paging = PageRequest.of(page - 1, size);
+            Specification<PersonalEntity> specification = Specification
+                    .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                    .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
+                    .and(PersonalPredicate.dinas(requestDTO.getDinas()))
+                    .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                    .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
+                    .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()));
 
-        Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
-        return new PaginationUtil<>(personalsPage, PersonalEntity.class);
+            Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
+            return new PaginationUtil<>(personalsPage, PersonalEntity.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 

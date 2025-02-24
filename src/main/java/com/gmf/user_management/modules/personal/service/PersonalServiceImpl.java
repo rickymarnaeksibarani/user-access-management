@@ -164,121 +164,146 @@ public class PersonalServiceImpl implements PersonalService{
 
     @Override
     public PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws JsonProcessingException {
-        PersonalEntity personal = (PersonalEntity) personalRepository.findByPersonalNumber(personalNumber)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal with number " + personalNumber + " not found"));
-        return personalResponse(personal);
+        try {
+            PersonalEntity personal = (PersonalEntity) personalRepository.findByPersonalNumber(personalNumber)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal with number " + personalNumber + " not found"));
+            return personalResponse(personal);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalByPartnerId(Long partnerExternal, Integer page, Integer size, PersonalRequestDTO requestDTO) {
-        if (partnerExternal == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "partnerExternal cannot be null.");
+        try {
+            if (partnerExternal == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "partnerExternal cannot be null.");
+            }
+            Pageable paging = PageRequest.of(page - 1, size);
+            Specification<PersonalEntity> specification = Specification
+                    .where(PersonalPredicate.dinas(requestDTO.getDinas()))
+                    .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                    .and(PersonalPredicate.isPic(requestDTO.getIsPic()))
+                    .and(PersonalPredicate.startDate(requestDTO.getStartDate()))
+                    .and(PersonalPredicate.expiredDate(requestDTO.getExpiredDate()))
+                    .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()))
+                    .and(PersonalPredicate.filterByPartnerId(partnerExternal));
+            Page<PersonalEntity> personalEntitiesPage = personalRepository.findAll(specification, paging);
+
+            personalEntitiesPage.stream()
+                    .map(personalEntity -> {
+                        try {
+                            return personalResponse(personalEntity);
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Error processing personal data", e);
+                        }
+                    })
+                    .toList();
+
+            return new PaginationUtil<>(personalEntitiesPage, PersonalEntity.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-        Pageable paging = PageRequest.of(page - 1, size);
-        Specification<PersonalEntity> specification = Specification
-                .where(PersonalPredicate.dinas(requestDTO.getDinas()))
-                .and(PersonalPredicate.unit(requestDTO.getUnit()))
-                .and(PersonalPredicate.isPic(requestDTO.getIsPic()))
-                .and(PersonalPredicate.startDate(requestDTO.getStartDate()))
-                .and(PersonalPredicate.expiredDate(requestDTO.getExpiredDate()))
-                .and(PersonalPredicate.searchByName(requestDTO.getSearchByName()))
-                .and(PersonalPredicate.filterByPartnerId(partnerExternal));
-        Page<PersonalEntity> personalEntitiesPage = personalRepository.findAll(specification, paging);
-
-        personalEntitiesPage.stream()
-                .map(personalEntity -> {
-                    try {
-                        return personalResponse(personalEntity);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Error processing personal data", e);
-                    }
-                })
-                .toList();
-
-        return new PaginationUtil<>(personalEntitiesPage, PersonalEntity.class);
     }
 
     @Override
     public PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalByDinasWithUid(Integer page, Integer size, String dinas, PersonalRequestDTO requestDTO) {
-        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
-        Specification<PersonalEntity> specification = Specification
-                .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
-                .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
-                .and(PersonalPredicate.dinas(requestDTO.getDinas()))
-                .and(PersonalPredicate.unit(requestDTO.getUnit()))
-                .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
-                .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
+        try {
+            Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
+            Specification<PersonalEntity> specification = Specification
+                    .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                    .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
+                    .and(PersonalPredicate.dinas(requestDTO.getDinas()))
+                    .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                    .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
+                    .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
 
-        Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
+            Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
 
-        Page<PersonalResponDTO> responsePage = personalsPage.map(personalEntity -> {
-            try {
-                return personalResponse(personalEntity);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Error processing JSON", e);
-            }
-        });
+            Page<PersonalResponDTO> responsePage = personalsPage.map(personalEntity -> {
+                try {
+                    return personalResponse(personalEntity);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("Error processing JSON", e);
+                }
+            });
 
-        return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
+            return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalWithUid(Integer page, Integer size, PersonalRequestDTO requestDTO) {
-        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
+        try {
+            Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
 
-        Specification<PersonalEntity> specification = Specification
-                .where(PersonalPredicate.uidIsNotNull())
-                .and(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
-                .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
-                .and(PersonalPredicate.dinas(requestDTO.getDinas()))
-                .and(PersonalPredicate.unit(requestDTO.getUnit()))
-                .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
-                .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
+            Specification<PersonalEntity> specification = Specification
+                    .where(PersonalPredicate.uidIsNotNull())
+                    .and(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
+                    .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
+                    .and(PersonalPredicate.dinas(requestDTO.getDinas()))
+                    .and(PersonalPredicate.unit(requestDTO.getUnit()))
+                    .and(PersonalPredicate.personalNumber(requestDTO.getPersonalNumber()))
+                    .and(PersonalPredicate.passCardNumber(requestDTO.getPassCardNumber()));
 
-        Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
+            Page<PersonalEntity> personalsPage = personalRepository.findAll(specification, paging);
 
-        Page<PersonalResponDTO> responsePage = personalsPage.map(personalEntity -> {
-            try {
-                return personalResponse(personalEntity);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Error processing JSON", e);
-            }
-        });
+            Page<PersonalResponDTO> responsePage = personalsPage.map(personalEntity -> {
+                try {
+                    return personalResponse(personalEntity);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("Error processing JSON", e);
+                }
+            });
 
-        return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
+            return new PaginationUtil<>(responsePage, PersonalResponDTO.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 
     //Get All Personal Partner if isPic(default = true)
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size) {
-        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
-        Page<PersonalEntity> personalEntities = personalRepository.findAllPersonalAsPartnerPIC(partnerExternal, paging);
-        if (personalEntities.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,"partnerExternal: " + partnerExternal + " is not PIC for partner or not record by personal");
+        try {
+            Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
+            Page<PersonalEntity> personalEntities = personalRepository.findAllPersonalAsPartnerPIC(partnerExternal, paging);
+            if (personalEntities.isEmpty()) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "partnerExternal: " + partnerExternal + " is not PIC for partner or not record by personal");
+            }
+            personalEntities.stream()
+                    .map(personalEntity -> {
+                        try {
+                            return personalResponse(personalEntity);
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Error processing personal data for PIC", e);
+                        }
+                    })
+                    .toList();
+            return new PaginationUtil<>(personalEntities, PersonalEntity.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-        personalEntities.stream()
-                .map(personalEntity -> {
-                    try {
-                        return personalResponse(personalEntity);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Error processing personal data for PIC", e);
-                    }
-                })
-                .toList();
-        return new PaginationUtil<>(personalEntities, PersonalEntity.class);
     }
 
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalBySapLoginTypeId(Long sapLoginTypeId, Integer page, Integer size) {
+        try{
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         Page<PersonalEntity> personalsPage = personalRepository.findBySapLoginTypeList_IdSapLoginType(sapLoginTypeId, paging);
         return new PaginationUtil<>(personalsPage, PersonalEntity.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> getSapLoginTypeByPersonalId(Long personalId, Integer page, Integer size) {
+        try {
         if (personalId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Personal ID cannot be null.");
         }
@@ -292,11 +317,14 @@ public class PersonalServiceImpl implements PersonalService{
         }
         Page<SapLoginTypeEntity> pagedSapLoginTypeList = new PageImpl<>(sapLoginTypeList, paging, sapLoginTypeList.size());
         return new PaginationUtil<>(pagedSapLoginTypeList, SapLoginTypeEntity.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public String countUIDByDinas() {
-        List<Map<String, Object>> results = personalRepository.countUIDByDinas();
         try {
+            List<Map<String, Object>> results = personalRepository.countUIDByDinas();
             return objectMapper.writeValueAsString(results);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error converting countUIDByDinas result to JSON", e);

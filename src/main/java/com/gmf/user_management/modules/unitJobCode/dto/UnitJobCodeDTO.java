@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -15,9 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 public class UnitJobCodeDTO {
     @JsonProperty("unitList")
+    @NotEmpty
     private List<Long> unitList;
+
     @JsonProperty("jobCodeList")
+    @NotEmpty
     private List<Long> jobCodeList;
+
     @Column(name = "createdBy")
     private String createdBy;
     @Column(name = "updatedBy")

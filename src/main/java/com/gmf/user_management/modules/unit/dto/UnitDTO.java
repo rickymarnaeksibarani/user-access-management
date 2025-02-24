@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -15,9 +17,11 @@ import java.util.List;
 public class UnitDTO {
 
     @JsonProperty("businessUnitCodeList")
+    @NotEmpty
     private List<Long> businessUnitCodeList;
 
     @JsonProperty("unit")
+    @NotEmpty
     private String unit;
 
     @JsonProperty("createdBy")

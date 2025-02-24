@@ -1,11 +1,10 @@
 package com.gmf.user_management.modules.usersAccessDomain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -14,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserAccessDomainDTO {
     @JsonProperty("personalList")
+    @NonNull
     private List<Long> personalList;
 
     @JsonProperty("isNetworkAccess")
@@ -23,9 +23,11 @@ public class UserAccessDomainDTO {
     private Boolean isDomainAccess = false;
 
     @JsonProperty("username")
+    @NotEmpty
     private String username;
 
     @JsonProperty("password")
+    @NotEmpty
     private String password;
 
     @JsonProperty("createdBy")

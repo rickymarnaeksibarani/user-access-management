@@ -7,24 +7,32 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BusinessUnitCodeDTO {
     @JsonProperty("businessUnitCode")
+    @NotEmpty
     private String businessUnitCode;
 
     @JsonIgnore
     private String partnerName;
 
     @JsonProperty("partnerExternal")
+    @NotNull
     private Long partnerExternal;
 
     @JsonProperty("description")
+    @NotEmpty
     private String description;
 
     @JsonProperty("dinas")
+    @NotEmpty
     private String dinas;
 
     @JsonProperty("createdBy")

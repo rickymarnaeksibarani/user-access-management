@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -23,52 +26,64 @@ import java.util.List;
 public class PersonalDTO {
 
     @JsonProperty("partnerExternal")
+    @NotNull
     private Long partnerExternal;
 
     @JsonIgnore
     private String partnerName;
 
     @JsonProperty("licenseTypeList")
+    @NotNull
     private List<Long> licenseTypeList;
 
     @JsonProperty("sapLoginTypeList")
     private List<Long> sapLoginTypeList;
 
     @JsonProperty("personalName")
+    @NotEmpty
     private String personalName;
 
     @JsonProperty("personalNumber")
+    @NotEmpty
     private String personalNumber;
 
     @JsonProperty("personalPicture")
     private List<MultipartFile> personalPicture;
 
     @JsonProperty("dateOfBirth")
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date dateOfBirth;
 
     @JsonProperty("contactNumber")
+    @NotEmpty
     private String contactNumber;
 
     @JsonProperty("email")
+    @NotEmpty
     private String email;
 
     @JsonProperty("identityNumber")
+    @NotEmpty
     private String identityNumber;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private IdentityType identityType;
 
     @JsonProperty("dinas")
+    @NotEmpty
     private String dinas;
 
     @JsonProperty("unit")
+    @NotEmpty
     private String unit;
 
     @JsonProperty("uid")
     private String uid;
 
     @JsonProperty("isPic")
+    @NotNull
     private Boolean isPic;
 
     @JsonProperty("passCardNumber")
@@ -76,14 +91,17 @@ public class PersonalDTO {
 
     @JsonProperty("activeStatus")
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Status activeStatus;
 
     @JsonProperty("startDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @NotNull
     private Date startDate;
 
     @JsonProperty("expiredDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @NotNull
     private Date expiredDate;
 
     @JsonProperty("createdBy")
@@ -91,6 +109,7 @@ public class PersonalDTO {
 
     @JsonProperty("updatedBy")
     private String updatedBy;
+
     private String searchTerm;
     private Integer page;
     private Integer size;

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -14,9 +16,11 @@ import java.util.List;
 @NoArgsConstructor
 public class CompositeRoleDTO {
     @JsonProperty("jobCodeList")
+    @NotEmpty
     private List<Long> jobCodeList;
 
     @JsonProperty("compositeRole")
+    @NotEmpty
     private String compositeRole;
 
     @JsonProperty("createdBy")

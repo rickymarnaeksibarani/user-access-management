@@ -72,6 +72,7 @@ public class UnitJobCodeService {
         if (allUnit.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unit not found");
 
         List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(unitJobCodeDTO.getJobCodeList());
+        if (allJobCode.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Code not found");
         unitJobCodeEntity.setUnitList(allUnit);
         unitJobCodeEntity.setJobCodeList(allJobCode);
         unitJobCodeEntity.setCreatedBy(unitJobCodeDTO.getCreatedBy());
@@ -101,8 +102,6 @@ public class UnitJobCodeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, idUnitJobCode + " not found");
 
         UnitJobCodeResponDTO response = ObjectMapperUtil.map(unitJobCode, UnitJobCodeResponDTO.class);
-
-        // Apply filter to jobCodeList if filterJobCode is provided
         if (filterJobCode != null && !filterJobCode.isEmpty()) {
             List<JobCodeEntity> filteredJobCodes = unitJobCode.getJobCodeList().stream()
                     .filter(jobCode -> jobCode.getJobCode().equalsIgnoreCase(filterJobCode))

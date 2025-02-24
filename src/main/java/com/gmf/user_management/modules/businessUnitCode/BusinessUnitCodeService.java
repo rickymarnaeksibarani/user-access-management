@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -107,7 +108,7 @@ public class BusinessUnitCodeService {
 
     public PaginationUtil<BusinessUnitCodeEntity, BusinessUnitCodeEntity> getAllBusinessUnitCode(Integer page, Integer size, BusinessUnitCodeRequestDto requestDto) {
         try {
-            Pageable paging = PageRequest.of(page -1, size);
+            Pageable paging = PageRequest.of(page -1, size, Sort.by(Sort.Order.asc("createdAt")));
             Specification<BusinessUnitCodeEntity> specification = Specification
                     .where(BusinessUnitCodePredicate.searchTerm(requestDto.getSearchTerm()))
                     .and(BusinessUnitCodePredicate.dinas(requestDto.getDinas()))

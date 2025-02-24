@@ -16,10 +16,7 @@ import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import com.gmf.user_management.modules.sapLoginType.repository.SapLoginTypeRepository;
 import io.minio.ObjectWriteResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -142,7 +139,7 @@ public class PersonalServiceImpl implements PersonalService{
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getAllPersonal(Integer page, Integer size, PersonalRequestDTO requestDTO) {
         try {
-            Pageable paging = PageRequest.of(page - 1, size);
+            Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
             Specification<PersonalEntity> specification = Specification
                     .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
                     .and(PersonalPredicate.filterByStatus(requestDTO.getFilterByStatus()))
@@ -203,7 +200,7 @@ public class PersonalServiceImpl implements PersonalService{
 
     @Override
     public PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalByDinasWithUid(Integer page, Integer size, String dinas, PersonalRequestDTO requestDTO) {
-        Pageable paging = PageRequest.of(page - 1, size);
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<PersonalEntity> specification = Specification
                 .where(PersonalPredicate.filterByName(requestDTO.getFilterByName()))
                 .and(PersonalPredicate.searchNamePartner(requestDTO.getPartnerName()))
@@ -227,7 +224,7 @@ public class PersonalServiceImpl implements PersonalService{
 
     @Override
     public PaginationUtil<PersonalResponDTO, PersonalResponDTO> getAllPersonalWithUid(Integer page, Integer size, PersonalRequestDTO requestDTO) {
-        Pageable paging = PageRequest.of(page - 1, size);
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
 
         Specification<PersonalEntity> specification = Specification
                 .where(PersonalPredicate.uidIsNotNull())
@@ -255,7 +252,7 @@ public class PersonalServiceImpl implements PersonalService{
     //Get All Personal Partner if isPic(default = true)
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalAsPartnerPIC(Long partnerExternal, Integer page, Integer size) {
-        Pageable paging = PageRequest.of(page - 1, size);
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         Page<PersonalEntity> personalEntities = personalRepository.findAllPersonalAsPartnerPIC(partnerExternal, paging);
         if (personalEntities.isEmpty()) {
             throw new ResponseStatusException(
@@ -275,7 +272,7 @@ public class PersonalServiceImpl implements PersonalService{
 
     @Override
     public PaginationUtil<PersonalEntity, PersonalEntity> getPersonalBySapLoginTypeId(Long sapLoginTypeId, Integer page, Integer size) {
-        Pageable paging = PageRequest.of(page - 1, size);
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         Page<PersonalEntity> personalsPage = personalRepository.findBySapLoginTypeList_IdSapLoginType(sapLoginTypeId, paging);
         return new PaginationUtil<>(personalsPage, PersonalEntity.class);
     }
@@ -285,7 +282,7 @@ public class PersonalServiceImpl implements PersonalService{
         if (personalId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Personal ID cannot be null.");
         }
-        Pageable paging = PageRequest.of(page - 1, size);
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         PersonalEntity personalEntity = personalRepository.findById(personalId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal with ID " + personalId + " not found"));
 

@@ -33,7 +33,7 @@ public class PersonalDTO {
     private String partnerName;
 
     @JsonProperty("licenseTypeList")
-    @NotNull
+//    @NotNull
     private List<Long> licenseTypeList;
 
     @JsonProperty("sapLoginTypeList")
@@ -44,7 +44,7 @@ public class PersonalDTO {
     private String personalName;
 
     @JsonProperty("personalNumber")
-    @NotEmpty
+//    @NotEmpty
     private String personalNumber;
 
     @JsonProperty("personalPicture")

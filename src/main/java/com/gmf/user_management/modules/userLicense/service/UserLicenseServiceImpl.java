@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,12 +103,10 @@ public class UserLicenseServiceImpl implements UserLicenseService{
     }
 
     private UserLicenseEntity userLicensePayload(UserLicenseDTO userLicenseDTO, UserLicenseEntity userLicenseEntity){
-        List<ApplicationLicenseEntity> allApplication = applicationLicenseRepository.findByIdApplicationLicenseIsIn(userLicenseDTO.getApplicationLicenseList());
-        if (allApplication.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Application not found");
-        List<PersonalEntity>allPersonal = personalRepository.findByIdPersonalIsIn(userLicenseDTO.getPersonalList());
-        if (allPersonal.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal not found");
-        userLicenseEntity.setApplicationLicenseList(allApplication);
-        userLicenseEntity.setPersonalList(allPersonal);
+        Optional.ofNullable(userLicenseDTO.getApplicationLicenseList())
+                        .ifPresent(applicationList -> userLicenseEntity.setApplicationLicenseList(applicationLicenseRepository.findByIdApplicationLicenseIsIn(applicationList)));
+        Optional.ofNullable(userLicenseDTO.getPersonalList())
+                        .ifPresent(applicationList -> userLicenseEntity.setPersonalList(personalRepository.findByIdPersonalIsIn(applicationList)));
         userLicenseEntity.setCreatedBy(userLicenseDTO.getCreatedBy());
         userLicenseEntity.setUpdatedBy(userLicenseDTO.getUpdatedBy());
         return userLicenseEntity;

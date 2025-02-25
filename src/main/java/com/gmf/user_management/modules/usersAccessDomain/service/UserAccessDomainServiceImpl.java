@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -71,9 +72,8 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
 
     private UserAccessDomainEntity uadPayload(UserAccessDomainDTO userAccessDomainDTO, UserAccessDomainEntity userAccessDomainEntity){
-        List<PersonalEntity> allPersonal = personalRepository.findByIdPersonalIsIn(userAccessDomainDTO.getPersonalList());
-        if (allPersonal.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal not found");
-        userAccessDomainEntity.setPersonalList(allPersonal);
+        Optional.ofNullable(userAccessDomainDTO.getPersonalList())
+                        .ifPresent(personallist -> userAccessDomainEntity.setPersonalList(personalRepository.findByIdPersonalIsIn(personallist)));
         userAccessDomainEntity.setIsDomainAccess(userAccessDomainDTO.getIsDomainAccess());
         userAccessDomainEntity.setIsNetworkAccess(userAccessDomainDTO.getIsNetworkAccess());
         userAccessDomainEntity.setUsername(userAccessDomainDTO.getUsername());

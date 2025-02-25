@@ -7,6 +7,10 @@
 #server:
 #  port: 8080
 #spring:
+#  cache:
+#    type: caffeine
+#    caffeine:
+#      spec: "expireAfterWrite=30s,expireAfterAccess=60s"
 #  kafka:
 #    consumer:
 #      bootstrap-servers:
@@ -45,7 +49,7 @@
 #  jpa:
 #    #    open-in-view: false
 #    hibernate:
-#      ddl-auto: update
+#      ddl-auto: create-drop
 #    properties:
 #      hibernate:
 #        format_sql: false
@@ -66,14 +70,3 @@
 #  resource: admin-cli
 #  username: "782659"
 #  password: "Aeroas1@59"
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
-#  metrics:
-#    tags:
-#      application: userman-service
-#  endpoint:
-#    health:
-#      show-details: always

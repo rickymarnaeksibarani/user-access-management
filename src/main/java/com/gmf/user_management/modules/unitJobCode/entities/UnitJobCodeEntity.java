@@ -5,7 +5,6 @@ import com.gmf.user_management.modules.unit.entities.UnitEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Data
-@EntityListeners({AuditingEntityListener.class})
+//@EntityListeners({AuditingEntityListener.class})
 @Table(name = "tb_unit_job_code")
 public class UnitJobCodeEntity {
     @Id

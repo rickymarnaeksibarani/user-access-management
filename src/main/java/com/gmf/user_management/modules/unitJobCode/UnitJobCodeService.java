@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +57,7 @@ public class UnitJobCodeService {
             throw new RuntimeException(e);
         }
     }
+
     public UnitJobCodeResponDTO updatedUnit(Long idUnitJobCode, UnitJobCodeDTO request) {
         try {
             UnitJobCodeEntity data = unitJobCodeRepository.findById(idUnitJobCode).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Unit Job Code not found"));
@@ -68,13 +70,13 @@ public class UnitJobCodeService {
     }
 
     private  UnitJobCodeEntity unitJobCodePayload(UnitJobCodeDTO unitJobCodeDTO, UnitJobCodeEntity unitJobCodeEntity){
-        List<UnitEntity> allUnit = unitRepository.findByIdUnitIsIn(unitJobCodeDTO.getUnitList());
-        if (allUnit.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unit not found");
+        Optional.ofNullable(unitJobCodeDTO.getUnitList())
+                        .ifPresent(unitList -> unitJobCodeEntity.setUnitList(unitRepository.findByIdUnitIsIn(unitList)));
+        Optional.ofNullable(unitJobCodeDTO.getJobCodeList())
+                .ifPresent(jobCodeList -> unitJobCodeEntity.setJobCodeList(jobCodeRepository.findByIdJobCodeIsIn(jobCodeList)));
 
-        List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(unitJobCodeDTO.getJobCodeList());
-        if (allJobCode.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Code not found");
-        unitJobCodeEntity.setUnitList(allUnit);
-        unitJobCodeEntity.setJobCodeList(allJobCode);
+//        unitJobCodeEntity.setUnitList(allUnit);
+//        unitJobCodeEntity.setJobCodeList(allJobCode);
         unitJobCodeEntity.setCreatedBy(unitJobCodeDTO.getCreatedBy());
         unitJobCodeEntity.setUpdatedBy(unitJobCodeDTO.getUpdatedBy());
         return unitJobCodeEntity;

@@ -23,11 +23,9 @@ public class UserAccessDomainDTO {
     private Boolean isDomainAccess = false;
 
     @JsonProperty("username")
-    @NotEmpty
     private String username;
 
     @JsonProperty("password")
-    @NotEmpty
     private String password;
 
     @JsonProperty("createdBy")

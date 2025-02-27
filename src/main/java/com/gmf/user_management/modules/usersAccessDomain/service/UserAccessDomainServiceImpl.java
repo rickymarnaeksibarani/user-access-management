@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -72,12 +71,11 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
 
     private UserAccessDomainEntity uadPayload(UserAccessDomainDTO userAccessDomainDTO, UserAccessDomainEntity userAccessDomainEntity){
-        Optional.ofNullable(userAccessDomainDTO.getPersonalList())
+        Optional.of(userAccessDomainDTO.getPersonalList())
                         .ifPresent(personallist -> userAccessDomainEntity.setPersonalList(personalRepository.findByIdPersonalIsIn(personallist)));
         userAccessDomainEntity.setIsDomainAccess(userAccessDomainDTO.getIsDomainAccess());
         userAccessDomainEntity.setIsNetworkAccess(userAccessDomainDTO.getIsNetworkAccess());
-        userAccessDomainEntity.setUsername(userAccessDomainDTO.getUsername());
-
+        Optional.ofNullable(userAccessDomainDTO.getUsername()).ifPresent(userAccessDomainEntity::setUsername);
         if (userAccessDomainDTO.getPassword() != null && !userAccessDomainDTO.getPassword().trim().isEmpty()) {
             userAccessDomainEntity.setPassword(passwordUtil.generatePassword(userAccessDomainDTO.getPassword()));
         }

@@ -37,7 +37,7 @@ public class ApplicationLicenseDTO {
 
     @JsonProperty("expiredDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    @NotNull
+//    @NotNull
     private Date expiredDate;
 
     @JsonProperty("activeStatus")

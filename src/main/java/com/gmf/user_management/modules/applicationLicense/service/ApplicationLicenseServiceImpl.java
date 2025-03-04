@@ -46,6 +46,10 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     @Override
     public ApplicationLicenseResponDTO createLicense(ApplicationLicenseDTO request) {
         try {
+            boolean exists =  applicationLicenseRepository.existsByApplicationNameAndLicenseType(request.getApplicationName(), request.getLicenseType());
+            if (exists){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "License Type "+ request.getLicenseType() + " is already used in " + request.getApplicationName());
+            }
             ApplicationLicenseEntity data = new ApplicationLicenseEntity();
             ApplicationLicenseEntity payload = applicationLicensePayload(request, data);
             applicationLicenseRepository.save(payload);
@@ -91,6 +95,7 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
         Page<ApplicationLicenseEntity> pages = applicationLicenseRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, ApplicationLicenseResponDTO.class);
     }
+
     @Override
     public ApplicationLicenseResponDTO getApplicationLicenseById(Long applicationLicenseId) throws NotFoundException {
         ApplicationLicenseEntity applicationLicenses = JpaResultHelperUtil.getSingleResultFromOptional(applicationLicenseRepository.findById(applicationLicenseId));
@@ -99,6 +104,7 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
         }
         return ObjectMapperUtil.map(applicationLicenses, ApplicationLicenseResponDTO.class);
     }
+
     private ApplicationLicenseEntity applicationLicensePayload(ApplicationLicenseDTO applicationLicenseDTO, ApplicationLicenseEntity applicationLicenseEntity){
         applicationLicenseEntity.setApplicationName(applicationLicenseDTO.getApplicationName());
         applicationLicenseEntity.setLicenseType(applicationLicenseDTO.getLicenseType());
@@ -108,6 +114,17 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
         applicationLicenseEntity.setActiveStatus(applicationLicenseDTO.getActiveStatus());
         applicationLicenseEntity.setCreatedBy(applicationLicenseDTO.getCreatedBy());
         applicationLicenseEntity.setUpdatedBy(applicationLicenseDTO.getUpdatedBy());
+        if ("Lifetime".equalsIgnoreCase(String.valueOf(applicationLicenseDTO.getLicenseCategory()))){
+            applicationLicenseEntity.setExpiredDate(null);
+        } else if ("Subscription".equalsIgnoreCase(String.valueOf(applicationLicenseDTO.getLicenseCategory()))) {
+            if (applicationLicenseDTO.getExpiredDate() == null){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Expired Date must be provided for Subscription License");
+            }
+            applicationLicenseEntity.setExpiredDate(applicationLicenseDTO.getExpiredDate());
+
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid License category");
+        }
         return applicationLicenseEntity;
     }
 }

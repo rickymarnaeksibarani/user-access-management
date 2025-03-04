@@ -53,9 +53,11 @@ public class ExternalRepository {
         if (dataSourceDTO.getSearchTerm() != null && !dataSourceDTO.getSearchTerm().isEmpty()) {
             sql.append(" AND n.name LIKE ?");
             params.add("%" + dataSourceDTO.getSearchTerm() + "%");
+
         }
 
-        sql.append(" LIMIT ? OFFSET ?");
+//        sql.append(" LIMIT ? OFFSET ?");
+        sql.append(" ORDER BY c.start DESC LIMIT ? OFFSET ?");
         params.add(pageable.getPageSize());
         params.add(pageable.getOffset());
 

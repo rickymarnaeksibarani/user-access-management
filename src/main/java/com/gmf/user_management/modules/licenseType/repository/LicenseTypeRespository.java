@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,5 @@ public interface LicenseTypeRespository extends JpaRepository<LicenseTypeEntity,
             "JOIN p.licenseTypeList l GROUP BY l.licenseName")
     List<Object[]> countPersonalByLicense();
 
+    boolean existsByLicenseName(@NotEmpty String licenseName);
 }

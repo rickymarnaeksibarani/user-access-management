@@ -39,6 +39,10 @@ public class LicenseTypeService {
     }
     
     public LicenseTypeResponDTO createLicenseType(LicenseTypeDTO request) {
+        boolean exists =  licenseTypeRespository.existsByLicenseName(request.getLicenseName());
+        if (exists){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "License Name "+ request.getLicenseName() + " is already used");
+        }
         LicenseTypeEntity licenseType = new LicenseTypeEntity();
         LicenseTypeEntity payload = licenseTypePayload(request, licenseType);
         licenseTypeRespository.save(payload);

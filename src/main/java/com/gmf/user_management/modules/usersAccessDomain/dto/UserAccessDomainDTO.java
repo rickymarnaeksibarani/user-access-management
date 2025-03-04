@@ -3,8 +3,6 @@ package com.gmf.user_management.modules.usersAccessDomain.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data

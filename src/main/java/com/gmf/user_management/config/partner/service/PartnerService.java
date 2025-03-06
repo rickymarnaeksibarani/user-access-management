@@ -1,13 +1,11 @@
-package com.gmf.user_management.config.multipleDataSourceConfiguration.service;
+package com.gmf.user_management.config.partner.service;
 
-import com.gmf.user_management.config.multipleDataSourceConfiguration.dto.DataSourceDTO;
-import com.gmf.user_management.config.multipleDataSourceConfiguration.repository.ExternalRepository;
+import com.gmf.user_management.config.partner.dto.PartnerDTO;
+import com.gmf.user_management.config.partner.repository.PartnerRepository;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,18 +17,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DataSourceService {
 
-    private final ExternalRepository externalRepository;
+    private final PartnerRepository externalRepository;
 
     public PaginationUtil<Map<String, Object>, Map<String, Object>> getExternalDataRelation(
-            DataSourceDTO dataSourceDTO) {
+            PartnerDTO partnerDTO) {
 
         Page<Map<String, Object>> externalDataPage = externalRepository.findContractsWithPartners(
-                dataSourceDTO, PageRequest.of(dataSourceDTO.getPage()-1 , dataSourceDTO.getSize()));
+                partnerDTO, PageRequest.of(partnerDTO.getPage()-1 , partnerDTO.getSize()));
         if (externalDataPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No external data found for the given criteria.");
         }
-        return new PaginationUtil<>(externalDataPage.getContent(), dataSourceDTO.getPage(), externalDataPage.getTotalElements(),
-                externalDataPage.getTotalPages(), dataSourceDTO.getSize(), externalDataPage.hasPrevious(), externalDataPage.hasNext());
+        return new PaginationUtil<>(externalDataPage.getContent(), partnerDTO.getPage(), externalDataPage.getTotalElements(),
+                externalDataPage.getTotalPages(), partnerDTO.getSize(), externalDataPage.hasPrevious(), externalDataPage.hasNext());
     }
 //    Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt"))); Sort.by(Sort.Order.asc("start"))
 

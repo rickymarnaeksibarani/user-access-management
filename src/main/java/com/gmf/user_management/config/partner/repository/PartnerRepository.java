@@ -1,6 +1,6 @@
-package com.gmf.user_management.config.multipleDataSourceConfiguration.repository;
+package com.gmf.user_management.config.partner.repository;
 
-import com.gmf.user_management.config.multipleDataSourceConfiguration.dto.DataSourceDTO;
+import com.gmf.user_management.config.partner.dto.PartnerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ public class ExternalRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
     public Page<Map<String, Object>> findContractsWithPartners(
-            DataSourceDTO dataSourceDTO,
+            PartnerDTO dataSourceDTO,
             Pageable pageable) {
 
         StringBuilder sql = new StringBuilder("""

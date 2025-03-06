@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -87,7 +88,7 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     public PaginationUtil<ApplicationLicenseEntity, ApplicationLicenseResponDTO> getAllLicense(
             Integer page, Integer size, ApplicationLicenseRequest requestDto
     ){
-        Pageable paging = PageRequest.of(page - 1, size);
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<ApplicationLicenseEntity> specs = Specification
                 .where(ApplicationLicensePredicate.searchTerm(requestDto.getSearchTerm()))
                 .and(ApplicationLicensePredicate.activeStatus(requestDto.getActiveStatus()));

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,4 +18,10 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
     List<UnitEntity> findByIdUnitIsIn(Collection<Long> id);
 
     Page<UnitEntity> findByBusinessUnitCodeListContains(BusinessUnitCodeEntity businessUnitCode, Pageable pageable);
+
+//    boolean existsByUnitAndBusinessUnitCode(@NotEmpty String unit, @NotEmpty List<Long> businessUnitCodeList);
+
+//    boolean existsByBusinessUnitCodeIdAndUnit(@NotEmpty String unit, @NotEmpty List<Long> businessUnitCodeList);
+
+//    boolean existsByBusinessUnitCodeListIn(List<BusinessUnitCodeEntity> allBusinessUnit);
 }

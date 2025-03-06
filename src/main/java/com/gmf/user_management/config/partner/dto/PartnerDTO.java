@@ -1,4 +1,4 @@
-package com.gmf.user_management.config.multipleDataSourceConfiguration.dto;
+package com.gmf.user_management.config.partner.dto;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DataSourceDTO {
+public class PartnerDTO {
     private Integer page;
     private Integer size;
     private String searchTerm;

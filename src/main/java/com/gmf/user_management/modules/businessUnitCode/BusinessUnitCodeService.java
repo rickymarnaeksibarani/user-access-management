@@ -1,7 +1,7 @@
 package com.gmf.user_management.modules.businessUnitCode;
 
-import com.gmf.user_management.config.multipleDataSourceConfiguration.repository.ExternalRepository;
-import com.gmf.user_management.config.multipleDataSourceConfiguration.service.DataSourceService;
+import com.gmf.user_management.config.partner.repository.PartnerRepository;
+import com.gmf.user_management.config.partner.service.PartnerService;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodeDTO;
 import com.gmf.user_management.modules.businessUnitCode.dto.BusinessUnitCodePredicate;
@@ -29,14 +29,14 @@ import java.util.Objects;
 public class BusinessUnitCodeService {
 
     private final BusinessUnitCodeRepository businessUnitCodeRepository;
-    private final DataSourceService dataSourceService;
-    private final ExternalRepository externalRepository;
+    private final PartnerService partnerService;
+    private final PartnerRepository partnerRepository;
 
     private BusinessUnitCodeResponDTO businessRespone(BusinessUnitCodeEntity businessUnitCodeEntity) {
         Map<String, Object> partnerExternal = null;
         if (businessUnitCodeEntity.getPartnerExternal() != null){
             try {
-                partnerExternal = dataSourceService.getContractById(businessUnitCodeEntity.getPartnerExternal());
+                partnerExternal = partnerService.getContractById(businessUnitCodeEntity.getPartnerExternal());
             }catch (ResponseStatusException e){
                 partnerExternal = Map.of("error", Objects.requireNonNull(e.getReason()));
             }
@@ -55,7 +55,7 @@ public class BusinessUnitCodeService {
     }
 
     public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
-        Map<String, Object> exPartner = externalRepository.findContractById(request.getPartnerExternal());
+        Map<String, Object> exPartner = partnerRepository.findContractById(request.getPartnerExternal());
         if (exPartner.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Partner is not found");
 
         BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
@@ -70,7 +70,7 @@ public class BusinessUnitCodeService {
         try {
             BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Business Unit Code with: " + id_business_unit_code + " is not found"));
             if (request.getPartnerExternal() != null) {
-                Map<String, Object> exPartner = externalRepository.findContractById(request.getPartnerExternal());
+                Map<String, Object> exPartner = partnerRepository.findContractById(request.getPartnerExternal());
                 if (exPartner.isEmpty()) {
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner External not found");
                 }
@@ -101,7 +101,6 @@ public class BusinessUnitCodeService {
         businessUnitCodeEntity.setUpdatedBy(request.getUpdatedBy());
         if (request.getPartnerExternal() != null) {
             businessUnitCodeEntity.setPartnerExternal(request.getPartnerExternal());
-//            businessUnitCodeEntity.setPartnerName(request.getPartnerName());
         }
         return businessUnitCodeEntity;
     }

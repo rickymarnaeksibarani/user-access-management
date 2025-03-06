@@ -1,4 +1,4 @@
-package com.gmf.user_management.core.storage;
+package com.gmf.user_management.core.storageMinIO;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

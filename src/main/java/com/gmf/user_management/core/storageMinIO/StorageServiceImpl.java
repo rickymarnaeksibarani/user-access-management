@@ -1,4 +1,4 @@
-package com.gmf.user_management.core.storage;
+package com.gmf.user_management.core.storageMinIO;
 
 import io.minio.*;
 import io.minio.errors.MinioException;

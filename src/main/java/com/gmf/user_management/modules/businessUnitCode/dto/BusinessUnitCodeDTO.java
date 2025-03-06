@@ -20,9 +20,6 @@ public class BusinessUnitCodeDTO {
     @NotEmpty
     private String businessUnitCode;
 
-    @JsonIgnore
-    private String partnerName;
-
     @JsonProperty("partnerExternal")
     @NotNull
     private Long partnerExternal;

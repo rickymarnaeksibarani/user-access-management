@@ -1,4 +1,4 @@
-package com.gmf.user_management.core.storage;
+package com.gmf.user_management.core.storageMinIO;
 
 import io.minio.MinioClient;
 import io.minio.ObjectWriteResponse;

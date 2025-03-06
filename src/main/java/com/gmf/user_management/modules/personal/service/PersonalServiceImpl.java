@@ -3,9 +3,9 @@ package com.gmf.user_management.modules.personal.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gmf.user_management.config.multipleDataSourceConfiguration.repository.ExternalRepository;
-import com.gmf.user_management.config.multipleDataSourceConfiguration.service.DataSourceService;
-import com.gmf.user_management.core.storage.StorageService;
+import com.gmf.user_management.config.partner.repository.PartnerRepository;
+import com.gmf.user_management.config.partner.service.PartnerService;
+import com.gmf.user_management.core.storageMinIO.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
@@ -40,8 +40,8 @@ public class PersonalServiceImpl implements PersonalService{
     private final SapLoginTypeRepository sapLoginTypeRepository;
     private final ObjectMapper objectMapper;
     private final StorageService storageService;
-    private final DataSourceService dataSourceService;
-    private final ExternalRepository externalRepository;
+    private final PartnerService partnerService;
+    private final PartnerRepository externalRepository;
     private final Date date = new Date();
     private final Long time = date.getTime();
 
@@ -50,7 +50,7 @@ public class PersonalServiceImpl implements PersonalService{
         Map<String, Object> partnerExternal = null;
         if (personalEntity.getPartnerExternal() != null){
             try {
-                partnerExternal = dataSourceService.getContractById(personalEntity.getPartnerExternal());
+                partnerExternal = partnerService.getContractById(personalEntity.getPartnerExternal());
             }catch (ResponseStatusException e){
                 partnerExternal = Map.of("error", Objects.requireNonNull(e.getReason()));
             }
@@ -87,8 +87,10 @@ public class PersonalServiceImpl implements PersonalService{
     public PersonalResponDTO createPersonal(PersonalDTO request){
         try {
             List<ApplicationFileDTO> personalPicture = uploadImage(request.getPersonalPicture());
+
             Map<String, Object>exPartner = externalRepository.findContractById(request.getPartnerExternal());
             if (exPartner.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner External not found");
+
             PersonalEntity personal = new PersonalEntity();
             PersonalEntity payload = personalPayload(request, personal, personalPicture);
             payload.setPartnerExternal((Long) exPartner.get("id"));

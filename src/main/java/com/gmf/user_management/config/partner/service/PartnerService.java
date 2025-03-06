@@ -15,14 +15,14 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class DataSourceService {
+public class PartnerService {
 
-    private final PartnerRepository externalRepository;
+    private final PartnerRepository partnerRepository;
 
     public PaginationUtil<Map<String, Object>, Map<String, Object>> getExternalDataRelation(
             PartnerDTO partnerDTO) {
 
-        Page<Map<String, Object>> externalDataPage = externalRepository.findContractsWithPartners(
+        Page<Map<String, Object>> externalDataPage = partnerRepository.findContractsWithPartners(
                 partnerDTO, PageRequest.of(partnerDTO.getPage()-1 , partnerDTO.getSize()));
         if (externalDataPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No external data found for the given criteria.");
@@ -30,24 +30,21 @@ public class DataSourceService {
         return new PaginationUtil<>(externalDataPage.getContent(), partnerDTO.getPage(), externalDataPage.getTotalElements(),
                 externalDataPage.getTotalPages(), partnerDTO.getSize(), externalDataPage.hasPrevious(), externalDataPage.hasNext());
     }
-//    Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt"))); Sort.by(Sort.Order.asc("start"))
 
 
     public Map<String, Object> getContractById(Long contractId) {
-        return externalRepository.findContractById(contractId);
+        return partnerRepository.findContractById(contractId);
     }
 
     public Map<String, Object> getPartnerByContractId(Long contractId) {
-        return externalRepository.findPartnerByContractId(contractId);
+        return partnerRepository.findPartnerByContractId(contractId);
     }
 
     public List<Map<String, Object>> getByPartnerId(Long partnerId) {
-        List<Map<String, Object>> contracts = externalRepository.findByPartnerId(partnerId);
-
+        List<Map<String, Object>> contracts = partnerRepository.findByPartnerId(partnerId);
         if (contracts.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No contracts found for the given partner ID.");
         }
-
         return contracts;
     }
 

@@ -12,11 +12,24 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
+/**
+ * The PartnerConfiguration class is responsible for configuring two separate databases in a Spring Boot application:
+ * PostgreSQL → The primary database.
+ * MySQL → A secondary database for external data (likely related to partners).
+ * It also configures transaction managers for both databases to ensure proper transaction handling.
+ */
+
 @Component
 @Configuration
 @EnableTransactionManagement
-public class DataSourceConfig {
+public class PartnerConfiguration {
 
+    /**
+     * Defines the primary DataSource for the application using PostgreSQL.
+     * This DataSource is configured using properties from `spring.datasource.*`.
+     * The @Primary annotation ensures that this is the default DataSource used
+     * when multiple DataSources exist.
+     */
     @Primary
     @Bean(name = "postgresDataSource")
     public DataSource postgresDataSource(@Value("${spring.datasource.url}") String url,
@@ -31,6 +44,12 @@ public class DataSourceConfig {
                 .build();
     }
 
+    /**
+     * Defines a secondary DataSource for the application using MySQL.
+     * This DataSource is configured using properties from `spring.partner-datasource.*`.
+     * It does not have the @Primary annotation, meaning it will not be the default
+     * DataSource when multiple exist.
+     */
     @Bean(name = "mysqlDataSource")
     public DataSource mysqlDataSource(@Value("${spring.partner-datasource.url}") String url,
                                       @Value("${spring.partner-datasource.username}") String username,
@@ -44,6 +63,11 @@ public class DataSourceConfig {
                 .build();
     }
 
+    /**
+     * Configures a transaction manager for PostgreSQL, ensuring transaction
+     * management is handled using the primary DataSource (`postgresDataSource`).
+     * The @Primary annotation ensures this is the default transaction manager.
+     */
     @Primary
     @Bean(name = "postgresTransactionManager")
     public DataSourceTransactionManager postgresTransactionManager(
@@ -51,6 +75,10 @@ public class DataSourceConfig {
         return new DataSourceTransactionManager(dataSource);
     }
 
+    /**
+     * Configures a transaction manager for MySQL, using the `mysqlDataSource`.
+     * This transaction manager is explicitly defined and does not override the primary one.
+     */
     @Bean(name = "transactionManager")
     public DataSourceTransactionManager transactionManager(
             @Qualifier("mysqlDataSource") DataSource dataSource) {

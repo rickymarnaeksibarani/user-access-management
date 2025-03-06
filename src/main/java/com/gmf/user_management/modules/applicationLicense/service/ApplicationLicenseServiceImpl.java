@@ -88,7 +88,7 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     public PaginationUtil<ApplicationLicenseEntity, ApplicationLicenseResponDTO> getAllLicense(
             Integer page, Integer size, ApplicationLicenseRequest requestDto
     ){
-        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.desc("createdAt")));
         Specification<ApplicationLicenseEntity> specs = Specification
                 .where(ApplicationLicensePredicate.searchTerm(requestDto.getSearchTerm()))
                 .and(ApplicationLicensePredicate.activeStatus(requestDto.getActiveStatus()));

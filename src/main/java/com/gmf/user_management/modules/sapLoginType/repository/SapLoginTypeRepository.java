@@ -8,9 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Repository
 public interface SapLoginTypeRepository extends JpaRepository<SapLoginTypeEntity, Long>, JpaSpecificationExecutor<SapLoginTypeEntity> {
     List<SapLoginTypeEntity> findByIdSapLoginTypeIsIn(List<Long> id);
+
+    boolean existsByLoginType(@NotEmpty String loginType);
 }

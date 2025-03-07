@@ -9,4 +9,5 @@ import lombok.Data;
 public class JobCodeRequestDto {
     @Sanitizer
     private String searchJobCode;
+    private String filterByJobPosition;
 }

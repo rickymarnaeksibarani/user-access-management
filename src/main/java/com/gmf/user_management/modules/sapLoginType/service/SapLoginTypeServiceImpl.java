@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
     @Override
     public SapLoginTypeResponDTO createSapLoginType(SapLoginTypeDTO requestDto) {
         try {
+
             SapLoginTypeEntity data = new SapLoginTypeEntity();
             SapLoginTypeEntity payload = sapLoginTypePayload(requestDto, data);
             sapLoginTypeRepository.save(payload);
@@ -66,7 +68,7 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
 
     @Override
     public PaginationUtil<SapLoginTypeEntity, SapLoginTypeResponDTO> getAllSapLoginType(Integer page, Integer size, SapLoginTypeRequest requestDTO) {
-        Pageable paging = PageRequest.of(page -1, size);
+        Pageable paging = PageRequest.of(page -1, size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<SapLoginTypeEntity> specs = Specification.where(SapLoginTypePredicate.filterSapLoginType(requestDTO.getFilterSapLoginType()));
         Page<SapLoginTypeEntity> pages = sapLoginTypeRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, SapLoginTypeResponDTO.class);
@@ -78,10 +80,12 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
         return sapLoginTypeResponDTO(sapLoginTypeEntity);
     }
 
-    private SapLoginTypeEntity sapLoginTypePayload(SapLoginTypeDTO sapLoginTypeDTO, SapLoginTypeEntity sapLoginTypeEntity){
-        sapLoginTypeEntity.setLoginType(sapLoginTypeDTO.getLoginType());
-        sapLoginTypeEntity.setCreatedBy(sapLoginTypeDTO.getCreatedBy());
-        sapLoginTypeEntity.setUpdatedBy(sapLoginTypeDTO.getUpdatedBy());
+    private SapLoginTypeEntity sapLoginTypePayload(SapLoginTypeDTO requestDto, SapLoginTypeEntity sapLoginTypeEntity){
+        boolean exists = sapLoginTypeRepository.existsByLoginType(requestDto.getLoginType());
+        if (exists){throw new ResponseStatusException(HttpStatus.CONFLICT, "SAP Login Type with " + requestDto.getLoginType() + " is already exists");}
+        sapLoginTypeEntity.setLoginType(requestDto.getLoginType());
+        sapLoginTypeEntity.setCreatedBy(requestDto.getCreatedBy());
+        sapLoginTypeEntity.setUpdatedBy(requestDto.getUpdatedBy());
         return sapLoginTypeEntity;
     }
 

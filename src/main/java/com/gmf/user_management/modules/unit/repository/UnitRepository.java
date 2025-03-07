@@ -19,9 +19,5 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
 
     Page<UnitEntity> findByBusinessUnitCodeListContains(BusinessUnitCodeEntity businessUnitCode, Pageable pageable);
 
-//    boolean existsByUnitAndBusinessUnitCode(@NotEmpty String unit, @NotEmpty List<Long> businessUnitCodeList);
-
-//    boolean existsByBusinessUnitCodeIdAndUnit(@NotEmpty String unit, @NotEmpty List<Long> businessUnitCodeList);
-
-//    boolean existsByBusinessUnitCodeListIn(List<BusinessUnitCodeEntity> allBusinessUnit);
+    boolean existsByBusinessUnitCodeListIn(List<BusinessUnitCodeEntity> allBusinessUnit);
 }

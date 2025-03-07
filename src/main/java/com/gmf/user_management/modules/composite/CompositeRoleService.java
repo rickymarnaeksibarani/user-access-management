@@ -70,6 +70,8 @@ public class CompositeRoleService {
     private CompositeRoleEntity compositePayload(CompositeRoleDTO request, CompositeRoleEntity compositeRole) {
         List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(request.getJobCodeList());
         if (allJobCode.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Job Code not found");
+        boolean exists = compositeRoleRepository.existsByCompositeRole(request.getCompositeRole());
+        if (exists){throw new ResponseStatusException(HttpStatus.CONFLICT, "Composite Role is already exists");}
         compositeRole.setJobCodeList(allJobCode);
         compositeRole.setCompositeRole(request.getCompositeRole());
         compositeRole.setCreatedBy(request.getCreatedBy());

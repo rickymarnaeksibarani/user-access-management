@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,10 +39,14 @@ public class JobCodeService {
                 .build();
     }
     public JobCodeResponeDTO createJobCode(JobCodeDTO request){
-        JobCodeEntity jobCode = new JobCodeEntity();
-        JobCodeEntity payload = jobCodePayload(request, jobCode);
-        jobCodeRepository.save(payload);
-        return jobRespone(payload);
+        try {
+            JobCodeEntity jobCode = new JobCodeEntity();
+            JobCodeEntity payload = jobCodePayload(request, jobCode);
+            jobCodeRepository.save(payload);
+            return jobRespone(payload);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public JobCodeResponeDTO updateJobCode(Long id_job_code, JobCodeDTO request){
@@ -54,6 +59,8 @@ public class JobCodeService {
 
 
     private JobCodeEntity jobCodePayload(JobCodeDTO request, JobCodeEntity jobCode) {
+        boolean existsByJobCode = jobCodeRepository.existsByJobCode(request.getJobCode());
+        if (existsByJobCode){throw new ResponseStatusException(HttpStatus.CONFLICT, "Job Code is already exists");}
         jobCode.setJobPosition(request.getJobPosition());
         jobCode.setJobCode(request.getJobCode());
         jobCode.setCreatedBy(request.getCreatedBy());
@@ -70,9 +77,10 @@ public class JobCodeService {
     public PaginationUtil<JobCodeEntity, JobCodeResponeDTO> getAllJobCode(
             Integer page, Integer size, JobCodeRequestDto requestDto
     ){
-        Pageable paging = PageRequest.of(page -1, size);
+        Pageable paging = PageRequest.of(page -1, size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<JobCodeEntity> specs = Specification
-                .where(JobCodePredicate.searchJobCode(requestDto.getSearchJobCode()));
+                .where(JobCodePredicate.searchJobCode(requestDto.getSearchJobCode()))
+                .and(JobCodePredicate.filterByJobPosition(requestDto.getFilterByJobPosition()));
         Page<JobCodeEntity> pages = jobCodeRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, JobCodeResponeDTO.class);
     }

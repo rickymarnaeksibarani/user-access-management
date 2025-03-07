@@ -55,6 +55,8 @@ public class BusinessUnitCodeService {
     }
 
     public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
+//        boolean exist = businessUnitCodeRepository.existsByBusinessUnitCode(request.getBusinessUnitCode());
+//        if (exist){throw new ResponseStatusException(HttpStatus.CONFLICT, "Business Unit Code " + request.getBusinessUnitCode() + " is already exists");}
         Map<String, Object> exPartner = partnerRepository.findContractById(request.getPartnerExternal());
         if (exPartner.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Partner is not found");
 

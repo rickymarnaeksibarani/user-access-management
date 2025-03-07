@@ -76,10 +76,10 @@ public class UnitService {
     private UnitEntity unitPaylod(UnitDTO unitDTO, UnitEntity unitEntity) {
         List<BusinessUnitCodeEntity> allBusinessUnit = businessUnitCodeRepository.findByIdBusinessUnitCodeIsIn(unitDTO.getBusinessUnitCodeList());
         if (allBusinessUnit.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Business code not found!");
-//        boolean exists = unitRepository.existsByBusinessUnitCodeListIn(allBusinessUnit);
-//        if (exists){
-//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit " + unitDTO.getUnit() + "is already used in "+ unitDTO.getBusinessUnitCodeList());
-//        }
+        boolean exists = unitRepository.existsByBusinessUnitCodeListIn(allBusinessUnit);
+        if (exists){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit " + unitDTO.getUnit() + " is already used in "+ unitDTO.getBusinessUnitCodeList());
+        }
 
         unitEntity.setBusinessUnitCodeList(allBusinessUnit);
         unitEntity.setUnit(unitDTO.getUnit());

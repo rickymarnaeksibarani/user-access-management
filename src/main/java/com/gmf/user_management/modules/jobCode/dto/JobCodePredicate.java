@@ -16,4 +16,16 @@ public class JobCodePredicate {
         };
     }
 
+    public static Specification<JobCodeEntity> filterByJobPosition(String filterByJobPosition) {
+        return (root, query, criteriaBuilder) -> {
+            if (filterByJobPosition != null && !filterByJobPosition.isEmpty()) {
+                return criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("jobPosition")),
+                        "%" + filterByJobPosition.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
+
 }

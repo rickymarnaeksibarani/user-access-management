@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Repository
 public interface BusinessUnitCodeRepository extends JpaRepository<BusinessUnitCodeEntity, Long>, JpaSpecificationExecutor<BusinessUnitCodeEntity> {
     List<BusinessUnitCodeEntity> findByIdBusinessUnitCodeIsIn(List<Long> id);
-
     Page<BusinessUnitCodeEntity> findByDinas(String dinas, Pageable pageable);
     Page<BusinessUnitCodeEntity> findByPartnerExternal(Long partnerExternal, Pageable pageable);
-
+//    boolean existsByBusinessUnitCode(@NotEmpty String businessUnitCode);
 }

@@ -8,10 +8,10 @@ import com.gmf.user_management.modules.licenseType.dto.*;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -61,12 +61,12 @@ public class LicenseTypeService {
         return true;
     }
 
-    public PaginationUtil<LicenseTypeEntity, LicenseTypeEntity> getAllLicenseType(Integer page, Integer size, LicenseTypeRequestDto requestDto) {
-        Pageable paging = PageRequest.of(page -1, size);
+    public PaginationUtil<LicenseTypeEntity, LicenseTypeResponDTO> getAllLicenseType(Integer page, Integer size, LicenseTypeRequestDto requestDto) {
+        Pageable paging = PageRequest.of(page -1, size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<LicenseTypeEntity> specs = Specification
                 .where(LicenseTypePredicate.searchTerm(requestDto.getSearchTerm()));
         Page<LicenseTypeEntity> pages = licenseTypeRespository.findAll(specs, paging);
-        return new PaginationUtil<>(pages, LicenseTypeEntity.class);
+        return new PaginationUtil<>(pages, LicenseTypeResponDTO.class);
     }
 
     private LicenseTypeEntity licenseTypePayload(LicenseTypeDTO request, LicenseTypeEntity licenseTypeEntity) {

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -76,10 +77,10 @@ public class UnitService {
     private UnitEntity unitPaylod(UnitDTO unitDTO, UnitEntity unitEntity) {
         List<BusinessUnitCodeEntity> allBusinessUnit = businessUnitCodeRepository.findByIdBusinessUnitCodeIsIn(unitDTO.getBusinessUnitCodeList());
         if (allBusinessUnit.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Business code not found!");
-        boolean exists = unitRepository.existsByBusinessUnitCodeListIn(allBusinessUnit);
-        if (exists){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit " + unitDTO.getUnit() + " is already used in "+ unitDTO.getBusinessUnitCodeList());
-        }
+//        boolean exists = unitRepository.existsByBusinessUnitCodeListIn(allBusinessUnit);
+//        if (exists){
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit " + unitDTO.getUnit() + " is already used in "+ unitDTO.getBusinessUnitCodeList());
+//        }
 
         unitEntity.setBusinessUnitCodeList(allBusinessUnit);
         unitEntity.setUnit(unitDTO.getUnit());
@@ -89,7 +90,7 @@ public class UnitService {
     }
 
     public PaginationUtil<UnitEntity, UnitResponDto> getAllUnit(Integer page, Integer size, UnitRequestDto requestDto) {
-        Pageable paging = PageRequest.of(page -1 ,size);
+        Pageable paging = PageRequest.of(page -1 ,size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<UnitEntity> specs = Specification.where(UnitPredicate.unit(requestDto.getUnit()));
         Page<UnitEntity> pages = unitRepository.findAll(specs, paging);
         return new PaginationUtil<>(pages, UnitResponDto.class);

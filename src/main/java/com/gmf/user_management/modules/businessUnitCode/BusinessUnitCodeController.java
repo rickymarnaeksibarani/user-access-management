@@ -30,10 +30,14 @@ public class BusinessUnitCodeController {
     public ResponseEntity<HttpResponseDTO<BusinessUnitCodeResponDTO>> createBusinessUnitCode(
             @RequestBody @Valid BusinessUnitCodeDTO request
     ){
-        BusinessUnitCodeResponDTO response = businessUnitCodeService.createBusinessUnitCode(request);
-        return new HttpResponseDTO<>(response, HttpStatus.CREATED)
-                .setResponseHeaders("request", response)
-                .toResponse();
+        try {
+            BusinessUnitCodeResponDTO response = businessUnitCodeService.createBusinessUnitCode(request);
+            return new HttpResponseDTO<>(response, HttpStatus.CREATED)
+                    .setResponseHeaders("request", response)
+                    .toResponse();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @PutMapping(value = "/by-id/{id_business_unit_code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,11 +45,15 @@ public class BusinessUnitCodeController {
             @PathVariable Long id_business_unit_code,
             @RequestBody @Valid BusinessUnitCodeDTO request
     ){
-        BusinessUnitCodeResponDTO response = businessUnitCodeService.updateBusinessUnitCode(id_business_unit_code, request);
+        try {
+            BusinessUnitCodeResponDTO response = businessUnitCodeService.updateBusinessUnitCode(id_business_unit_code, request);
 
-        return new HttpResponseDTO<>(response,HttpStatus.OK)
-                .setResponseHeaders("request", response)
-                .toResponse();
+            return new HttpResponseDTO<>(response,HttpStatus.OK)
+                    .setResponseHeaders("request", response)
+                    .toResponse();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

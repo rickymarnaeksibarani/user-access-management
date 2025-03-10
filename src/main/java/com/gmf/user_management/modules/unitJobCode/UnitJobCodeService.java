@@ -17,13 +17,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,13 +70,18 @@ public class UnitJobCodeService {
     }
 
     private  UnitJobCodeEntity unitJobCodePayload(UnitJobCodeDTO unitJobCodeDTO, UnitJobCodeEntity unitJobCodeEntity){
-        Optional.ofNullable(unitJobCodeDTO.getUnitList())
-                        .ifPresent(unitList -> unitJobCodeEntity.setUnitList(unitRepository.findByIdUnitIsIn(unitList)));
-        Optional.ofNullable(unitJobCodeDTO.getJobCodeList())
-                .ifPresent(jobCodeList -> unitJobCodeEntity.setJobCodeList(jobCodeRepository.findByIdJobCodeIsIn(jobCodeList)));
+//        Optional.ofNullable(unitJobCodeDTO.getUnitList())
+//                        .ifPresent(unitList -> unitJobCodeEntity.setUnitList(unitRepository.findByIdUnitIsIn(unitList)));
+        List<UnitEntity> allUnitList = unitRepository.findByIdUnitIsIn(unitJobCodeDTO.getUnitList());
+        List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(unitJobCodeDTO.getJobCodeList());
+
+//        Optional.ofNullable(unitJobCodeDTO.getJobCodeList())
+//                .ifPresent(jobCodeList -> unitJobCodeEntity.setJobCodeList(jobCodeRepository.findByIdJobCodeIsIn(jobCodeList)));
 
 //        unitJobCodeEntity.setUnitList(allUnit);
 //        unitJobCodeEntity.setJobCodeList(allJobCode);
+        unitJobCodeEntity.setUnitList(allUnitList);
+        unitJobCodeEntity.setJobCodeList(allJobCode);
         unitJobCodeEntity.setCreatedBy(unitJobCodeDTO.getCreatedBy());
         unitJobCodeEntity.setUpdatedBy(unitJobCodeDTO.getUpdatedBy());
         return unitJobCodeEntity;
@@ -89,7 +94,7 @@ public class UnitJobCodeService {
     }
 
     public PaginationUtil<UnitJobCodeEntity, UnitJobCodeResponDTO> getAllJobCode(Integer page, Integer size, UnitJobCodeRequestDTO requestDTO) {
-        Pageable paging = PageRequest.of(page -1 ,size);
+        Pageable paging = PageRequest.of(page -1 ,size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<UnitJobCodeEntity> spec = Specification
                 .where(UnitJobCodePredicate.filterByUnit(requestDTO.getFilterByUnit()))
                 .and(UnitJobCodePredicate.filterByJobCode(requestDTO.getFilterByJobCode()))

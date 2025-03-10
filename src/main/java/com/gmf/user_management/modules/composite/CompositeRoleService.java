@@ -14,10 +14,10 @@ import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.jobCode.repositories.JobCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -46,6 +46,7 @@ public class CompositeRoleService {
                 .jobCodeCount((compositeRoleEntity.getJobCodeList() != null ? compositeRoleEntity.getJobCodeList().size() : 0))
                 .build();
     }
+
     public CompositeRoleResponDTO createCompositeRole(CompositeRoleDTO request) {
         CompositeRoleEntity compositeRole = new CompositeRoleEntity();
         CompositeRoleEntity payload = compositePayload(request, compositeRole);
@@ -59,14 +60,13 @@ public class CompositeRoleService {
         CompositeRoleEntity payload = compositePayload(request, data);
         compositeRoleRepository.saveAndFlush(payload);
         return compositeRoleRespon(payload);
-
-
     }
 
     public Boolean deleteCompositeRole(Long idCompositeRole) {
         compositeRoleRepository.deleteById(idCompositeRole);
         return true;
     }
+
     private CompositeRoleEntity compositePayload(CompositeRoleDTO request, CompositeRoleEntity compositeRole) {
         List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(request.getJobCodeList());
         if (allJobCode.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Job Code not found");
@@ -78,8 +78,9 @@ public class CompositeRoleService {
         compositeRole.setUpdatedBy(request.getUpdatedBy());
         return compositeRole;
     }
-    public PaginationUtil<CompositeRoleEntity, CompositeRoleEntity> getAllCompositeRole(Integer page, Integer size, CompositeRoleRequestDTO requestDto) {
-        Pageable paging = PageRequest.of(page - 1, size);
+
+    public PaginationUtil<CompositeRoleEntity, CompositeRoleResponDTO> getAllCompositeRole(Integer page, Integer size, CompositeRoleRequestDTO requestDto) {
+        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<CompositeRoleEntity> specs = Specification.where(CompositeRolePredicate.searchTerm(requestDto.getSearchTerm()));
         Page<CompositeRoleEntity> pages = compositeRoleRepository.findAll(specs, paging);
         List<CompositeRoleResponDTO> responseDTOs = pages.getContent().stream()
@@ -90,7 +91,7 @@ public class CompositeRoleService {
                 })
                 .toList();
 
-        return new PaginationUtil<>(pages, CompositeRoleEntity.class);
+        return new PaginationUtil<>(pages, CompositeRoleResponDTO.class);
     }
 
     public CompositeRoleResponDTO getCompositeRoleById(Long id_composite_role) throws NotFoundException {

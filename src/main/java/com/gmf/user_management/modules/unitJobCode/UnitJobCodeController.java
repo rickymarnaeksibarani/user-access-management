@@ -30,27 +30,27 @@ public class UnitJobCodeController {
     ){
         UnitJobCodeResponDTO response = unitJobCodeService.createUnitJobCode(request);
         return new HttpResponseDTO<>(response, HttpStatus.CREATED)
-                .setResponseHeaders("request", response)
+                .setResponseHeaders("response", response)
                 .toResponse();
     }
 
-    @PutMapping(value = "/by-id/{id_unit_job_code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/by-id/{idUnitJobCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<UnitJobCodeResponDTO>>updateUnitJobCode(
             @RequestBody @Valid UnitJobCodeDTO request,
-            @PathVariable Long id_unit_job_code
+            @PathVariable Long idUnitJobCode
     ) {
-        UnitJobCodeResponDTO responDto = unitJobCodeService.updatedUnit(id_unit_job_code, request);
+        UnitJobCodeResponDTO responDto = unitJobCodeService.updatedUnit(idUnitJobCode, request);
         return new HttpResponseDTO<>(responDto,HttpStatus.OK)
                 .setResponseHeaders("responDto", responDto)
                 .toResponse();
     }
 
-    @DeleteMapping(value = "/by-id/{id_unit_job_code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/by-id/{idUnitJobCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpResponseDTO<Boolean>> deleteUnitJobCode(
-            @PathVariable Long id_unit_job_code
+            @PathVariable Long idUnitJobCode
     ){
-        return new HttpResponseDTO<>(unitJobCodeService.deleteUnitJobCode(id_unit_job_code))
-                .setResponseHeaders("idUnitJobCode", id_unit_job_code)
+        return new HttpResponseDTO<>(unitJobCodeService.deleteUnitJobCode(idUnitJobCode))
+                .setResponseHeaders("idUnitJobCode", idUnitJobCode)
                 .toResponse();
     }
 

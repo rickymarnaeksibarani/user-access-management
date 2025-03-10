@@ -88,22 +88,31 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     public PaginationUtil<ApplicationLicenseEntity, ApplicationLicenseResponDTO> getAllLicense(
             Integer page, Integer size, ApplicationLicenseRequest requestDto
     ){
-        Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
-        Specification<ApplicationLicenseEntity> specs = Specification
-                .where(ApplicationLicensePredicate.searchTerm(requestDto.getSearchTerm()))
-                .and(ApplicationLicensePredicate.activeStatus(requestDto.getActiveStatus()));
+        try {
+            Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
+            Specification<ApplicationLicenseEntity> specs = Specification
+                    .where(ApplicationLicensePredicate.searchTerm(requestDto.getSearchTerm()))
+                    .and(ApplicationLicensePredicate.activeStatus(requestDto.getActiveStatus()));
 
-        Page<ApplicationLicenseEntity> pages = applicationLicenseRepository.findAll(specs, paging);
-        return new PaginationUtil<>(pages, ApplicationLicenseResponDTO.class);
+            Page<ApplicationLicenseEntity> pages = applicationLicenseRepository.findAll(specs, paging);
+            return new PaginationUtil<>(pages, ApplicationLicenseResponDTO.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public ApplicationLicenseResponDTO getApplicationLicenseById(Long applicationLicenseId) throws NotFoundException {
-        ApplicationLicenseEntity applicationLicenses = JpaResultHelperUtil.getSingleResultFromOptional(applicationLicenseRepository.findById(applicationLicenseId));
-        if (applicationLicenses == null){
-            throw new NotFoundException("id with: " + applicationLicenseId + " is not found");
+        try {
+            ApplicationLicenseEntity applicationLicenses = JpaResultHelperUtil.getSingleResultFromOptional(applicationLicenseRepository.findById(applicationLicenseId));
+            if (applicationLicenses == null){
+                throw new NotFoundException("id with: " + applicationLicenseId + " is not found");
+            }
+            return ObjectMapperUtil.map(applicationLicenses, ApplicationLicenseResponDTO.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-        return ObjectMapperUtil.map(applicationLicenses, ApplicationLicenseResponDTO.class);
+
     }
 
     private ApplicationLicenseEntity applicationLicensePayload(ApplicationLicenseDTO applicationLicenseDTO, ApplicationLicenseEntity applicationLicenseEntity){

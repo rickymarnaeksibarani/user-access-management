@@ -6,7 +6,7 @@ import com.gmf.user_management.modules.personal.repository.PersonalRepository;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainDTO;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainResponDTO;
 import com.gmf.user_management.modules.usersAccessDomain.entities.UserAccessDomainEntity;
-import com.gmf.user_management.modules.usersAccessDomain.repository.UADRepository;
+import com.gmf.user_management.modules.usersAccessDomain.repository.UserAccessDomainRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
-    private final UADRepository uadRepository;
+    private final UserAccessDomainRepository userAccessDomainRepository;
     private final PersonalRepository personalRepository;
     private final PasswordUtil passwordUtil;
 
@@ -31,7 +31,6 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
                 .isNetworkAccess(userAccessDomainEntity.getIsNetworkAccess())
                 .isDomainAccess(userAccessDomainEntity.getIsDomainAccess())
                 .username(userAccessDomainEntity.getUsername())
-                .password(userAccessDomainEntity.getPassword())
                 .createdAt(userAccessDomainEntity.getCreatedAt())
                 .createdBy(userAccessDomainEntity.getCreatedBy())
                 .updatedAt(userAccessDomainEntity.getUpdatedAt())
@@ -40,23 +39,27 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     }
     @Override
     public UserAccessDomainResponDTO createUserAccessDomain(UserAccessDomainDTO request) {
+//        boolean exists = userAccessDomainRepository.existsByPersonalListIn(request.getPersonalList());
+//        if (exists){
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username: " + request.getUsername() + " is already used in "+ request.getPersonalList());
+//        }
         UserAccessDomainEntity uad = new UserAccessDomainEntity();
         UserAccessDomainEntity payload = uadPayload(request, uad);
-        uadRepository.save(payload);
+        userAccessDomainRepository.save(payload);
         return userAccessDomainResponDTO(payload);
     }
 
     @Override
     public UserAccessDomainResponDTO updateUserAccessDomain(Long idUserAccessDomain, UserAccessDomainDTO request){
-        UserAccessDomainEntity data = uadRepository.findById(idUserAccessDomain).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id not found"));
+        UserAccessDomainEntity data = userAccessDomainRepository.findById(idUserAccessDomain).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id not found"));
         UserAccessDomainEntity payload = uadPayload(request, data);
-        uadRepository.saveAndFlush(payload);
+        userAccessDomainRepository.saveAndFlush(payload);
         return userAccessDomainResponDTO(payload);
     }
 
     @Override
     public Boolean deleteUserAccessDomain(Long idUser) {
-        uadRepository.deleteById(idUser);
+        userAccessDomainRepository.deleteById(idUser);
         return true;
     }
 
@@ -64,7 +67,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     public UserAccessDomainResponDTO getUserAccessDomainByPersonalId(Long personalId, UserAccessDomainDTO request){
             PersonalEntity personal = personalRepository.findById(personalId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal ID not found"));
-            UserAccessDomainEntity userAccessDomainEntity = uadRepository.findByPersonalListContaining(personal)
+            UserAccessDomainEntity userAccessDomainEntity = userAccessDomainRepository.findByPersonalListContaining(personal)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Access Domain not found for the given Personal ID"));
             return userAccessDomainResponDTO(userAccessDomainEntity);
         }

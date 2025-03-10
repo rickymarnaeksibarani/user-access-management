@@ -19,7 +19,6 @@ public class UserAccessDomainResponDTO {
     private Boolean isNetworkAccess = false;
     private Boolean isDomainAccess = false;
     private String username;
-    private String password;
     private LocalDateTime createdAt;
     private String createdBy;
     private LocalDateTime updatedAt;

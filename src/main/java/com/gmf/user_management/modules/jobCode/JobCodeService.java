@@ -11,7 +11,6 @@ import com.gmf.user_management.modules.jobCode.dto.JobCodeResponeDTO;
 import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.jobCode.repositories.JobCodeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -59,8 +58,8 @@ public class JobCodeService {
 
 
     private JobCodeEntity jobCodePayload(JobCodeDTO request, JobCodeEntity jobCode) {
-        boolean existsByJobCode = jobCodeRepository.existsByJobCode(request.getJobCode());
-        if (existsByJobCode){throw new ResponseStatusException(HttpStatus.CONFLICT, "Job Code is already exists");}
+//        boolean existsByJobCode = jobCodeRepository.existsByJobCode(request.getJobCode());
+//        if (existsByJobCode){throw new ResponseStatusException(HttpStatus.CONFLICT, "Job Code is already exists");}
         jobCode.setJobPosition(request.getJobPosition());
         jobCode.setJobCode(request.getJobCode());
         jobCode.setCreatedBy(request.getCreatedBy());

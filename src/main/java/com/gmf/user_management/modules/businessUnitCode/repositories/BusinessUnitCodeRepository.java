@@ -15,5 +15,5 @@ public interface BusinessUnitCodeRepository extends JpaRepository<BusinessUnitCo
     List<BusinessUnitCodeEntity> findByIdBusinessUnitCodeIsIn(List<Long> id);
     Page<BusinessUnitCodeEntity> findByDinas(String dinas, Pageable pageable);
     Page<BusinessUnitCodeEntity> findByPartnerExternal(Long partnerExternal, Pageable pageable);
-//    boolean existsByBusinessUnitCode(@NotEmpty String businessUnitCode);
+    boolean existsByBusinessUnitCode(@NotEmpty String businessUnitCode);
 }

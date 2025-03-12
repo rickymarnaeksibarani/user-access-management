@@ -25,10 +25,4 @@ public class UserAccessDomainDTO {
 
     @JsonProperty("password")
     private String password;
-
-    @JsonProperty("createdBy")
-    private String createdBy;
-
-    @JsonProperty("updatedBy")
-    private String updatedBy;
 }

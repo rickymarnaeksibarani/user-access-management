@@ -3,6 +3,7 @@ package com.gmf.user_management.modules.usersAccessDomain.service;
 import com.gmf.user_management.core.utils.PasswordUtil;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.repository.PersonalRepository;
+import com.gmf.user_management.modules.usersAccessDomain.dto.PersonalDTOtoUAD;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainDTO;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainResponDTO;
 import com.gmf.user_management.modules.usersAccessDomain.entities.UserAccessDomainEntity;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,9 +27,18 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     private final PasswordUtil passwordUtil;
 
     private UserAccessDomainResponDTO userAccessDomainResponDTO(UserAccessDomainEntity userAccessDomainEntity){
+        List<PersonalDTOtoUAD> personalDTOList = userAccessDomainEntity.getPersonalList().stream()
+                .map(personal -> new PersonalDTOtoUAD(
+                        personal.getIdPersonal(),
+                        personal.getPersonalName(),
+                        personal.getEmail(),
+                        personal.getIdentityNumber(),
+                        personal.getIsPic()
+                ))
+                .toList();
         return UserAccessDomainResponDTO.builder()
                 .idUserAccessDomain(userAccessDomainEntity.getIdUserAccessDomain())
-                .personalList(userAccessDomainEntity.getPersonalList())
+                .personalList(personalDTOList)
                 .isNetworkAccess(userAccessDomainEntity.getIsNetworkAccess())
                 .isDomainAccess(userAccessDomainEntity.getIsDomainAccess())
                 .username(userAccessDomainEntity.getUsername())
@@ -82,8 +93,8 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         if (userAccessDomainDTO.getPassword() != null && !userAccessDomainDTO.getPassword().trim().isEmpty()) {
             userAccessDomainEntity.setPassword(passwordUtil.generatePassword(userAccessDomainDTO.getPassword()));
         }
-        userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
-        userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());
+//        userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
+//        userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());
         return userAccessDomainEntity;
     }
 }

@@ -2,10 +2,11 @@ package com.gmf.user_management.modules.usersAccessDomain.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
+import com.gmf.user_management.core.validations.IsNumeric;
+import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainDTO;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainResponDTO;
 import com.gmf.user_management.modules.usersAccessDomain.service.UserAccessDomainService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,10 @@ public class UserAccessDomainControllerImpl {
             @RequestBody @Valid UserAccessDomainDTO request
     ){
         UserAccessDomainResponDTO respone = userAccessDomainService.createUserAccessDomain(request);
+        String idUAD = String.valueOf(respone.getIdUserAccessDomain());
+        String idPersonal = respone.getPersonalList().toString();
         return new HttpResponseDTO<>(respone, HttpStatus.CREATED)
-                .setResponseHeaders("respon", respone)
+                .setResponseHeaders("idUserAccessDomain", idUAD)
                 .toResponse();
     }
 
@@ -43,7 +46,6 @@ public class UserAccessDomainControllerImpl {
         return new HttpResponseDTO<>(responDTO, HttpStatus.OK)
                 .setResponseHeaders("responDTO", responDTO)
                 .toResponse();
-
     }
 
     @DeleteMapping(value = "/by-id/{idUserAccessDomain}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -15,12 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 public class UserAccessDomainResponDTO {
     private Long idUserAccessDomain;
-    private List<PersonalEntity> personalList;
+    private List<PersonalDTOtoUAD> personalList;
     private Boolean isNetworkAccess = false;
     private Boolean isDomainAccess = false;
     private String username;
     private LocalDateTime createdAt;
-    private String createdBy;
     private LocalDateTime updatedAt;
+    private String createdBy;
     private String updatedBy;
 }

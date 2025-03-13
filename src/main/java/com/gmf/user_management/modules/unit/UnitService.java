@@ -46,6 +46,11 @@ public class UnitService {
     }
     public UnitResponDto createUnit(UnitDTO request)throws Exception {
         try {
+            List<BusinessUnitCodeEntity> businessUnits = businessUnitCodeRepository.findAllById(request.getBusinessUnitCodeList());
+            if (unitRepository.existsByBusinessUnitCodeListIn(businessUnits)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Business Unit Code is already used in " + request.getBusinessUnitCodeList());
+            }
             UnitEntity unit = new UnitEntity();
             UnitEntity payload = unitPaylod(request, unit);
             unitRepository.save(payload);
@@ -77,10 +82,10 @@ public class UnitService {
     private UnitEntity unitPaylod(UnitDTO unitDTO, UnitEntity unitEntity) {
         List<BusinessUnitCodeEntity> allBusinessUnit = businessUnitCodeRepository.findByIdBusinessUnitCodeIsIn(unitDTO.getBusinessUnitCodeList());
         if (allBusinessUnit.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Business code not found!");
-        boolean exists = unitRepository.existsByBusinessUnitCodeListIn(allBusinessUnit);
-        if (exists){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit " + unitDTO.getUnit() + " is already used in "+ unitDTO.getBusinessUnitCodeList());
-        }
+//        boolean exists = unitRepository.existsByBusinessUnitCodeListIn(allBusinessUnit);
+//        if (exists){
+//            throw new ResponseStatusException();
+//        }
 
         unitEntity.setBusinessUnitCodeList(allBusinessUnit);
         unitEntity.setUnit(unitDTO.getUnit());
@@ -102,4 +107,5 @@ public class UnitService {
         if (unitEntity == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + idUnit + " Not Found");
         return ObjectMapperUtil.map(unitEntity, UnitResponDto.class);
     }
+
 }

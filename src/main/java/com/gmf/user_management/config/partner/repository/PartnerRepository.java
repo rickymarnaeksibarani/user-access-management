@@ -29,15 +29,18 @@ public class PartnerRepository {
     {
         StringBuilder sql = new StringBuilder(
        """
-       SELECT p.id, p.partner_id, p.contract_id, n.name, c.subject, c.number, c.start, c.end, CASE
-           WHEN c.status = 2 THEN 'Active'
-           WHEN c.status = 3 THEN 'Inactive'
-           ELSE '(Null)'
-       END AS status
-         FROM partner_contracts p
-         LEFT JOIN contracts c ON c.id = p.contract_id
-         LEFT JOIN partners n ON n.id = p.partner_id
-         WHERE c.status <> 1 AND c.status IS NOT NULL
+       SELECT p.id, p.partner_id, p.contract_id,
+              COALESCE(n.name, 'Unknown') AS name,
+              c.subject, c.number, c.start, c.end,
+              COALESCE(
+                  CASE WHEN c.status = 2 THEN 'Active'
+                       WHEN c.status = 3 THEN 'Inactive'
+                  END, 'Unknown'
+              ) AS status
+       FROM partner_contracts p
+       INNER JOIN contracts c ON c.id = p.contract_id
+       LEFT JOIN partners n ON n.id = p.partner_id
+       WHERE c.status IS NOT NULL AND c.status <> 1
        """
         );
         //Final -> active
@@ -69,10 +72,12 @@ public class PartnerRepository {
 
         List<Map<String, Object>> content = jdbcTemplate.queryForList(sql.toString(), params.toArray());
 
-        String countSql = "SELECT COUNT(*) FROM partner_contracts p " +
-                "LEFT JOIN contracts c ON c.id = p.contract_id " +
-                "LEFT JOIN partners n ON n.id = p.partner_id " +
-                "WHERE 1=1";
+        String countSql = """
+                    SELECT COUNT(*) FROM partner_contracts p
+                    INNER JOIN contracts c ON c.id = p.contract_id
+                    LEFT JOIN partners n ON n.id = p.partner_id
+                    WHERE c.status IS NOT NULL AND c.status <> 1
+                    """;
 
         List<Object> countParams = new ArrayList<>();
         if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().isEmpty()) {
@@ -105,7 +110,6 @@ public class PartnerRepository {
        SELECT p.id, p.partner_id, p.contract_id, n.name, c.subject, c.number, c.start, c.end, CASE
            WHEN c.status = 2 THEN 'Active'
            WHEN c.status = 3 THEN 'Inactive'
-           ELSE '(Null)'
        END AS status
        FROM partner_contracts p
        LEFT JOIN contracts c ON c.id = p.contract_id
@@ -124,7 +128,6 @@ public class PartnerRepository {
        SELECT p.id, partner_id, contract_id, n.name, c.subject, c.number, c.start, c.end, CASE
            WHEN c.status = 2 THEN 'Active'
            WHEN c.status = 3 THEN 'Inactive'
-           ELSE '(Null)'
        END AS status
        FROM partner_contracts p
        LEFT JOIN contracts c ON c.id = p.contract_id
@@ -140,16 +143,19 @@ public class PartnerRepository {
 
     public List<Map<String, Object>> findByPartnerId(Long partnerId) {
         String sql = """
-           SELECT p.id, p.partner_id, p.contract_id, n.name, c.subject, c.number, c.start, c.end, CASE
-               WHEN c.status = 2 THEN 'Active'
-               WHEN c.status = 3 THEN 'Inactive'
-               ELSE '(Null)'
-           END AS status
-             FROM partner_contracts p
-             LEFT JOIN contracts c ON c.id = p.contract_id
-             LEFT JOIN partners n ON n.id = p.partner_id
-             WHERE p.id = ? AND c.status <> 1 AND c.status IS NOT NULL
-        """;
+     SELECT p.id, p.partner_id, p.contract_id,
+     COALESCE(n.name, 'Unknown') AS name,
+     c.subject, c.number, c.start, c.end,
+        COALESCE(
+            CASE WHEN c.status = 2 THEN 'Active'
+                 WHEN c.status = 3 THEN 'Inactive'
+            END, 'Unknown'
+        ) AS status
+     FROM partner_contracts p
+     INNER JOIN contracts c ON c.id = p.contract_id
+     LEFT JOIN partners n ON n.id = p.partner_id
+     WHERE p.id = ? AND c.status IS NOT NULL AND c.status <> 1
+     """;
         try {
             return jdbcTemplate.queryForList(sql, partnerId);
         } catch (Exception e) {

@@ -73,16 +73,19 @@ public class PartnerRepository {
         List<Map<String, Object>> content = jdbcTemplate.queryForList(sql.toString(), params.toArray());
 
         String countSql = """
-                    SELECT COUNT(*) FROM partner_contracts p
-                    INNER JOIN contracts c ON c.id = p.contract_id
-                    LEFT JOIN partners n ON n.id = p.partner_id
-                    WHERE c.status IS NOT NULL AND c.status <> 1
-                    """;
+    SELECT COUNT(*)FROM partner_contracts p
+    INNER JOIN contracts c ON c.id = p.contract_id
+    LEFT JOIN partners n ON n.id = p.partner_id
+    WHERE c.status IN (2, 3);
+""";
+
 
         List<Object> countParams = new ArrayList<>();
-        if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().isEmpty()) {
-            countSql += " AND c.status = ?";
-            countParams.add(PartnerDTO.getFilterByStatus());
+        if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().trim().isEmpty()) {
+            countSql +=" AND c.status = ?";
+            params.add(Integer.parseInt(PartnerDTO.getFilterByStatus()));
+        } else {
+            sql.append(" AND c.status IN (2,3)");
         }
         if (PartnerDTO.getFilterByStart() != null) {
             countSql += " AND c.start >= ?";

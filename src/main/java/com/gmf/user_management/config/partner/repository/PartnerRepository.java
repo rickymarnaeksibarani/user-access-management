@@ -72,36 +72,34 @@ public class PartnerRepository {
 
         List<Map<String, Object>> content = jdbcTemplate.queryForList(sql.toString(), params.toArray());
 
-        String countSql = """
-    SELECT COUNT(*)FROM partner_contracts p
-    INNER JOIN contracts c ON c.id = p.contract_id
-    LEFT JOIN partners n ON n.id = p.partner_id
-    WHERE c.status IN (2, 3);
-""";
+        StringBuilder countSql = new StringBuilder( """
+            SELECT COUNT(*)FROM partner_contracts p
+            INNER JOIN contracts c ON c.id = p.contract_id
+            LEFT JOIN partners n ON n.id = p.partner_id
+            WHERE c.status IN (2, 3)
+        """);
 
 
         List<Object> countParams = new ArrayList<>();
         if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().trim().isEmpty()) {
-            countSql +=" AND c.status = ?";
-            params.add(Integer.parseInt(PartnerDTO.getFilterByStatus()));
-        } else {
-            sql.append(" AND c.status IN (2,3)");
+            countSql.append(" AND c.status = ?");
+            countParams.add(Integer.parseInt(PartnerDTO.getFilterByStatus()));
         }
         if (PartnerDTO.getFilterByStart() != null) {
-            countSql += " AND c.start >= ?";
+            countSql.append(" AND c.start >= ?") ;
             countParams.add(java.sql.Date.valueOf(PartnerDTO.getFilterByStart()));
         }
         if (PartnerDTO.getFilterByEnd() != null) {
-            countSql += " AND c.end <= ?";
+            countSql.append(" AND c.end <= ?");
             countParams.add(java.sql.Date.valueOf(PartnerDTO.getFilterByEnd()));
         }
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
-            countSql += " AND n.name LIKE ?";
+            countSql.append(" AND n.name LIKE ?") ;
             countParams.add("%" + PartnerDTO.getSearchTerm() + "%");
         }
 
         long totalElements = Objects.requireNonNullElse(
-                jdbcTemplate.queryForObject(countSql, Long.class, countParams.toArray()),
+                jdbcTemplate.queryForObject(countSql.toString(), Long.class, countParams.toArray()),
                 0L
         );
 
@@ -146,19 +144,19 @@ public class PartnerRepository {
 
     public List<Map<String, Object>> findByPartnerId(Long partnerId) {
         String sql = """
-     SELECT p.id, p.partner_id, p.contract_id,
-     COALESCE(n.name, 'Unknown') AS name,
-     c.subject, c.number, c.start, c.end,
-        COALESCE(
-            CASE WHEN c.status = 2 THEN 'Active'
-                 WHEN c.status = 3 THEN 'Inactive'
-            END, 'Unknown'
-        ) AS status
-     FROM partner_contracts p
-     INNER JOIN contracts c ON c.id = p.contract_id
-     LEFT JOIN partners n ON n.id = p.partner_id
-     WHERE p.id = ? AND c.status IS NOT NULL AND c.status <> 1
-     """;
+         SELECT p.id, p.partner_id, p.contract_id,
+         COALESCE(n.name, 'Unknown') AS name,
+         c.subject, c.number, c.start, c.end,
+            COALESCE(
+                CASE WHEN c.status = 2 THEN 'Active'
+                     WHEN c.status = 3 THEN 'Inactive'
+                END, 'Unknown'
+            ) AS status
+         FROM partner_contracts p
+         INNER JOIN contracts c ON c.id = p.contract_id
+         LEFT JOIN partners n ON n.id = p.partner_id
+         WHERE p.id = ? AND c.status IS NOT NULL AND c.status <> 1
+         """;
         try {
             return jdbcTemplate.queryForList(sql, partnerId);
         } catch (Exception e) {

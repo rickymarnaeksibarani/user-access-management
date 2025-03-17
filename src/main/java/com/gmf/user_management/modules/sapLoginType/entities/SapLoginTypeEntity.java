@@ -26,7 +26,7 @@ public class SapLoginTypeEntity {
     @Column(name = "id_sap_login_type")
     private Long idSapLoginType;
 
-    @Column(name = "login_type")
+    @Column(name = "login_type", length = 60)
     private String loginType;
 
     @CreationTimestamp

@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,10 +24,11 @@ public class JobCodeEntity {
     @Column(name = "id_job_code")
     private Long idJobCode;
 
-    @Column(name = "job_code")
+    @Column(name = "job_code", length = 10)
     private String jobCode;
 
     @Column(name = "job_position")
+    @Size(max = 255, message = "Must not exceed 255 characters")
     private String jobPosition;
 
     @CreationTimestamp

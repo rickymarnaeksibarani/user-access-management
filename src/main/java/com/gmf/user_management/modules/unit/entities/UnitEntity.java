@@ -29,7 +29,7 @@ public class UnitEntity {
     @JoinColumn(name = "business_unit_code_id")
     private List<BusinessUnitCodeEntity> businessUnitCodeList;
 
-    @Column(name = "unit")
+    @Column(name = "unit", length = 50)
     private String unit;
 
     @CreationTimestamp

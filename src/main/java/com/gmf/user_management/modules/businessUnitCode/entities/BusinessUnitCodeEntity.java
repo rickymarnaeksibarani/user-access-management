@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,13 +30,14 @@ public class BusinessUnitCodeEntity {
     @Column(name = "partner_name")
     private String partnerName;
 
-    @Column(name = "business_unit_code")
+    @Column(name = "business_unit_code", length = 20)
     private String businessUnitCode;
 
     @Column(name = "description", columnDefinition = "text")
+    @Size(max = 255, message ="Must not exceed 255 characters")
     private String description;
 
-    @Column(name = "dinas")
+    @Column(name = "dinas", length = 50)
     private String dinas;
 
     @CreationTimestamp

@@ -26,10 +26,10 @@ public class ApplicationLicenseEntity {
     @Column(name = "id_application_license")
     private Long idApplicationLicense;
 
-    @Column(name = "application_name")
+    @Column(name = "application_name", length = 60)
     private String applicationName;
 
-    @Column(name = "license_type")
+    @Column(name = "license_type", length = 20)
     private String licenseType;
 
     @Column(name = "quantity")

@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -41,10 +42,11 @@ public class PersonalEntity {
     @ManyToMany @JoinColumn(name = "sap_login_type_id")
     private List<SapLoginTypeEntity> sapLoginTypeList;
 
-    @Column(name = "personal_name")
+    @Column(name = "personal_name", length = 60, nullable = false)
     private String personalName;
 
-    @Column(name = "personal_number")
+    @Column(name = "personal_number", length = 10)
+    @Pattern(regexp = "^[0-9]+$", message = "Personal number hanya boleh berisi angka")
     private String personalNumber;
 
     @Column(name = "personal_picture", columnDefinition = "text")
@@ -53,32 +55,35 @@ public class PersonalEntity {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name = "contact_number")
+    @Column(name = "contact_number", length = 14)
+    @Pattern(regexp = "^[0-9]+$", message = "Contact Number hanya boleh berisi angka")
     private String contactNumber;
 
-    @Column(name = "email")
+    @Column(name = "email", length = 60)
     private String email;
 
-    @Column(name = "identity_number")
+    @Column(name = "identity_number", length = 20)
+    @Pattern(regexp = "^[0-9]+$", message = "Identity number hanya boleh berisi angka")
     private String identityNumber;
 
     @Column(name = "identity_type")
     @Enumerated(EnumType.STRING)
     private IdentityType identityType;
 
-    @Column(name = "dinas")
+    @Column(name = "dinas", length = 50)
     private String dinas;
 
-    @Column(name = "unit")
+    @Column(name = "unit", length = 50)
     private String unit;
 
-    @Column(name = "uid")
+    @Column(name = "uid", length = 10)
     private String uid;
 
     @Column(name = "is_pic")
     private Boolean isPic;
 
-    @Column(name = "pass_card_number")
+    @Column(name = "pass_card_number", length = 10)
+    @Pattern(regexp = "^[0-9]+$", message = "Pass Card Number hanya boleh berisi angka")
     private String passCardNumber;
 
     @Column(name = "active_status")

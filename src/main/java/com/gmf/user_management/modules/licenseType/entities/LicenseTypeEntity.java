@@ -23,7 +23,7 @@ public class LicenseTypeEntity {
     @Column(name = "id_license_type")
     private Long idLicenseType;
 
-    @Column(name = "license_name")
+    @Column(name = "license_name", length = 60)
     private String licenseName;
 
     @CreationTimestamp

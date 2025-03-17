@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.TransactionalException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -116,6 +117,11 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     }
 
     private ApplicationLicenseEntity applicationLicensePayload(ApplicationLicenseDTO applicationLicenseDTO, ApplicationLicenseEntity applicationLicenseEntity){
+        Optional<ApplicationLicenseEntity> existingEntity = applicationLicenseRepository.findByApplicationName(applicationLicenseDTO.getApplicationName());
+
+        if (existingEntity.isPresent() && !existingEntity.get().getIdApplicationLicense().equals(applicationLicenseEntity.getIdApplicationLicense())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Application License is already exists with another ID");
+        }
         applicationLicenseEntity.setApplicationName(applicationLicenseDTO.getApplicationName());
         applicationLicenseEntity.setLicenseType(applicationLicenseDTO.getLicenseType());
         applicationLicenseEntity.setQuantity(applicationLicenseDTO.getQuantity());

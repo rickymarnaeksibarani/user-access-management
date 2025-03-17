@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ApplicationLicenseRepository extends JpaRepository<ApplicationLicenseEntity, Long>, JpaSpecificationExecutor<ApplicationLicenseEntity> {
     List<ApplicationLicenseEntity> findByIdApplicationLicenseIsIn(List<Long> applicationLicenseList);
     boolean existsByApplicationNameAndLicenseType(@NotEmpty String applicationName, @NotEmpty String licenseType);
+    Optional<ApplicationLicenseEntity> findByApplicationName(@NotEmpty String applicationName);
 }

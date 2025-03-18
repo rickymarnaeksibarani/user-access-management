@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -24,4 +25,10 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     @Query("SELECT p FROM PersonalEntity p WHERE p.partnerExternal = :partnerExternal AND p.isPic = true")
     Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerExternal") Long partnerExternal, Pageable pageable);
     Page<PersonalEntity> findBySapLoginTypeList_IdSapLoginType(Long sapLoginTypeId, Pageable paging);
+
+    Optional<PersonalEntity> findByPassCardNumber(String passCardNumber);
+
+    Optional<PersonalEntity> findByIdentityNumber(@NotEmpty String identityNumber);
+
+    Optional<PersonalEntity> findyByContactNumber(@NotEmpty String contactNumber);
 }

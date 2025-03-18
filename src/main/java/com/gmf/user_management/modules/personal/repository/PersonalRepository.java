@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +27,11 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerExternal") Long partnerExternal, Pageable pageable);
     Page<PersonalEntity> findBySapLoginTypeList_IdSapLoginType(Long sapLoginTypeId, Pageable paging);
 
-    Optional<PersonalEntity> findByPassCardNumber(String passCardNumber);
+    boolean existsByPersonalNumber(@Pattern(regexp = "^[0-9]+$", message = "Personal number hanya boleh berisi angka") String personalNumber);
 
-    Optional<PersonalEntity> findByIdentityNumber(@NotEmpty String identityNumber);
+    boolean existsByIdentityNumber(@Pattern(regexp = "^[0-9]+$", message = "Identity number hanya boleh berisi angka") String identityNumber);
 
-    Optional<PersonalEntity> findyByContactNumber(@NotEmpty String contactNumber);
+    boolean existsByPassCardNumber(@Pattern(regexp = "^[0-9]+$", message = "Pass Card Number hanya boleh berisi angka") String passCardNumber);
+
+    boolean existsByContactNumber(@Pattern(regexp = "^[0-9]+$", message = "Contact Number hanya boleh berisi angka") String contactNumber);
 }

@@ -20,7 +20,7 @@ import java.util.Optional;
 @Repository
 public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>, JpaSpecificationExecutor<PersonalEntity>{
     List<PersonalEntity> findByIdPersonalIsIn(Collection<Long> id);
-    Optional<Object> findByPersonalNumber(String personalNumber);
+    Optional<PersonalEntity> findByPersonalNumber(String personalNumber);
     @Query("SELECT p.dinas AS dinas, COUNT(DISTINCT p.uid) AS uidCount FROM PersonalEntity p GROUP BY p.dinas")
     List<Map<String, Object>> countUIDByDinas();
     @Query("SELECT p FROM PersonalEntity p WHERE p.partnerExternal = :partnerExternal AND p.isPic = true")
@@ -40,4 +40,6 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     Optional<PersonalEntity> findByPassCardNumber(String passCardNumber);
 
     Optional<PersonalEntity> findByContactNumber(@NotEmpty String contactNumber);
+
+//    Optional<PersonalEntity> findByPersonalNumberIsIn(String personalNumber);
 }

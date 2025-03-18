@@ -168,7 +168,7 @@ public class PersonalServiceImpl implements PersonalService{
     @Override
     public PersonalResponDTO getPersonalByPersonalNumber(String personalNumber) throws JsonProcessingException {
         try {
-            PersonalEntity personal = (PersonalEntity) personalRepository.findByPersonalNumber(personalNumber)
+            PersonalEntity personal = personalRepository.findByPersonalNumber(personalNumber)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal with number " + personalNumber + " not found"));
             return personalResponse(personal);
         }catch (Exception e){
@@ -354,14 +354,20 @@ public class PersonalServiceImpl implements PersonalService{
         List<SapLoginTypeEntity> allSapLoginType = sapLoginTypeRepository.findByIdSapLoginTypeIsIn(personalDTO.getSapLoginTypeList());
 //        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
 
-        Optional<Object> existingPersonalNumber = personalRepository.findByPersonalNumber(personalDTO.getPersonalNumber());
-        if (existingPersonalNumber.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Number is already used by another ID");
-        }
+//        Optional<ApplicationLicenseEntity> existingEntity = applicationLicenseRepository.findByApplicationName(applicationLicenseDTO.getApplicationName());
+//
+//        if (existingEntity.isPresent() && !existingEntity.get().getIdApplicationLicense().equals(applicationLicenseEntity.getIdApplicationLicense())) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Application License is already exists with another ID");
+//        }
 
         Optional<PersonalEntity> existingIdentityNumber = personalRepository.findByIdentityNumber(personalDTO.getIdentityNumber());
         if (existingIdentityNumber.isPresent() && !existingIdentityNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Identity Number is already used by another ID");
+        }
+
+        Optional<PersonalEntity> existingPersonalNumber = personalRepository.findByPersonalNumber(personalDTO.getPersonalNumber());
+        if (existingPersonalNumber.isPresent() && !existingPersonalNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Number is already exists with another ID");
         }
 
         Optional<PersonalEntity> existingPassCardNumber = personalRepository.findByPassCardNumber(personalDTO.getPassCardNumber());

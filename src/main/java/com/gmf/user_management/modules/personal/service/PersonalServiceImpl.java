@@ -7,6 +7,7 @@ import com.gmf.user_management.config.partner.repository.PartnerRepository;
 import com.gmf.user_management.config.partner.service.PartnerService;
 import com.gmf.user_management.core.storageMinIO.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
 import com.gmf.user_management.modules.personal.dto.*;
@@ -353,17 +354,24 @@ public class PersonalServiceImpl implements PersonalService{
         List<SapLoginTypeEntity> allSapLoginType = sapLoginTypeRepository.findByIdSapLoginTypeIsIn(personalDTO.getSapLoginTypeList());
 //        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
 
-        if (personalRepository.existsByPersonalNumber(personalDTO.getPersonalNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Number is already used");
+        Optional<Object> existingPersonalNumber = personalRepository.findByPersonalNumber(personalDTO.getPersonalNumber());
+        if (existingPersonalNumber.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Number is already used by another ID");
         }
-        if (personalRepository.existsByIdentityNumber(personalDTO.getIdentityNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Identity Number is already used");
+
+        Optional<PersonalEntity> existingIdentityNumber = personalRepository.findByIdentityNumber(personalDTO.getIdentityNumber());
+        if (existingIdentityNumber.isPresent() && !existingIdentityNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Identity Number is already used by another ID");
         }
-        if (personalRepository.existsByPassCardNumber(personalDTO.getPassCardNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Pass Card Number is already used");
+
+        Optional<PersonalEntity> existingPassCardNumber = personalRepository.findByPassCardNumber(personalDTO.getPassCardNumber());
+        if (existingPassCardNumber.isPresent() && !existingPassCardNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Pass Card Number is already used by another ID");
         }
-        if (personalRepository.existsByContactNumber(personalDTO.getContactNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Number is already used");
+
+        Optional<PersonalEntity> existingContactNumber = personalRepository.findByContactNumber(personalDTO.getContactNumber());
+        if (existingContactNumber.isPresent() && !existingContactNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Number is already used by another ID");
         }
 
         personalEntity.setLicenseTypeList(allLicenseType);

@@ -27,11 +27,17 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     Page<PersonalEntity> findAllPersonalAsPartnerPIC(@Param("partnerExternal") Long partnerExternal, Pageable pageable);
     Page<PersonalEntity> findBySapLoginTypeList_IdSapLoginType(Long sapLoginTypeId, Pageable paging);
 
-    boolean existsByPersonalNumber(@Pattern(regexp = "^[0-9]+$", message = "Personal number hanya boleh berisi angka") String personalNumber);
+//    boolean existsByPersonalNumber(@Pattern(regexp = "^[0-9]+$", message = "Personal number hanya boleh berisi angka") String personalNumber);
+//
+//    boolean existsByIdentityNumber(@Pattern(regexp = "^[0-9]+$", message = "Identity number hanya boleh berisi angka") String identityNumber);
+//
+//    boolean existsByPassCardNumber(@Pattern(regexp = "^[0-9]+$", message = "Pass Card Number hanya boleh berisi angka") String passCardNumber);
+//
+//    boolean existsByContactNumber(@Pattern(regexp = "^[0-9]+$", message = "Contact Number hanya boleh berisi angka") String contactNumber);
 
-    boolean existsByIdentityNumber(@Pattern(regexp = "^[0-9]+$", message = "Identity number hanya boleh berisi angka") String identityNumber);
+    Optional<PersonalEntity> findByIdentityNumber(@NotEmpty String identityNumber);
 
-    boolean existsByPassCardNumber(@Pattern(regexp = "^[0-9]+$", message = "Pass Card Number hanya boleh berisi angka") String passCardNumber);
+    Optional<PersonalEntity> findByPassCardNumber(String passCardNumber);
 
-    boolean existsByContactNumber(@Pattern(regexp = "^[0-9]+$", message = "Contact Number hanya boleh berisi angka") String contactNumber);
+    Optional<PersonalEntity> findByContactNumber(@NotEmpty String contactNumber);
 }

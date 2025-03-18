@@ -45,7 +45,7 @@ public class PersonalEntity {
     @Column(name = "personal_name", length = 60, nullable = false)
     private String personalName;
 
-    @Column(name = "personal_number", length = 10)
+    @Column(name = "personal_number", length = 10, unique = true)
     @Pattern(regexp = "^[0-9]+$", message = "Personal number hanya boleh berisi angka")
     private String personalNumber;
 

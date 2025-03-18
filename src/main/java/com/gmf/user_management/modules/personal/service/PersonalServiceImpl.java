@@ -86,6 +86,18 @@ public class PersonalServiceImpl implements PersonalService{
     @Override
     public PersonalResponDTO createPersonal(PersonalDTO request){
         try {
+            if (personalRepository.existsByPersonalNumber(request.getPersonalNumber())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Number is already used");
+            }
+            if (personalRepository.existsByIdentityNumber(request.getIdentityNumber())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Identity Number is already used");
+            }
+            if (personalRepository.existsByPassCardNumber(request.getPassCardNumber())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Pass Card Number is already used");
+            }
+            if (personalRepository.existsByContactNumber(request.getContactNumber())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Number is already used");
+            }
           
             List<ApplicationFileDTO> personalPicture = uploadImage(request.getPersonalPicture());
 
@@ -354,18 +366,7 @@ public class PersonalServiceImpl implements PersonalService{
         List<SapLoginTypeEntity> allSapLoginType = sapLoginTypeRepository.findByIdSapLoginTypeIsIn(personalDTO.getSapLoginTypeList());
 //        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
 
-        if (personalRepository.existsByPersonalNumber(personalEntity.getPersonalNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Number is already used");
-        }
-        if (personalRepository.existsByIdentityNumber(personalEntity.getIdentityNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Identity Number is already used");
-        }
-        if (personalRepository.existsByPassCardNumber(personalEntity.getPassCardNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Pass Card Number is already used");
-        }
-        if (personalRepository.existsByContactNumber(personalEntity.getContactNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Number is already used");
-        }
+
 
         personalEntity.setLicenseTypeList(allLicenseType);
         personalEntity.setSapLoginTypeList(allSapLoginType);

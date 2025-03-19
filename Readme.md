@@ -5,8 +5,8 @@ User Management Service is application that built for user management / 3rd part
 ### 1. Application Specification
 | Requirement        | Version     |
 |--------------------|-------------|
-| Spring Boot        | >= v2.7.13   |
-| JDK                | >= v17.0.10  |
+| Spring Boot        | >= v2.7.13  |
+| JDK                | >= v21.0.5  |
 | PostgreSQL Driver  | >= v13.13 |
 | Apache Maven       | >= v3.9.6   |
 

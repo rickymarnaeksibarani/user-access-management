@@ -7,7 +7,6 @@ import com.gmf.user_management.config.partner.repository.PartnerRepository;
 import com.gmf.user_management.config.partner.service.PartnerService;
 import com.gmf.user_management.core.storageMinIO.StorageService;
 import com.gmf.user_management.core.utils.PaginationUtil;
-import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
 import com.gmf.user_management.modules.personal.dto.*;
@@ -350,51 +349,43 @@ public class PersonalServiceImpl implements PersonalService{
         
 
         List<LicenseTypeEntity> allLicenseType = licenseTypeRespository.findByIdLicenseTypeIsIn(personalDTO.getLicenseTypeList());
-//        if (allLicenseType.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "License Type not found");
         List<SapLoginTypeEntity> allSapLoginType = sapLoginTypeRepository.findByIdSapLoginTypeIsIn(personalDTO.getSapLoginTypeList());
-//        if (allLicenseType.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data License Type not found");
-
-//        Optional<ApplicationLicenseEntity> existingEntity = applicationLicenseRepository.findByApplicationName(applicationLicenseDTO.getApplicationName());
-//
-//        if (existingEntity.isPresent() && !existingEntity.get().getIdApplicationLicense().equals(applicationLicenseEntity.getIdApplicationLicense())) {
-//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Application License is already exists with another ID");
-//        }
 
         Optional<PersonalEntity> existingIdentityNumber = personalRepository.findByIdentityNumber(personalDTO.getIdentityNumber());
         if (existingIdentityNumber.isPresent() && !existingIdentityNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Identity Number is already used by another ID");
         }
+        personalEntity.setIdentityNumber(personalDTO.getIdentityNumber());
 
         Optional<PersonalEntity> existingPersonalNumber = personalRepository.findByPersonalNumber(personalDTO.getPersonalNumber());
         if (existingPersonalNumber.isPresent() && !existingPersonalNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Number is already exists with another ID");
         }
+        personalEntity.setPersonalNumber(personalDTO.getPersonalNumber());
 
         Optional<PersonalEntity> existingPassCardNumber = personalRepository.findByPassCardNumber(personalDTO.getPassCardNumber());
         if (existingPassCardNumber.isPresent() && !existingPassCardNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Pass Card Number is already used by another ID");
         }
+        personalEntity.setPassCardNumber(personalDTO.getPassCardNumber());
 
         Optional<PersonalEntity> existingContactNumber = personalRepository.findByContactNumber(personalDTO.getContactNumber());
         if (existingContactNumber.isPresent() && !existingContactNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Number is already used by another ID");
         }
+        personalEntity.setContactNumber(personalDTO.getContactNumber());
 
         personalEntity.setLicenseTypeList(allLicenseType);
         personalEntity.setSapLoginTypeList(allSapLoginType);
         personalEntity.setPersonalName(personalDTO.getPersonalName());
-        personalEntity.setPersonalNumber(personalDTO.getPersonalNumber());
         personalEntity.setPersonalPicture(objectMapper.writeValueAsString(personalPicture));
         personalEntity.setDateOfBirth(personalDTO.getDateOfBirth());
-        personalEntity.setContactNumber(personalDTO.getContactNumber());
         personalEntity.setEmail(personalDTO.getEmail());
-        personalEntity.setIdentityNumber(personalDTO.getIdentityNumber());
         personalEntity.setIdentityType(personalDTO.getIdentityType());
         personalEntity.setDinas(personalDTO.getDinas());
         personalEntity.setUnit(personalDTO.getUnit());
         personalEntity.setUid(personalDTO.getUid());
         personalEntity.setIsPic(personalDTO.getIsPic());
-        personalEntity.setPassCardNumber(personalDTO.getPassCardNumber());
         personalEntity.setActiveStatus(personalDTO.getActiveStatus());
         personalEntity.setStartDate(personalDTO.getStartDate());
         personalEntity.setExpiredDate(personalDTO.getExpiredDate());

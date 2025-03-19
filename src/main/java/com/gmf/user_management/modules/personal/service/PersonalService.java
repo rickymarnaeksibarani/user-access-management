@@ -28,5 +28,4 @@ public interface PersonalService {
     PaginationUtil<SapLoginTypeEntity, SapLoginTypeEntity> getSapLoginTypeByPersonalId(Long personalId, Integer page, Integer size);
     String countUIDByDinas();
     Map<String, Long> countPersonalByLicense();
-//    Map<String, Long> countLicenseNameByPersonal();
 }

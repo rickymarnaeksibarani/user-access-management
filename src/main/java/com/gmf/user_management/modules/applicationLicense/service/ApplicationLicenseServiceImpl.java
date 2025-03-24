@@ -117,10 +117,10 @@ public class ApplicationLicenseServiceImpl implements ApplicationLicenseService{
     }
 
     private ApplicationLicenseEntity applicationLicensePayload(ApplicationLicenseDTO applicationLicenseDTO, ApplicationLicenseEntity applicationLicenseEntity){
-        Optional<ApplicationLicenseEntity> existingEntity = applicationLicenseRepository.findByApplicationName(applicationLicenseDTO.getApplicationName());
+        Optional<ApplicationLicenseEntity> existingEntity = applicationLicenseRepository.findByApplicationNameAndLicenseType(applicationLicenseDTO.getApplicationName(), applicationLicenseDTO.getLicenseType());
 
         if (existingEntity.isPresent() && !existingEntity.get().getIdApplicationLicense().equals(applicationLicenseEntity.getIdApplicationLicense())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Application License is already exists with another ID");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Application License with the same name and license type already exists");
         }
         applicationLicenseEntity.setApplicationName(applicationLicenseDTO.getApplicationName());
         applicationLicenseEntity.setLicenseType(applicationLicenseDTO.getLicenseType());

@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class UserAccessDomainEntity {
     private Long idUserAccessDomain;
 
     @ManyToMany @JoinColumn(name = "personal_id")
+    @NotNull
     private List<PersonalEntity> personalList;
 
     @Column(name = "is_network_access")

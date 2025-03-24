@@ -13,5 +13,7 @@ import java.util.Optional;
 public interface ApplicationLicenseRepository extends JpaRepository<ApplicationLicenseEntity, Long>, JpaSpecificationExecutor<ApplicationLicenseEntity> {
     List<ApplicationLicenseEntity> findByIdApplicationLicenseIsIn(List<Long> applicationLicenseList);
     boolean existsByApplicationNameAndLicenseType(@NotEmpty String applicationName, @NotEmpty String licenseType);
-    Optional<ApplicationLicenseEntity> findByApplicationName(@NotEmpty String applicationName);
+//    Optional<ApplicationLicenseEntity> findByApplicationName(@NotEmpty String applicationName);
+
+    Optional<ApplicationLicenseEntity> findByApplicationNameAndLicenseType(@NotEmpty String applicationName, @NotEmpty String licenseType);
 }

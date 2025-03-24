@@ -27,4 +27,5 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     Optional<PersonalEntity> findByIdentityNumber(@NotEmpty String identityNumber);
     Optional<PersonalEntity> findByPassCardNumber(String passCardNumber);
     Optional<PersonalEntity> findByContactNumber(@NotEmpty String contactNumber);
+
 }

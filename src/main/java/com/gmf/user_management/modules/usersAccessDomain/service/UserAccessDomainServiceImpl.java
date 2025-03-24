@@ -1,6 +1,7 @@
 package com.gmf.user_management.modules.usersAccessDomain.service;
 
 import com.gmf.user_management.core.utils.PasswordUtil;
+import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.repository.PersonalRepository;
 import com.gmf.user_management.modules.usersAccessDomain.dto.PersonalDTOtoUAD;
@@ -31,6 +32,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
                 .map(personal -> new PersonalDTOtoUAD(
                         personal.getIdPersonal(),
                         personal.getPersonalName(),
+                        personal.getPersonalNumber(),
                         personal.getEmail(),
                         personal.getIdentityNumber(),
                         personal.getIsPic()
@@ -85,8 +87,20 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
 
     private UserAccessDomainEntity uadPayload(UserAccessDomainDTO userAccessDomainDTO, UserAccessDomainEntity userAccessDomainEntity){
-        Optional.of(userAccessDomainDTO.getPersonalList())
-                        .ifPresent(personallist -> userAccessDomainEntity.setPersonalList(personalRepository.findByIdPersonalIsIn(personallist)));
+//        Optional.of(userAccessDomainDTO.getPersonalList())
+//                        .ifPresent(personallist -> userAccessDomainEntity.setPersonalList(personalRepository.findByIdPersonalIsIn(personallist)));
+
+        List<PersonalEntity> existingPersonalList = personalRepository.findByIdPersonalIsIn(userAccessDomainDTO.getPersonalList());
+
+        if (existingPersonalList.isEmpty())throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Personal cannot be null");
+        // Check if any of the personal IDs are already used in UserAccessDomainEntity
+        boolean conflictExists = userAccessDomainRepository.existsByPersonalListIn(existingPersonalList);
+        if (conflictExists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Id is already used");
+        }
+        // Set personal list if no conflict
+        Optional.of(existingPersonalList).ifPresent(userAccessDomainEntity::setPersonalList);
+
         userAccessDomainEntity.setIsDomainAccess(userAccessDomainDTO.getIsDomainAccess());
         userAccessDomainEntity.setIsNetworkAccess(userAccessDomainDTO.getIsNetworkAccess());
         Optional.ofNullable(userAccessDomainDTO.getUsername()).ifPresent(userAccessDomainEntity::setUsername);

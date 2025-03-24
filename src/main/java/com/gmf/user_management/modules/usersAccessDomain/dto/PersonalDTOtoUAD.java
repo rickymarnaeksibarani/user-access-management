@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class PersonalDTOtoUAD {
     private Long personalId;
     private String personalName;
+    private String personalNumber;
     private String email;
     private String identityNumber;
     private Boolean isPic;

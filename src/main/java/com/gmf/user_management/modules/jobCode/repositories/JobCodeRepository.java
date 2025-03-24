@@ -8,10 +8,13 @@ import org.springframework.stereotype.Repository;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobCodeRepository extends JpaRepository<JobCodeEntity, Long>, JpaSpecificationExecutor<JobCodeEntity> {
     List<JobCodeEntity> findByIdJobCodeIsIn(Collection<Long> id);
 
     boolean existsByJobCode(@NotEmpty String jobCode);
+
+    Optional<JobCodeEntity> findByJobCode(@NotEmpty String jobCode);
 }

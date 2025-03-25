@@ -1,7 +1,6 @@
 package com.gmf.user_management.modules.usersAccessDomain.service;
 
 import com.gmf.user_management.core.utils.PasswordUtil;
-import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import com.gmf.user_management.modules.personal.repository.PersonalRepository;
 import com.gmf.user_management.modules.usersAccessDomain.dto.PersonalDTOtoUAD;
@@ -35,7 +34,9 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
                         personal.getPersonalNumber(),
                         personal.getEmail(),
                         personal.getIdentityNumber(),
-                        personal.getIsPic()
+                        personal.getIsPic(),
+                        personal.getActiveStatus(),
+                        personal.getExpiredDate()
                 ))
                 .toList();
         return UserAccessDomainResponDTO.builder()

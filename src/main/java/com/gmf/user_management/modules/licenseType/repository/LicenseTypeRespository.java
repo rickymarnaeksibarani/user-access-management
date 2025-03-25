@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LicenseTypeRespository extends JpaRepository<LicenseTypeEntity, Long>, JpaSpecificationExecutor<LicenseTypeEntity> {
@@ -21,4 +22,6 @@ public interface LicenseTypeRespository extends JpaRepository<LicenseTypeEntity,
     List<Object[]> countPersonalByLicense();
 
     boolean existsByLicenseName(@NotEmpty String licenseName);
+
+    Optional<LicenseTypeEntity> findByLicenseName(@NotEmpty String licenseName);
 }

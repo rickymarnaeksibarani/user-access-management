@@ -15,14 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LicenseTypeDTO {
-
     @JsonProperty("licenseName")
     @NotEmpty
     private String licenseName;
-
-    @JsonProperty("createdBy")
-    private String createdBy;
-
-    @JsonProperty("updatedBy")
-    private String updatedBy;
 }

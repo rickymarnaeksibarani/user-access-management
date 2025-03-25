@@ -4,6 +4,7 @@ import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.licenseType.dto.*;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,9 +72,12 @@ public class LicenseTypeService {
     }
 
     private LicenseTypeEntity licenseTypePayload(LicenseTypeDTO request, LicenseTypeEntity licenseTypeEntity) {
+        Optional<LicenseTypeEntity> existingEntity = licenseTypeRespository.findByLicenseName(request.getLicenseName());
+
+        if (existingEntity.isPresent() && !existingEntity.get().getIdLicenseType().equals(licenseTypeEntity.getIdLicenseType())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "License Name is already exists with another ID");
+        }
         licenseTypeEntity.setLicenseName(request.getLicenseName());
-        licenseTypeEntity.setCreatedBy(request.getCreatedBy());
-        licenseTypeEntity.setUpdatedBy(request.getUpdatedBy());
         return licenseTypeEntity;
     }
 

@@ -1,9 +1,12 @@
 package com.gmf.user_management.modules.usersAccessDomain.dto;
 
+import com.gmf.user_management.core.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -16,4 +19,6 @@ public class PersonalDTOtoUAD {
     private String email;
     private String identityNumber;
     private Boolean isPic;
+    private Status activeStatus;
+    private Date expiredDate;
 }

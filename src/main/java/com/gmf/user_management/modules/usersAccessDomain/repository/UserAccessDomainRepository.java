@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,5 @@ import java.util.Optional;
 public interface UserAccessDomainRepository extends JpaRepository<UserAccessDomainEntity, Long>, JpaSpecificationExecutor<UserAccessDomainEntity> {
     Optional<UserAccessDomainEntity> findByPersonalListContaining(PersonalEntity personal);
 //    List<UserAccessDomainEntity> findByPersonalListIdIn(@NonNull List<Long> personalList);
-
-    boolean existsByPersonalListIn(List<PersonalEntity> personalList);
+    List<UserAccessDomainEntity> findByPersonalListIn(List<PersonalEntity> personalList);
 }

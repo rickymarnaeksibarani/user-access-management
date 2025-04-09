@@ -65,6 +65,10 @@ public class PartnerRepository {
             sql.append(" AND n.name LIKE ?");
             params.add("%" + PartnerDTO.getSearchTerm() + "%");
         }
+        if (PartnerDTO.getSearchNumber() != null && !PartnerDTO.getSearchNumber().isEmpty()) {
+            sql.append(" AND c.number LIKE ?");
+            params.add("%" + PartnerDTO.getSearchNumber() + "%");
+        }
 
         sql.append(" ORDER BY c.start DESC LIMIT ? OFFSET ?");
         params.add(pageable.getPageSize());
@@ -96,6 +100,11 @@ public class PartnerRepository {
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
             countSql.append(" AND n.name LIKE ?") ;
             countParams.add("%" + PartnerDTO.getSearchTerm() + "%");
+        }
+
+        if (PartnerDTO.getSearchNumber() != null && !PartnerDTO.getSearchNumber().isEmpty()) {
+            countSql.append(" AND c.number LIKE ?") ;
+            countParams.add("%" + PartnerDTO.getSearchNumber() + "%");
         }
 
         long totalElements = Objects.requireNonNullElse(

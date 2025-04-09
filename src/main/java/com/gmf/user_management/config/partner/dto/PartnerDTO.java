@@ -13,6 +13,7 @@ public class PartnerDTO {
     private Integer page;
     private Integer size;
     private String searchTerm;
+    private String searchNumber;
     private String filterByStatus;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

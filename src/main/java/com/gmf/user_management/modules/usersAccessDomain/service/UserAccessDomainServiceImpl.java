@@ -91,13 +91,18 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
 
         List<PersonalEntity> existingPersonalList = personalRepository.findByIdPersonalIsIn(userAccessDomainDTO.getPersonalList());
 
-        if (existingPersonalList.isEmpty())throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Personal cannot be null");
+        if (existingPersonalList.isEmpty())throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Personal is already used");
         // Check if any of the personal IDs are already used in UserAccessDomainEntity
-        boolean conflictExists = userAccessDomainRepository.existsByPersonalListIn(existingPersonalList);
-        if (conflictExists) {
+        List<UserAccessDomainEntity> conflictingEntities = userAccessDomainRepository
+                .findByPersonalListIn(existingPersonalList)
+                .stream()
+                .filter(entity -> !entity.getIdUserAccessDomain().equals(userAccessDomainEntity.getIdUserAccessDomain()))
+                .toList();
+
+        if (!conflictingEntities.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Id is already used");
         }
-        //todo: ketika update by-userAccessDomainId dan personalId nya tetap dan tidak berubah maka berhasil tapi ketika 
+        //todo: ketika update by-userAccessDomainId dan personalId nya tetap dan tidak berubah maka berhasil
 
         // Set personal list if no conflict
         Optional.of(existingPersonalList).ifPresent(userAccessDomainEntity::setPersonalList);

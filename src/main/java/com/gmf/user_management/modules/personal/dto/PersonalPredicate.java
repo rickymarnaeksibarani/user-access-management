@@ -38,6 +38,18 @@ public class PersonalPredicate {
         };
     }
 
+    public static Specification<PersonalEntity>searchByKeyNumber(String searchByName){
+        return (root, query, builder) -> {
+            if (searchByName != null && !searchByName.isEmpty()){
+                return builder.like(
+                        builder.lower(root.get("personalName")),
+                        "%" + searchByName.toLowerCase() + "%"
+                );
+            }
+            return null;
+        };
+    }
+
     public static Specification<PersonalEntity> filterByStatus(List<Status> filterByStatus) {
         return (root, query, criteriaBuilder) -> {
             if (filterByStatus != null && !filterByStatus.isEmpty()) {

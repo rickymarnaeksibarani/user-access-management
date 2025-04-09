@@ -363,16 +363,16 @@ public class PersonalServiceImpl implements PersonalService{
         }
         personalEntity.setPersonalNumber(personalDTO.getPersonalNumber());
 
-        Optional<PersonalEntity> existingPassCardNumber = personalRepository.findByPassCardNumber(personalDTO.getPassCardNumber());
-        if (existingPassCardNumber.isPresent() && !existingPassCardNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Pass Card Number is already used by another ID");
-        }
+//        Optional<PersonalEntity> existingPassCardNumber = personalRepository.findByPassCardNumber(personalDTO.getPassCardNumber());
+//        if (existingPassCardNumber.isPresent() && !existingPassCardNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Pass Card Number is already used by another ID");
+//        }
         personalEntity.setPassCardNumber(personalDTO.getPassCardNumber());
 
-        Optional<PersonalEntity> existingContactNumber = personalRepository.findByContactNumber(personalDTO.getContactNumber());
-        if (existingContactNumber.isPresent() && !existingContactNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Number is already used by another ID");
-        }
+//        Optional<PersonalEntity> existingContactNumber = personalRepository.findByContactNumber(personalDTO.getContactNumber());
+//        if (existingContactNumber.isPresent() && !existingContactNumber.get().getIdPersonal().equals(personalEntity.getIdPersonal())) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Contact Number is already used by another ID");
+//        }
         personalEntity.setContactNumber(personalDTO.getContactNumber());
 
         personalEntity.setLicenseTypeList(allLicenseType);

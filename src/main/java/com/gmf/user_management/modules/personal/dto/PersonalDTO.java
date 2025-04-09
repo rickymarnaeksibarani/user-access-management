@@ -51,7 +51,6 @@ public class PersonalDTO {
     private Date dateOfBirth;
 
     @JsonProperty("contactNumber")
-    @NotEmpty
     private String contactNumber;
 
     @JsonProperty("email")

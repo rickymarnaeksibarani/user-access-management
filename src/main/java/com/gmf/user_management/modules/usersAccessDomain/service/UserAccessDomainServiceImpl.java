@@ -34,9 +34,7 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
                         personal.getPersonalNumber(),
                         personal.getEmail(),
                         personal.getIdentityNumber(),
-                        personal.getIsPic(),
-                        personal.getActiveStatus(),
-                        personal.getExpiredDate()
+                        personal.getIsPic()
                 ))
                 .toList();
         return UserAccessDomainResponDTO.builder()
@@ -99,6 +97,8 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         if (conflictExists) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Id is already used");
         }
+        //todo: ketika update by-userAccessDomainId dan personalId nya tetap dan tidak berubah maka berhasil tapi ketika 
+
         // Set personal list if no conflict
         Optional.of(existingPersonalList).ifPresent(userAccessDomainEntity::setPersonalList);
 
@@ -108,8 +108,6 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         if (userAccessDomainDTO.getPassword() != null && !userAccessDomainDTO.getPassword().trim().isEmpty()) {
             userAccessDomainEntity.setPassword(passwordUtil.generatePassword(userAccessDomainDTO.getPassword()));
         }
-//        userAccessDomainEntity.setCreatedBy(userAccessDomainDTO.getCreatedBy());
-//        userAccessDomainEntity.setUpdatedBy(userAccessDomainDTO.getUpdatedBy());
         return userAccessDomainEntity;
     }
 }

@@ -58,7 +58,7 @@ public class PartnerRepository {
             params.add(java.sql.Date.valueOf(PartnerDTO.getFilterByStart()));
         }
         if (PartnerDTO.getFilterByEnd() != null) {
-            sql.append(" AND c.end >= ?");
+            sql.append(" AND c.end <= ?");
             params.add(java.sql.Date.valueOf(PartnerDTO.getFilterByEnd()));
         }
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
@@ -90,7 +90,7 @@ public class PartnerRepository {
             countParams.add(java.sql.Date.valueOf(PartnerDTO.getFilterByStart()));
         }
         if (PartnerDTO.getFilterByEnd() != null) {
-            countSql.append(" AND c.end >= ?");
+            countSql.append(" AND c.end <= ?");
             countParams.add(java.sql.Date.valueOf(PartnerDTO.getFilterByEnd()));
         }
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {

@@ -19,6 +19,4 @@ public class PersonalDTOtoUAD {
     private String email;
     private String identityNumber;
     private Boolean isPic;
-    private Status activeStatus;
-    private Date expiredDate;
 }

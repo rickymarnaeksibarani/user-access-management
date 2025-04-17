@@ -34,7 +34,8 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
                         personal.getPersonalNumber(),
                         personal.getEmail(),
                         personal.getIdentityNumber(),
-                        personal.getIsPic()
+                        personal.getIsPic(),
+                        personal.getActiveStatus()
                 ))
                 .toList();
         return UserAccessDomainResponDTO.builder()

@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,4 +17,5 @@ public class PersonalDTOtoUAD {
     private String email;
     private String identityNumber;
     private Boolean isPic;
+    private Status activeStatus;
 }

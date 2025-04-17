@@ -28,6 +28,8 @@ public class PartnerRepository {
             Pageable pageable)
     {
         StringBuilder sql = new StringBuilder(
+                //Final -> active
+                //Finish -> inactive
        """
        SELECT p.id, p.partner_id, p.contract_id,
               COALESCE(n.name, 'Unknown') AS name,
@@ -43,8 +45,7 @@ public class PartnerRepository {
        WHERE c.status IS NOT NULL AND c.status <> 1
        """
         );
-        //Final -> active
-        //Finish -> inactive
+
         List<Object> params = new ArrayList<>();
 
         if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().trim().isEmpty()) {

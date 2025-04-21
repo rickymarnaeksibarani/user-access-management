@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,20 +26,19 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     private final PasswordUtil passwordUtil;
 
     private UserAccessDomainResponDTO userAccessDomainResponDTO(UserAccessDomainEntity userAccessDomainEntity){
-        List<PersonalDTOtoUAD> personalDTOList = userAccessDomainEntity.getPersonalList().stream()
-                .map(personal -> new PersonalDTOtoUAD(
-                        personal.getIdPersonal(),
-                        personal.getPersonalName(),
-                        personal.getPersonalNumber(),
-                        personal.getEmail(),
-                        personal.getIdentityNumber(),
-                        personal.getIsPic(),
-                        personal.getActiveStatus()
-                ))
-                .toList();
+        PersonalEntity personal = userAccessDomainEntity.getPersonalId();
+        PersonalDTOtoUAD personalDTO = new PersonalDTOtoUAD(
+                personal.getIdPersonal(),
+                personal.getPersonalName(),
+                personal.getPersonalNumber(),
+                personal.getEmail(),
+                personal.getIdentityNumber(),
+                personal.getIsPic(),
+                personal.getActiveStatus()
+        );
         return UserAccessDomainResponDTO.builder()
                 .idUserAccessDomain(userAccessDomainEntity.getIdUserAccessDomain())
-                .personalList(personalDTOList)
+                .personal(personalDTO)
                 .isNetworkAccess(userAccessDomainEntity.getIsNetworkAccess())
                 .isDomainAccess(userAccessDomainEntity.getIsDomainAccess())
                 .username(userAccessDomainEntity.getUsername())
@@ -80,33 +78,31 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
     public UserAccessDomainResponDTO getUserAccessDomainByPersonalId(Long personalId, UserAccessDomainDTO request){
             PersonalEntity personal = personalRepository.findById(personalId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal ID not found"));
-            UserAccessDomainEntity userAccessDomainEntity = userAccessDomainRepository.findByPersonalListContaining(personal)
+            UserAccessDomainEntity userAccessDomainEntity = userAccessDomainRepository.findByPersonalId(personal)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Access Domain not found for the given Personal ID"));
             return userAccessDomainResponDTO(userAccessDomainEntity);
         }
 
 
     private UserAccessDomainEntity uadPayload(UserAccessDomainDTO userAccessDomainDTO, UserAccessDomainEntity userAccessDomainEntity){
-        List<PersonalEntity> existingPersonalList = personalRepository.findByIdPersonalIsIn(userAccessDomainDTO.getPersonalList());
+        PersonalEntity personalId = personalRepository.findById(userAccessDomainDTO.getPersonalId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Personal id with: " + userAccessDomainDTO.getPersonalId() + " is not found"));
 
-        if (existingPersonalList.isEmpty())throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Personal id with: " + userAccessDomainDTO.getPersonalList() + " is not found");
-        List<UserAccessDomainEntity> conflictingEntities = userAccessDomainRepository
-                .findByPersonalListIn(existingPersonalList)
-                .stream()
-                .filter(entity -> !entity.getIdUserAccessDomain().equals(userAccessDomainEntity.getIdUserAccessDomain()))
-                .toList();
-
-        if (!conflictingEntities.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Id is already used");
-        }
-        Optional.of(existingPersonalList).ifPresent(userAccessDomainEntity::setPersonalList);
-
+        userAccessDomainRepository.findByPersonalId(personalId).ifPresent(existingEntity -> {
+            if (userAccessDomainEntity.getIdUserAccessDomain() == null) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Personal Id is already used");
+            }
+        });
+        userAccessDomainEntity.setPersonalId(personalId);
         userAccessDomainEntity.setIsDomainAccess(userAccessDomainDTO.getIsDomainAccess());
         userAccessDomainEntity.setIsNetworkAccess(userAccessDomainDTO.getIsNetworkAccess());
         Optional.ofNullable(userAccessDomainDTO.getUsername()).ifPresent(userAccessDomainEntity::setUsername);
+
         if (userAccessDomainDTO.getPassword() != null && !userAccessDomainDTO.getPassword().trim().isEmpty()) {
             userAccessDomainEntity.setPassword(passwordUtil.generatePassword(userAccessDomainDTO.getPassword()));
         }
+
         return userAccessDomainEntity;
     }
 }

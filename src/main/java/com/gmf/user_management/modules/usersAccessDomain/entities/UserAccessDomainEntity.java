@@ -9,12 +9,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
 @EntityListeners({AuditingEntityListener.class})
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -26,9 +24,10 @@ public class UserAccessDomainEntity {
     @Column(name = "id_user_access_domain")
     private Long idUserAccessDomain;
 
-    @ManyToMany @JoinColumn(name = "personal_id")
+    @ManyToOne
+    @JoinColumn(name = "id_personal",  nullable = false)
     @NotNull
-    private List<PersonalEntity> personalList;
+    private PersonalEntity personalId;
 
     @Column(name = "is_network_access")
     private Boolean isNetworkAccess = false;

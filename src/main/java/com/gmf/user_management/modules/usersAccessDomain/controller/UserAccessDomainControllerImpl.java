@@ -2,8 +2,6 @@ package com.gmf.user_management.modules.usersAccessDomain.controller;
 
 import com.gmf.user_management.core.dto.HttpResponseDTO;
 import com.gmf.user_management.core.exceptions.NotFoundException;
-import com.gmf.user_management.core.validations.IsNumeric;
-import com.gmf.user_management.core.validations.IsRequired;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainDTO;
 import com.gmf.user_management.modules.usersAccessDomain.dto.UserAccessDomainResponDTO;
 import com.gmf.user_management.modules.usersAccessDomain.service.UserAccessDomainService;
@@ -30,10 +28,8 @@ public class UserAccessDomainControllerImpl {
             @RequestBody @Valid UserAccessDomainDTO request
     ){
         UserAccessDomainResponDTO respone = userAccessDomainService.createUserAccessDomain(request);
-        String idUAD = String.valueOf(respone.getIdUserAccessDomain());
-        String idPersonal = respone.getPersonalList().toString();
         return new HttpResponseDTO<>(respone, HttpStatus.CREATED)
-                .setResponseHeaders("idUserAccessDomain", idUAD)
+                .setResponseHeaders("ResponeHeaders", respone)
                 .toResponse();
     }
 
@@ -44,7 +40,7 @@ public class UserAccessDomainControllerImpl {
     )throws Exception{
         UserAccessDomainResponDTO responDTO = userAccessDomainService.updateUserAccessDomain(idUserAccessDomain, request);
         return new HttpResponseDTO<>(responDTO, HttpStatus.OK)
-                .setResponseHeaders("responDTO", responDTO)
+                .setResponseHeaders("ResponeHeaders", responDTO)
                 .toResponse();
     }
 

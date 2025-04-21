@@ -10,9 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserAccessDomainDTO {
-    @JsonProperty("personalList")
+    @JsonProperty("personalId")
     @NonNull
-    private List<Long> personalList;
+    private Long personalId;
 
     @JsonProperty("isNetworkAccess")
     private Boolean isNetworkAccess = false;

@@ -36,8 +36,14 @@ public class PersonalEntity {
     @Column(name = "partner_name")
     private String partnerName;
 
-    @ManyToMany @JoinColumn(name = "license_type_id")
+    @ManyToMany
+    @JoinTable(
+            name = "tb_personal_license",
+            joinColumns = @JoinColumn(name = "id_personal"),
+            inverseJoinColumns = @JoinColumn(name = "license_type_id")
+    )
     private List<LicenseTypeEntity> licenseTypeList;
+
 
     @ManyToMany @JoinColumn(name = "sap_login_type_id")
     private List<SapLoginTypeEntity> sapLoginTypeList;

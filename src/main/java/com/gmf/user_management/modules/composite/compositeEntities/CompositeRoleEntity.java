@@ -28,7 +28,7 @@ public class CompositeRoleEntity {
     @ManyToMany @JoinColumn(name = "job_code_id")
     private List<JobCodeEntity> jobCodeList;
 
-    @Column(name = "composite_role", length = 20)
+    @Column(name = "composite_role")
     private String compositeRole;
 
     @CreationTimestamp

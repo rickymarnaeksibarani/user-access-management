@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Repository
 public interface CompositeRoleRepository extends JpaRepository<CompositeRoleEntity, Long>, JpaSpecificationExecutor<CompositeRoleEntity> {
@@ -16,4 +17,6 @@ public interface CompositeRoleRepository extends JpaRepository<CompositeRoleEnti
     Page<CompositeRoleEntity> findByJobCodeList_idJobCode(Long jobCodeId, Pageable pageable);
 
     boolean existsByCompositeRole(@NotEmpty String compositeRole);
+
+    List<CompositeRoleEntity> findByCompositeRole(@NotEmpty String compositeRole);
 }

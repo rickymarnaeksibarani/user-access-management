@@ -70,8 +70,26 @@ public class CompositeRoleService {
     private CompositeRoleEntity compositePayload(CompositeRoleDTO request, CompositeRoleEntity compositeRole) {
         List<JobCodeEntity> allJobCode = jobCodeRepository.findByIdJobCodeIsIn(request.getJobCodeList());
         if (allJobCode.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Job Code not found");
-        boolean exists = compositeRoleRepository.existsByCompositeRole(request.getCompositeRole());
-        if (exists){throw new ResponseStatusException(HttpStatus.CONFLICT, "Composite Role is already exists");}
+//        boolean exists = compositeRoleRepository.existsByCompositeRole(request.getCompositeRole());
+//        if (exists){throw new ResponseStatusException(HttpStatus.CONFLICT, "Composite Role is already exists");}
+        List<CompositeRoleEntity> existingComposite = compositeRoleRepository.findByCompositeRole(request.getCompositeRole());
+        List<Long> newJobCodeIds = allJobCode.stream()
+                .map(JobCodeEntity::getIdJobCode)
+                .sorted()
+                .toList();
+
+        boolean isDuplicate = existingComposite.stream().anyMatch(role -> {
+            List<Long> existingJobCodeIds = role.getJobCodeList().stream()
+                    .map(JobCodeEntity::getIdJobCode)
+                    .sorted()
+                    .toList();
+            return existingJobCodeIds.equals(newJobCodeIds);
+        });
+
+        if (isDuplicate) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Composite Role with the same JobCode is already exists");
+        }
+
         compositeRole.setJobCodeList(allJobCode);
         compositeRole.setCompositeRole(request.getCompositeRole());
         compositeRole.setCreatedBy(request.getCreatedBy());

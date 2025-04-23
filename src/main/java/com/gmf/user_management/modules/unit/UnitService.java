@@ -46,11 +46,11 @@ public class UnitService {
     }
     public UnitResponDto createUnit(UnitDTO request)throws Exception {
         try {
-            List<BusinessUnitCodeEntity> businessUnits = businessUnitCodeRepository.findAllById(request.getBusinessUnitCodeList());
-            if (unitRepository.existsByBusinessUnitCodeListIn(businessUnits)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT,
-                        "Business Unit Code with id " + request.getBusinessUnitCodeList() + " is already used");
-            }
+//            List<BusinessUnitCodeEntity> businessUnits = businessUnitCodeRepository.findAllById(request.getBusinessUnitCodeList());
+//            if (unitRepository.existsByBusinessUnitCodeListIn(businessUnits)) {
+//                throw new ResponseStatusException(HttpStatus.CONFLICT,
+//                        "Business Unit Code with id " + request.getBusinessUnitCodeList() + " is already used");
+//            }
             UnitEntity unit = new UnitEntity();
             UnitEntity payload = unitPaylod(request, unit);
             unitRepository.save(payload);

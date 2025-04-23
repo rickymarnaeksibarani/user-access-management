@@ -63,12 +63,10 @@ public class PartnerRepository {
             params.add(java.sql.Date.valueOf(PartnerDTO.getFilterByEnd()));
         }
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
-            sql.append(" AND n.name LIKE ?");
-            params.add("%" + PartnerDTO.getSearchTerm() + "%");
-        }
-        if (PartnerDTO.getSearchNumber() != null && !PartnerDTO.getSearchNumber().isEmpty()) {
-            sql.append(" AND c.number LIKE ?");
-            params.add("%" + PartnerDTO.getSearchNumber() + "%");
+            sql.append(" AND (n.name LIKE ? OR c.number LIKE ?)");
+            String keyword = "%" + PartnerDTO.getSearchTerm() + "%";
+            params.add(keyword);
+            params.add(keyword);
         }
 
         sql.append(" ORDER BY c.start DESC LIMIT ? OFFSET ?");
@@ -99,13 +97,10 @@ public class PartnerRepository {
             countParams.add(java.sql.Date.valueOf(PartnerDTO.getFilterByEnd()));
         }
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
-            countSql.append(" AND n.name LIKE ?") ;
-            countParams.add("%" + PartnerDTO.getSearchTerm() + "%");
-        }
-
-        if (PartnerDTO.getSearchNumber() != null && !PartnerDTO.getSearchNumber().isEmpty()) {
-            countSql.append(" AND c.number LIKE ?") ;
-            countParams.add("%" + PartnerDTO.getSearchNumber() + "%");
+            sql.append(" AND (n.name LIKE ? OR c.number LIKE ?)");
+            String keyword = "%" + PartnerDTO.getSearchTerm() + "%";
+            params.add(keyword);
+            params.add(keyword);
         }
 
         long totalElements = Objects.requireNonNullElse(

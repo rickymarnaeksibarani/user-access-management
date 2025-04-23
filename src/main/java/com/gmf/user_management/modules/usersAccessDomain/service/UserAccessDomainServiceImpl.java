@@ -102,6 +102,8 @@ public class UserAccessDomainServiceImpl implements UserAccessDomainService {
         if (userAccessDomainDTO.getPassword() != null && !userAccessDomainDTO.getPassword().trim().isEmpty()) {
             userAccessDomainEntity.setPassword(passwordUtil.generatePassword(userAccessDomainDTO.getPassword()));
         }
+        userAccessDomainEntity.setCreatedBy(userAccessDomainEntity.getCreatedBy()); 
+        userAccessDomainEntity.setUpdatedBy(userAccessDomainEntity.getUpdatedBy());
 
         return userAccessDomainEntity;
     }

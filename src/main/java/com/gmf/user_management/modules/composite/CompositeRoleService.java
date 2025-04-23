@@ -101,7 +101,7 @@ public class CompositeRoleService {
         Pageable paging = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("createdAt")));
         Specification<CompositeRoleEntity> specs = Specification.where(CompositeRolePredicate.searchTerm(requestDto.getSearchTerm()));
         Page<CompositeRoleEntity> pages = compositeRoleRepository.findAll(specs, paging);
-        List<CompositeRoleResponDTO> responseDTOs = pages.getContent().stream()
+        pages.getContent().stream()
                 .map(entity -> {
                     CompositeRoleResponDTO dto = ObjectMapperUtil.map(entity, CompositeRoleResponDTO.class);
                     dto.setJobCodeCount(entity.getJobCodeList() != null ? entity.getJobCodeList().size() : 0);

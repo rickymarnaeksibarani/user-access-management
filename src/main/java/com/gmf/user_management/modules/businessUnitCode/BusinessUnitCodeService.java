@@ -56,35 +56,52 @@ public class BusinessUnitCodeService {
 
     public BusinessUnitCodeResponDTO createBusinessUnitCode(BusinessUnitCodeDTO request){
         boolean exist = businessUnitCodeRepository.existsByBusinessUnitCode(request.getBusinessUnitCode());
-        if (exist){throw new ResponseStatusException(HttpStatus.CONFLICT, "Business Unit Code " + request.getBusinessUnitCode() + " is already exists");}
-        Map<String, Object> exPartner = partnerRepository.findContractById(request.getPartnerExternal());
-        if (exPartner.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Partner is not found");
+        if (exist){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Business Unit Code " + request.getBusinessUnitCode() + " is already exists");
+        }
 
         BusinessUnitCodeEntity businessUnitCode = new BusinessUnitCodeEntity();
         BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
-        payload.setPartnerExternal((Long) exPartner.get("id"));
-        payload.setPartnerName((String) exPartner.get("name"));
+
+        if (request.getPartnerExternal() != null) {
+            Map<String, Object> exPartner = partnerRepository.findContractById(request.getPartnerExternal());
+            if (exPartner.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Data Partner is not found");
+            }
+            payload.setPartnerExternal((Long) exPartner.get("id"));
+            payload.setPartnerName((String) exPartner.get("name"));
+        } else {
+            payload.setPartnerExternal(null);
+            payload.setPartnerName(null);
+        }
+
         businessUnitCodeRepository.save(payload);
         return businessRespone(payload);
     }
 
+
     public BusinessUnitCodeResponDTO updateBusinessUnitCode(Long id_business_unit_code, BusinessUnitCodeDTO request){
-        try {
-            BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Business Unit Code with: " + id_business_unit_code + " is not found"));
-            if (request.getPartnerExternal() != null) {
-                Map<String, Object> exPartner = partnerRepository.findContractById(request.getPartnerExternal());
-                if (exPartner.isEmpty()) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner External not found");
-                }
-                businessUnitCode.setPartnerName((String) exPartner.get("name"));
+        BusinessUnitCodeEntity businessUnitCode = businessUnitCodeRepository.findById(id_business_unit_code)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Business Unit Code with: " + id_business_unit_code + " is not found"));
+
+        BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
+
+        if (request.getPartnerExternal() != null) {
+            Map<String, Object> exPartner = partnerRepository.findContractById(request.getPartnerExternal());
+            if (exPartner.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partner External not found");
             }
-            BusinessUnitCodeEntity payload = businessUnitCodePayload(request, businessUnitCode);
-            businessUnitCodeRepository.saveAndFlush(payload);
-            return businessRespone(payload);
-        }catch (Exception e){
-            throw new RuntimeException(e);
+            payload.setPartnerExternal((Long) exPartner.get("id"));
+            payload.setPartnerName((String) exPartner.get("name"));
+        } else {
+            payload.setPartnerExternal(null);
+            payload.setPartnerName(null);
         }
+
+        businessUnitCodeRepository.saveAndFlush(payload);
+        return businessRespone(payload);
     }
+
 
     public Boolean deleteBusinessUnitCode(Long idBusinessUnitCode) {
         try {
@@ -104,6 +121,7 @@ public class BusinessUnitCodeService {
         if (request.getPartnerExternal() != null) {
             businessUnitCodeEntity.setPartnerExternal(request.getPartnerExternal());
         }
+        businessUnitCodeEntity.setPartnerExternal(request.getPartnerExternal());
         return businessUnitCodeEntity;
     }
 

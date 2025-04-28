@@ -79,7 +79,7 @@ public class PartnerRepository {
             SELECT COUNT(*)FROM partner_contracts p
             INNER JOIN contracts c ON c.id = p.contract_id
             LEFT JOIN partners n ON n.id = p.partner_id
-            WHERE c.status IN (2, 3)
+            WHERE c.status <> 1
         """);
 
 
@@ -98,9 +98,12 @@ public class PartnerRepository {
         }
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
             sql.append(" AND (n.name LIKE ? OR c.number LIKE ?)");
+            countSql.append(" AND (n.name LIKE ? OR c.number LIKE ?)");
             String keyword = "%" + PartnerDTO.getSearchTerm() + "%";
             params.add(keyword);
             params.add(keyword);
+            countParams.add(keyword);
+            countParams.add(keyword);
         }
 
         long totalElements = Objects.requireNonNullElse(

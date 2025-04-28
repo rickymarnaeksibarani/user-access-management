@@ -51,6 +51,10 @@ public class UnitService {
 //                throw new ResponseStatusException(HttpStatus.CONFLICT,
 //                        "Business Unit Code with id " + request.getBusinessUnitCodeList() + " is already used");
 //            }
+//            List<PICDeveloperEntity> picDeveloper = picDeveloperRepository.findByPersonalNameIsIn(request.getPicDeveloper());
+//            if (picDeveloper.isEmpty()) {
+//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PIC Developer not found");
+//            }
             UnitEntity unit = new UnitEntity();
             UnitEntity payload = unitPaylod(request, unit);
             unitRepository.save(payload);

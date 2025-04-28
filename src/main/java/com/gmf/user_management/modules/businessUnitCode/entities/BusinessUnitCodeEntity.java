@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -25,12 +26,15 @@ public class BusinessUnitCodeEntity {
     private Long idBusinessUnitCode;
 
     @Column(name = "partner_external")
+    @Nullable
     private Long partnerExternal;
 
     @Column(name = "partner_name")
+    @Nullable
     private String partnerName;
 
     @Column(name = "business_unit_code", length = 20)
+    @Nullable
     private String businessUnitCode;
 
     @Column(name = "description", columnDefinition = "text")

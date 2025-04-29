@@ -78,17 +78,17 @@ public class CompositeRoleService {
                 .sorted()
                 .toList();
 
-        boolean isDuplicate = existingComposite.stream().anyMatch(role -> {
-            List<Long> existingJobCodeIds = role.getJobCodeList().stream()
-                    .map(JobCodeEntity::getIdJobCode)
-                    .sorted()
-                    .toList();
-            return existingJobCodeIds.equals(newJobCodeIds);
-        });
-
-        if (isDuplicate) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Composite Role with the same JobCode is already exists");
-        }
+//        boolean isDuplicate = existingComposite.stream().anyMatch(role -> {
+//            List<Long> existingJobCodeIds = role.getJobCodeList().stream()
+//                    .map(JobCodeEntity::getIdJobCode)
+//                    .sorted()
+//                    .toList();
+//            return existingJobCodeIds.equals(newJobCodeIds);
+//        });
+//
+//        if (isDuplicate) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Composite Role with the same JobCode is already exists");
+//        }
 
         compositeRole.setJobCodeList(allJobCode);
         compositeRole.setCompositeRole(request.getCompositeRole());

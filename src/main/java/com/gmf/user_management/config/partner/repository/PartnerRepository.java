@@ -37,7 +37,6 @@ public class PartnerRepository {
               COALESCE(
                   CASE WHEN c.status = 2 THEN 'Active'
                        WHEN c.status = 3 THEN 'Inactive'
-                       WHEN 
                   END, 'Unknown'
               ) AS status
        FROM partner_contracts p

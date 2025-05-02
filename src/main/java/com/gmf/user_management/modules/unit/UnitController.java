@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/unit")
@@ -87,4 +89,12 @@ public class UnitController {
                 .setResponseHeaders("businessUnitCodeId", businessUnitCodeId)
                 .toResponse();
     }
+
+    @PostMapping("/delete-array")
+    public ResponseEntity<?> deleteUnits(@RequestBody Map<String, List<Long>> request) {
+        List<Long> unitIds = request.get("unit");
+        unitService.deleteUnitsByIds(unitIds);
+        return ResponseEntity.ok("Units deleted successfully");
+    }
+
 }

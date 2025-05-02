@@ -37,12 +37,13 @@ public class PartnerRepository {
               COALESCE(
                   CASE WHEN c.status = 2 THEN 'Active'
                        WHEN c.status = 3 THEN 'Inactive'
+                       WHEN 
                   END, 'Unknown'
               ) AS status
        FROM partner_contracts p
        INNER JOIN contracts c ON c.id = p.contract_id
        LEFT JOIN partners n ON n.id = p.partner_id
-       WHERE c.status IS NOT NULL AND c.status <> 1
+       WHERE c.status IS NOT NULL AND c.status IN (2, 3)
        """
         );
 
@@ -79,7 +80,7 @@ public class PartnerRepository {
             SELECT COUNT(*)FROM partner_contracts p
             INNER JOIN contracts c ON c.id = p.contract_id
             LEFT JOIN partners n ON n.id = p.partner_id
-            WHERE c.status <> 1
+            WHERE c.status IN (2, 3)
         """);
 
 

@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -66,6 +67,7 @@ public class PersonalEntity {
     private String contactNumber;
 
     @Column(name = "email", length = 60)
+    @Email(message = "Email should be valid")
     private String email;
 
     @Column(name = "identity_number", length = 20)

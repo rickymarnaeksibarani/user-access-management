@@ -62,11 +62,11 @@ public class JobCodeService {
     private JobCodeEntity jobCodePayload(JobCodeDTO request, JobCodeEntity jobCode) {
 //        boolean existsByJobCode = jobCodeRepository.existsByJobCode(request.getJobCode());
 //        if (existsByJobCode){throw new ResponseStatusException(HttpStatus.CONFLICT, "Job Code is already exists");}
-        Optional<JobCodeEntity> existingEntity = jobCodeRepository.findByJobCode(request.getJobCode());
-
-        if (existingEntity.isPresent() && !existingEntity.get().getIdJobCode().equals(jobCode.getIdJobCode())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Job Code is already exists with another ID");
-        }
+//        Optional<JobCodeEntity> existingEntity = jobCodeRepository.findByJobCode(request.getJobCode());
+//
+//        if (existingEntity.isPresent() && !existingEntity.get().getIdJobCode().equals(jobCode.getIdJobCode())) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Job Code is already exists with another ID");
+//        }
         jobCode.setJobPosition(request.getJobPosition());
         jobCode.setJobCode(request.getJobCode());
         jobCode.setCreatedBy(request.getCreatedBy());

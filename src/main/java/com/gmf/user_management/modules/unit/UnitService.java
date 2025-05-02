@@ -12,6 +12,7 @@ import com.gmf.user_management.modules.unit.dto.UnitRequestDto;
 import com.gmf.user_management.modules.unit.dto.UnitResponDto;
 import com.gmf.user_management.modules.unit.entities.UnitEntity;
 import com.gmf.user_management.modules.unit.repository.UnitRepository;
+import com.gmf.user_management.modules.unitJobCode.repository.UnitJobCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -32,6 +34,7 @@ public class UnitService {
 
     private final UnitRepository unitRepository;
     private final BusinessUnitCodeRepository businessUnitCodeRepository;
+    private final UnitJobCodeRepository unitJobCodeRepository;
 
     private UnitResponDto unitRespon(UnitEntity unitEntity)throws JsonProcessingException {
         return UnitResponDto.builder()
@@ -105,6 +108,28 @@ public class UnitService {
         UnitEntity unitEntity = JpaResultHelperUtil.getSingleResultFromOptional(unitRepository.findById(idUnit));
         if (unitEntity == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ID " + idUnit + " Not Found");
         return ObjectMapperUtil.map(unitEntity, UnitResponDto.class);
+    }
+
+    @Transactional
+    public void deleteUnitsByIds(List<Long> unitIds) {
+        List<UnitEntity> unitsToDelete = unitRepository.findAllById(unitIds);
+        if (unitsToDelete.size() != unitIds.size()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Some Unit IDs were not found");
+        }
+
+        boolean hasRelation = unitJobCodeRepository
+                .findAll()
+                .stream()
+                .anyMatch(unitJobCode ->
+                        unitJobCode.getUnitList().stream()
+                                .anyMatch(unit -> unitIds.contains(unit.getIdUnit()))
+                );
+
+        if (hasRelation) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete: One or more Units are used in UnitJobCode");
+        }
+
+        unitRepository.deleteAll(unitsToDelete);
     }
 
 }

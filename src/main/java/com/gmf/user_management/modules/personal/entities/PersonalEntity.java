@@ -27,7 +27,12 @@ import java.util.List;
 @Table(name = "tb_personal")
 public class PersonalEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "personal_seq",
+            sequenceName = "personal_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personal_seq")
     @Column(name = "id_personal")
     private Long idPersonal;
 
@@ -37,17 +42,22 @@ public class PersonalEntity {
     @Column(name = "partner_name")
     private String partnerName;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
-            name = "tb_personal_license",
+            name = "personal_license",
             joinColumns = @JoinColumn(name = "id_personal"),
             inverseJoinColumns = @JoinColumn(name = "license_type_id")
     )
     private List<LicenseTypeEntity> licenseTypeList;
 
-
-    @ManyToMany @JoinColumn(name = "sap_login_type_id")
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "personal_sap_login_type",
+            joinColumns = @JoinColumn(name = "id_personal"),
+            inverseJoinColumns = @JoinColumn(name = "sap_login_type_id")
+    )
     private List<SapLoginTypeEntity> sapLoginTypeList;
+
 
     @Column(name = "personal_name", length = 60, nullable = false)
     private String personalName;

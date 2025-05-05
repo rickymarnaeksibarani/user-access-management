@@ -1,6 +1,7 @@
 package com.gmf.user_management.modules.composite.compositeEntities;
 
 import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
+import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,11 +22,21 @@ import java.util.List;
 @Table(name = "tb_composite_role")
 public class CompositeRoleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "composite_role_seq",
+            sequenceName = "composite_role_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "composite_role_seq")
     @Column(name = "id_composite_role")
     private Long idCompositeRole;
 
-    @ManyToMany @JoinColumn(name = "job_code_id")
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "composite_job_code",
+            joinColumns = @JoinColumn(name = "id_composite"),
+            inverseJoinColumns = @JoinColumn(name = "job_code_id")
+    )
     private List<JobCodeEntity> jobCodeList;
 
     @Column(name = "composite_role")

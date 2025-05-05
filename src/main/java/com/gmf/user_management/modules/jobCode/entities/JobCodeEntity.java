@@ -20,7 +20,12 @@ import java.time.LocalDateTime;
 @Table(name = "tb_job_code")
 public class JobCodeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "job_code_seq",
+            sequenceName = "job_code_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "job_code_seq")
     @Column(name = "id_job_code")
     private Long idJobCode;
 

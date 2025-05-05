@@ -22,7 +22,12 @@ import java.util.List;
 @Table(name = "tb_sap_login_type")
 public class SapLoginTypeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "sap_login_type_seq",
+            sequenceName = "sap_login_type_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sap_login_type_seq")
     @Column(name = "id_sap_login_type")
     private Long idSapLoginType;
 

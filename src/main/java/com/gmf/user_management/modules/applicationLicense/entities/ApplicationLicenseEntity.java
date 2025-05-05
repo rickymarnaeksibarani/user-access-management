@@ -22,7 +22,12 @@ import java.util.Date;
 @Table(name = "tb_application_license")
 public class ApplicationLicenseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "application_license_seq",
+            sequenceName = "application_license_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "application_license_seq")
     @Column(name = "id_application_license")
     private Long idApplicationLicense;
 

@@ -1,6 +1,7 @@
 package com.gmf.user_management.modules.userLicense.entities;
 
 import com.gmf.user_management.modules.applicationLicense.entities.ApplicationLicenseEntity;
+import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,14 +23,29 @@ import java.util.List;
 @Table(name = "tb_user_license")
 public class UserLicenseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "user_license_seq",
+            sequenceName = "user_license_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_license_seq")
     @Column(name = "id_user_license")
     private Long idUserLicense;
 
-    @ManyToMany @JoinColumn(name = "application_license_id")
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "user_license_application_license",
+            joinColumns = @JoinColumn(name = "id_user_license"),
+            inverseJoinColumns = @JoinColumn(name = "application_license_id")
+    )
     private List<ApplicationLicenseEntity> applicationLicenseList;
 
-    @ManyToMany @JoinColumn(name = "personal_id")
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "user_license_personal",
+            joinColumns = @JoinColumn(name = "id_user_license"),
+            inverseJoinColumns = @JoinColumn(name = "personal_id")
+    )
     private List<PersonalEntity> personalList;
 
     @CreationTimestamp

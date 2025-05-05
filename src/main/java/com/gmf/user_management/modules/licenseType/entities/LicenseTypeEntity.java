@@ -19,7 +19,12 @@ import java.time.LocalDateTime;
 @Table(name = "tb_license_type")
 public class LicenseTypeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "license_type_seq",
+            sequenceName = "license_type_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "license_type_seq")
     @Column(name = "id_license_type")
     private Long idLicenseType;
 

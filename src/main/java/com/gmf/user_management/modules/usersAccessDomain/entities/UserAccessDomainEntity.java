@@ -3,6 +3,8 @@ package com.gmf.user_management.modules.usersAccessDomain.entities;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,12 +22,18 @@ import java.time.LocalDateTime;
 @Table(name = "tb_user_access_domain")
 public class UserAccessDomainEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "user_access_domain_seq",
+            sequenceName = "user_access_domain_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_access_domain_seq")
     @Column(name = "id_user_access_domain")
     private Long idUserAccessDomain;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_personal",  nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
     private PersonalEntity personalId;
 

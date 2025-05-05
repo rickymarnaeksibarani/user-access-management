@@ -21,7 +21,12 @@ import java.time.LocalDateTime;
 @Table(name = "tb_business_unit_code")
 public class BusinessUnitCodeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "business_unit_code_seq",
+            sequenceName = "business_unit_code_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "business_unit_code_seq")
     @Column(name = "id_business_unit_code")
     private Long idBusinessUnitCode;
 

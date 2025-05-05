@@ -22,19 +22,31 @@ import java.util.List;
 @Table(name = "tb_unit_job_code")
 public class UnitJobCodeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "unit_job_code_seq",
+            sequenceName = "unit_job_code_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "unit_job_code_seq")
     @Column(name = "id_unit_job_code")
     private Long idUnitJobCode;
 
-    //table unit
-    @ManyToMany
-    @JoinColumn(name = "unit_id")
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "unit_job_code_unit_list",
+            joinColumns = @JoinColumn(name = "unit_job_code_id"),
+            inverseJoinColumns = @JoinColumn(name = "unit_id")
+    )
     private List<UnitEntity> unitList;
 
-    //table jobCode
     @ManyToMany
-    @JoinColumn(name = "job_code_id")
+    @JoinTable(
+            name = "unit_job_code_job_code_list",
+            joinColumns = @JoinColumn(name = "unit_job_code_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_code_id")
+    )
     private List<JobCodeEntity> jobCodeList;
+
 
     @CreationTimestamp
     @Column(name = "created_at")

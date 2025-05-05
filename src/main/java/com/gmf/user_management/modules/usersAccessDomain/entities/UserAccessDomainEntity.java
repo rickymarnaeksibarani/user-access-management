@@ -33,7 +33,6 @@ public class UserAccessDomainEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_personal",  nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
     private PersonalEntity personalId;
 

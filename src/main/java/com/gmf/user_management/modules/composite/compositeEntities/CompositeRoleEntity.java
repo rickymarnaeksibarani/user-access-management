@@ -31,7 +31,7 @@ public class CompositeRoleEntity {
     @Column(name = "id_composite_role")
     private Long idCompositeRole;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "composite_job_code",
             joinColumns = @JoinColumn(name = "id_composite"),

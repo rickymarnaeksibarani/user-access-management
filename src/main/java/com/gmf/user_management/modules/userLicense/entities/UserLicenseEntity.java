@@ -32,7 +32,7 @@ public class UserLicenseEntity {
     @Column(name = "id_user_license")
     private Long idUserLicense;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "user_license_application_license",
             joinColumns = @JoinColumn(name = "id_user_license"),

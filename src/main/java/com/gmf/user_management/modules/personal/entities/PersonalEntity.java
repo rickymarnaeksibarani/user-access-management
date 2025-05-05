@@ -42,7 +42,7 @@ public class PersonalEntity {
     @Column(name = "partner_name")
     private String partnerName;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "personal_license",
             joinColumns = @JoinColumn(name = "id_personal"),

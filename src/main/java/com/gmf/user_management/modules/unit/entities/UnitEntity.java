@@ -31,7 +31,7 @@ public class UnitEntity {
     @Column(name = "id_unit")
     private Long idUnit;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(
             name = "unit_business_unit_code",
             joinColumns = @JoinColumn(name = "id_unit"),

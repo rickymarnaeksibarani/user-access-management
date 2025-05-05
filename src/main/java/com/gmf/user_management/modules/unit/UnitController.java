@@ -94,7 +94,9 @@ public class UnitController {
     public ResponseEntity<?> deleteUnits(@RequestBody Map<String, List<Long>> request) {
         List<Long> unitIds = request.get("unit");
         unitService.deleteUnitsByIds(unitIds);
-        return ResponseEntity.ok("Units deleted successfully");
+        return new HttpResponseDTO<>(unitIds, HttpStatus.OK)
+                .setResponseHeaders("unitIds", unitIds)
+                .toResponse();
     }
 
 }

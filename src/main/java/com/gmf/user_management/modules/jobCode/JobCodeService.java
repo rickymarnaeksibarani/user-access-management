@@ -88,7 +88,7 @@ public class JobCodeService {
 
         JobCodeEntity jobCode =  jobCodeOpt.get();
         List<UnitJobCodeEntity> jobCodeRelations =  unitJobCodeRepository.findByJobCodeListContaining(jobCode);
-        if (!jobCodeRelations.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete job code because it is still used in another table, thankyou love marnaek");
+        if (!jobCodeRelations.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete job code because it is still used in another table");
 
         List<CompositeRoleEntity> compositeRoleRelation =  compositeRoleRepository.findByJobCodeListContaining(jobCode);
         for (CompositeRoleEntity composite : compositeRoleRelation)

@@ -40,7 +40,7 @@ public class UserLicenseEntity {
     )
     private List<ApplicationLicenseEntity> applicationLicenseList;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "user_license_personal",
             joinColumns = @JoinColumn(name = "id_user_license"),

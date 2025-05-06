@@ -46,6 +46,8 @@ public class PartnerRepository {
        """
         );
 
+        //todo: memastikan status 'Unknown' digunakan atau tidak
+
         List<Object> params = new ArrayList<>();
 
         if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().trim().isEmpty()) {

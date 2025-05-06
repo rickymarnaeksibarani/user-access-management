@@ -50,7 +50,7 @@ public class PersonalEntity {
     )
     private List<LicenseTypeEntity> licenseTypeList;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "personal_sap_login_type",
             joinColumns = @JoinColumn(name = "id_personal"),

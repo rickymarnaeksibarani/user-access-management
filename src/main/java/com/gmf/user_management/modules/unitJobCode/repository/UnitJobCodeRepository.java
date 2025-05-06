@@ -1,5 +1,6 @@
 package com.gmf.user_management.modules.unitJobCode.repository;
 
+import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.unitJobCode.entities.UnitJobCodeEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,5 @@ public interface UnitJobCodeRepository extends JpaRepository<UnitJobCodeEntity, 
     List<UnitJobCodeEntity> findByUnitList_IdUnit(Long unitId);
 
 
+    List<UnitJobCodeEntity> findByJobCodeListContaining(JobCodeEntity jobCode);
 }

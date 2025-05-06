@@ -1,6 +1,7 @@
 package com.gmf.user_management.modules.composite.repository;
 
 import com.gmf.user_management.modules.composite.compositeEntities.CompositeRoleEntity;
+import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,6 @@ public interface CompositeRoleRepository extends JpaRepository<CompositeRoleEnti
     boolean existsByCompositeRole(@NotEmpty String compositeRole);
 
     List<CompositeRoleEntity> findByCompositeRole(@NotEmpty String compositeRole);
+
+    List<CompositeRoleEntity> findByJobCodeListContaining(JobCodeEntity jobCode);
 }

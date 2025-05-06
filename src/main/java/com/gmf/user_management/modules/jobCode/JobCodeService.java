@@ -4,12 +4,16 @@ import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.JpaResultHelperUtil;
 import com.gmf.user_management.core.utils.ObjectMapperUtil;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.modules.composite.compositeEntities.CompositeRoleEntity;
+import com.gmf.user_management.modules.composite.repository.CompositeRoleRepository;
 import com.gmf.user_management.modules.jobCode.dto.JobCodeDTO;
 import com.gmf.user_management.modules.jobCode.dto.JobCodePredicate;
 import com.gmf.user_management.modules.jobCode.dto.JobCodeRequestDto;
 import com.gmf.user_management.modules.jobCode.dto.JobCodeResponeDTO;
 import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.jobCode.repositories.JobCodeRepository;
+import com.gmf.user_management.modules.unitJobCode.entities.UnitJobCodeEntity;
+import com.gmf.user_management.modules.unitJobCode.repository.UnitJobCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +32,8 @@ import java.util.Optional;
 public class JobCodeService {
 
     private final JobCodeRepository jobCodeRepository;
+    private final UnitJobCodeRepository unitJobCodeRepository;
+    private final CompositeRoleRepository compositeRoleRepository;
 
     private JobCodeResponeDTO jobRespone(JobCodeEntity jobCodeEntity){
         return JobCodeResponeDTO.builder()
@@ -76,6 +83,19 @@ public class JobCodeService {
 
 
     public Boolean deleteJobCode(Long idJobCode) {
+        Optional<JobCodeEntity> jobCodeOpt = jobCodeRepository.findById(idJobCode);
+        if (jobCodeOpt.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job Code with id: " + idJobCode + " is not found");
+
+        JobCodeEntity jobCode =  jobCodeOpt.get();
+        List<UnitJobCodeEntity> jobCodeRelations =  unitJobCodeRepository.findByJobCodeListContaining(jobCode);
+        if (!jobCodeRelations.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete job code because it is still used in another table, thankyou love marnaek");
+
+        List<CompositeRoleEntity> compositeRoleRelation =  compositeRoleRepository.findByJobCodeListContaining(jobCode);
+        for (CompositeRoleEntity composite : compositeRoleRelation)
+        {
+            compositeRoleRepository.delete(composite);
+        }
+
         jobCodeRepository.deleteById(idJobCode);
         return true;
     }

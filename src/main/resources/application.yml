@@ -57,7 +57,7 @@
 #  jpa:
 #    # open-in-view: false
 #    hibernate:
-#      ddl-auto: create-drop
+#      ddl-auto: none
 #    properties:
 #      hibernate:
 #        format_sql: false

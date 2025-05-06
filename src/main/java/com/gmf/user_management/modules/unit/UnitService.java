@@ -49,15 +49,6 @@ public class UnitService {
     }
     public UnitResponDto createUnit(UnitDTO request)throws Exception {
         try {
-//            List<BusinessUnitCodeEntity> businessUnits = businessUnitCodeRepository.findAllById(request.getBusinessUnitCodeList());
-//            if (unitRepository.existsByBusinessUnitCodeListIn(businessUnits)) {
-//                throw new ResponseStatusException(HttpStatus.CONFLICT,
-//                        "Business Unit Code with id " + request.getBusinessUnitCodeList() + " is already used");
-//            }
-//            List<PICDeveloperEntity> picDeveloper = picDeveloperRepository.findByPersonalNameIsIn(request.getPicDeveloper());
-//            if (picDeveloper.isEmpty()) {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PIC Developer not found");
-//            }
             UnitEntity unit = new UnitEntity();
             UnitEntity payload = unitPaylod(request, unit);
             unitRepository.save(payload);
@@ -89,6 +80,8 @@ public class UnitService {
     private UnitEntity unitPaylod(UnitDTO unitDTO, UnitEntity unitEntity) {
         List<BusinessUnitCodeEntity> allBusinessUnit = businessUnitCodeRepository.findByIdBusinessUnitCodeIsIn(unitDTO.getBusinessUnitCodeList());
         if (allBusinessUnit.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Business code not found!");
+        boolean exists = unitRepository.existsByUnit(unitDTO.getUnit());
+        if (exists){throw new ResponseStatusException(HttpStatus.CONFLICT, "Unit with id " + unitDTO.getUnit() + " is already exists");}
         unitEntity.setBusinessUnitCodeList(allBusinessUnit);
         unitEntity.setUnit(unitDTO.getUnit());
         unitEntity.setCreatedBy(unitDTO.getCreatedBy());

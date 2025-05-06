@@ -7,6 +7,14 @@
 #server:
 #  port: 8080
 #spring:
+#  cloud:
+#    config:
+#      fail-fast: true
+#      uri: http://172.16.41.27:8090
+#      enabled: true
+#  devtools:
+#    add-properties:
+#      false
 #  cache:
 #    type: caffeine
 #    caffeine:
@@ -47,7 +55,7 @@
 #    hikari:
 #      read-only: true
 #  jpa:
-#    #    open-in-view: false
+#    # open-in-view: false
 #    hibernate:
 #      ddl-auto: create-drop
 #    properties:

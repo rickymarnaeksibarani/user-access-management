@@ -31,9 +31,9 @@ public class UnitJobCodeEntity {
     @Column(name = "id_unit_job_code")
     private Long idUnitJobCode;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @ManyToMany
     @JoinTable(
-            name = "unit_job_code_unit_list",
+            name = "unit_job_code_units_list",
             joinColumns = @JoinColumn(name = "unit_job_code_id"),
             inverseJoinColumns = @JoinColumn(name = "unit_id")
     )
@@ -41,7 +41,7 @@ public class UnitJobCodeEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "unit_job_code_job_code_list",
+            name = "unit_job_code_job_codes_list",
             joinColumns = @JoinColumn(name = "unit_job_code_id"),
             inverseJoinColumns = @JoinColumn(name = "job_code_id")
     )

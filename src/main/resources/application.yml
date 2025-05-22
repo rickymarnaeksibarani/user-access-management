@@ -7,18 +7,6 @@
 #server:
 #  port: 8080
 #spring:
-#  cloud:
-#    config:
-#      fail-fast: true
-#      uri: http://172.16.41.27:8090
-#      enabled: true
-#  devtools:
-#    add-properties:
-#      false
-#  cache:
-#    type: caffeine
-#    caffeine:
-#      spec: "expireAfterWrite=30s,expireAfterAccess=60s"
 #  kafka:
 #    consumer:
 #      bootstrap-servers:
@@ -33,7 +21,7 @@
 #        - 172.16.41.107:9092
 #
 #  application:
-#    name: userman-service
+#    name: utils-userman-service
 #    version: 1.0.0
 #  datasource:
 #    driverClassName: org.postgresql.Driver
@@ -55,9 +43,9 @@
 #    hikari:
 #      read-only: true
 #  jpa:
-#    # open-in-view: false
+#    #    open-in-view: false
 #    hibernate:
-#      ddl-auto: none
+#      ddl-auto: create-drop
 #    properties:
 #      hibernate:
 #        format_sql: false
@@ -71,10 +59,10 @@
 #  access_key: Q5s0jJ3OBC6moQ1th1OQ
 #  secret_key: iaXkLIlln09loCYK6oyQCJzPnBiKA23yQBYReqS8
 #  bucket: "test-sda"
-#baseUrl: http://localhost:8080/
+##baseUrl: https://api-dev.gmf-aeroasia.co.id/utils/userman/
 #keycloak:
 #  auth-server-url: https://dev-auth.gmf-aeroasia.co.id/auth
 #  realm: master
 #  resource: admin-cli
-#  username: "782659"
-#  password: "Aeroas1@59"
+#  username: "xopsauthmaster"
+#  password: "x0ps4uthm4st3r@59"

@@ -15,9 +15,20 @@ public class PartnerDTO {
     private String searchTerm;
     private String searchNumber;
     private String filterByStatus;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate filterByStart;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate filterByEnd;
+
+    // startDate -> from - to
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startFrom;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startTo;
+
+    // expiredDate -> from - to
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate expiredFrom;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate expiredTo;
 }

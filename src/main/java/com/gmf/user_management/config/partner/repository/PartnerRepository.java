@@ -50,20 +50,35 @@ public class PartnerRepository {
 
         List<Object> params = new ArrayList<>();
 
+        // apply status -> 2 is Active 3 is Inactive
         if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().trim().isEmpty()) {
             sql.append(" AND c.status = ?");
             params.add(Integer.parseInt(PartnerDTO.getFilterByStatus()));
         } else {
             sql.append(" AND c.status IN (2,3)");
         }
-        if (PartnerDTO.getFilterByStart() != null) {
+
+        // apply startDate -> startFrom - startTo
+        if (PartnerDTO.getStartFrom() != null) {
             sql.append(" AND c.start >= ?");
-            params.add(java.sql.Date.valueOf(PartnerDTO.getFilterByStart()));
+            params.add(java.sql.Date.valueOf(PartnerDTO.getStartFrom()));
         }
-        if (PartnerDTO.getFilterByEnd() != null) {
+        if (PartnerDTO.getStartTo() != null) {
+            sql.append(" AND c.start <= ?");
+            params.add(java.sql.Date.valueOf(PartnerDTO.getStartTo()));
+        }
+
+        // apply expiredDate -> expiredFrom - expiredTo
+        if (PartnerDTO.getExpiredFrom() != null) {
+            sql.append(" AND c.end >= ?");
+            params.add(java.sql.Date.valueOf(PartnerDTO.getExpiredFrom()));
+        }
+        if (PartnerDTO.getExpiredTo() != null) {
             sql.append(" AND c.end <= ?");
-            params.add(java.sql.Date.valueOf(PartnerDTO.getFilterByEnd()));
+            params.add(java.sql.Date.valueOf(PartnerDTO.getExpiredTo()));
         }
+
+        // apply searchTerm ('name' LIKE OR 'number')
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
             sql.append(" AND (n.name LIKE ? OR c.number LIKE ?)");
             String keyword = "%" + PartnerDTO.getSearchTerm() + "%";
@@ -85,19 +100,30 @@ public class PartnerRepository {
         """);
 
 
+        // Also apply filters to count query
         List<Object> countParams = new ArrayList<>();
         if (PartnerDTO.getFilterByStatus() != null && !PartnerDTO.getFilterByStatus().trim().isEmpty()) {
             countSql.append(" AND c.status = ?");
             countParams.add(Integer.parseInt(PartnerDTO.getFilterByStatus()));
         }
-        if (PartnerDTO.getFilterByStart() != null) {
+
+        if (PartnerDTO.getStartFrom() != null) {
             countSql.append(" AND c.start >= ?");
-            countParams.add(java.sql.Date.valueOf(PartnerDTO.getFilterByStart()));
+            countParams.add(java.sql.Date.valueOf(PartnerDTO.getStartFrom()));
         }
-        if (PartnerDTO.getFilterByEnd() != null) {
+        if (PartnerDTO.getStartTo() != null) {
+            countSql.append(" AND c.start <= ?");
+            countParams.add(java.sql.Date.valueOf(PartnerDTO.getStartTo()));
+        }
+        if (PartnerDTO.getExpiredFrom() != null) {
+            countSql.append(" AND c.end >= ?");
+            countParams.add(java.sql.Date.valueOf(PartnerDTO.getExpiredFrom()));
+        }
+        if (PartnerDTO.getExpiredTo() != null) {
             countSql.append(" AND c.end <= ?");
-            countParams.add(java.sql.Date.valueOf(PartnerDTO.getFilterByEnd()));
+            countParams.add(java.sql.Date.valueOf(PartnerDTO.getExpiredTo()));
         }
+
         if (PartnerDTO.getSearchTerm() != null && !PartnerDTO.getSearchTerm().isEmpty()) {
             sql.append(" AND (n.name LIKE ? OR c.number LIKE ?)");
             countSql.append(" AND (n.name LIKE ? OR c.number LIKE ?)");
@@ -165,7 +191,7 @@ public class PartnerRepository {
          FROM partner_contracts p
          INNER JOIN contracts c ON c.id = p.contract_id
          LEFT JOIN partners n ON n.id = p.partner_id
-         WHERE p.id = ? AND c.status IS NOT NULL AND c.status <> 1
+         WHERE p.partner_id = ? AND c.status IS NOT NULL AND c.status <> 1
          """;
         try {
             return jdbcTemplate.queryForList(sql, partnerId);

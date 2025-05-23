@@ -2,12 +2,17 @@ package com.gmf.user_management.modules.sapLoginType.service;
 
 import com.gmf.user_management.core.exceptions.NotFoundException;
 import com.gmf.user_management.core.utils.PaginationUtil;
+import com.gmf.user_management.modules.composite.compositeEntities.CompositeRoleEntity;
+import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
+import com.gmf.user_management.modules.personal.entities.PersonalEntity;
+import com.gmf.user_management.modules.personal.repository.PersonalRepository;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeDTO;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypePredicate;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeRequest;
 import com.gmf.user_management.modules.sapLoginType.dto.SapLoginTypeResponDTO;
 import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import com.gmf.user_management.modules.sapLoginType.repository.SapLoginTypeRepository;
+import com.gmf.user_management.modules.unitJobCode.entities.UnitJobCodeEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,11 +23,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class SapLoginTypeServiceImpl implements SapLoginTypeService{
 
     private final SapLoginTypeRepository sapLoginTypeRepository;
+    private final PersonalRepository personalRepository;
 
     private SapLoginTypeResponDTO sapLoginTypeResponDTO(SapLoginTypeEntity sapLoginTypeEntity){
         return SapLoginTypeResponDTO.builder()
@@ -62,6 +71,14 @@ public class SapLoginTypeServiceImpl implements SapLoginTypeService{
 
     @Override
     public Boolean deleteSapLoginType(Long idSapLoginType){
+        Optional<SapLoginTypeEntity> find = sapLoginTypeRepository.findById(idSapLoginType);
+        if (find.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND, "SAP Login Type with id "+ idSapLoginType + " is not found");
+
+        SapLoginTypeEntity sapLogin = find.get();
+        List<PersonalEntity> sapLoginRelation = personalRepository.findBySapLoginTypeListContaining(sapLogin);
+        if (!sapLoginRelation.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete SAP Login Type because it is still used in another table");
+
+
         sapLoginTypeRepository.deleteById(idSapLoginType);
         return true;
     }

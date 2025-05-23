@@ -8,6 +8,9 @@ import com.gmf.user_management.modules.jobCode.entities.JobCodeEntity;
 import com.gmf.user_management.modules.licenseType.dto.*;
 import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.licenseType.repository.LicenseTypeRespository;
+import com.gmf.user_management.modules.personal.entities.PersonalEntity;
+import com.gmf.user_management.modules.personal.repository.PersonalRepository;
+import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 public class LicenseTypeService {
 
     private final LicenseTypeRespository licenseTypeRespository;
+    private final PersonalRepository personalRepository;
 
     private LicenseTypeResponDTO licenseTypeRespon(LicenseTypeEntity licenseTypeEntity) {
         return LicenseTypeResponDTO.builder()
@@ -59,6 +63,13 @@ public class LicenseTypeService {
     }
 
     public Boolean deleteLicenseType(Long idLicenseType) {
+        Optional<LicenseTypeEntity> findLicense = licenseTypeRespository.findById(idLicenseType);
+        if (findLicense.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND,"License Type with id " +idLicenseType+" is not found");
+
+        LicenseTypeEntity licenseTypeContaining = findLicense.get();
+        List<PersonalEntity>licenseTypeRelation =  personalRepository.findByLicenseTypeListContaining(licenseTypeContaining);
+        if (!licenseTypeRelation.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT,"Cannot delete License Type because it is still used in another table");
+
         licenseTypeRespository.deleteById(idLicenseType);
         return true;
     }

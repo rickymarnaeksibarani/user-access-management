@@ -1,6 +1,8 @@
 package com.gmf.user_management.modules.personal.repository;
 
+import com.gmf.user_management.modules.licenseType.entities.LicenseTypeEntity;
 import com.gmf.user_management.modules.personal.entities.PersonalEntity;
+import com.gmf.user_management.modules.sapLoginType.entities.SapLoginTypeEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +30,7 @@ public interface PersonalRepository extends JpaRepository<PersonalEntity, Long>,
     Optional<PersonalEntity> findByPassCardNumber(String passCardNumber);
     Optional<PersonalEntity> findByContactNumber(@NotEmpty String contactNumber);
 
+    List<PersonalEntity> findBySapLoginTypeListContaining(SapLoginTypeEntity sapLogin);
+
+    List<PersonalEntity> findByLicenseTypeListContaining(LicenseTypeEntity licenseTypeContaining);
 }

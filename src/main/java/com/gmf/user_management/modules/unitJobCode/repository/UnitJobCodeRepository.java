@@ -15,7 +15,5 @@ public interface UnitJobCodeRepository extends JpaRepository<UnitJobCodeEntity, 
     Page<UnitJobCodeEntity> findByJobCodeList_IdJobCode(Long jobCodeId, Pageable pageable);
     Page<UnitJobCodeEntity> findByUnitList_IdUnit(Long unitId, Pageable pageable);
     List<UnitJobCodeEntity> findByUnitList_IdUnit(Long unitId);
-
-
     List<UnitJobCodeEntity> findByJobCodeListContaining(JobCodeEntity jobCode);
 }
